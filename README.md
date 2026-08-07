@@ -1,22 +1,22 @@
 # SA_TOP Design Workbench
 
-## 在线使用
+## Online Workbench
 
-[打开 SA_TOP 设计工作台](https://lin2513lp.github.io/sa-workbench/)
+[Open the SA_TOP Design Workbench](https://lin2513lp.github.io/sa-workbench/)
 
-这是一个面向 16×16 脉动阵列（Systolic Array）的独立设计工作台，可直接通过 GitHub Pages 在浏览器中使用，无需安装软件。
+This repository hosts a standalone design workbench for a 16x16 systolic array. The complete workbench runs directly in a browser through GitHub Pages and requires no local installation.
 
-## 工作台内容
+## Workbench Contents
 
-- **设计报告**：SA_TOP 总体架构、外部接口、时钟复位、RegMap CDC、权重加载、PE 阵列互连与输出收集设计。
-- **代码设计**：在线浏览当前工程的 `Makefile`、11 个 RTL 文件和 11 个 testbench 文件。
-- **仿真波形**：收录 INT4、INT8、FP16、FP32 和 multi 连续任务的顶层回归波形与检查结论。
-- **WaveDrom 时序图**：展示 B 权重跨时钟域加载、A 数据流水以及不同计算精度下的输出时序。
-- **材料与笔记**：从矩阵乘法、局部 MAC、partial sum 到 16×16 阵列数据流的图示化讲解，并包含可交互流水演示。
+- **Design Report**: SA_TOP architecture, external interfaces, clock and reset handling, RegMap CDC, weight loading, PE array interconnects, and output collection.
+- **RTL and Testbench Code**: Browse the current `Makefile`, 11 RTL files, and 11 testbench files online.
+- **Simulation Waveforms**: Review top-level regression waveforms and check results for INT4, INT8, FP16, FP32, and multi-task operation.
+- **WaveDrom Timing Diagrams**: Inspect B-weight clock-domain crossing, A-data flow, and output timing for different compute modes.
+- **Design Notes**: Learn the dataflow from matrix multiplication and local MAC operations to partial-sum propagation across the 16x16 array, including an interactive pipeline demonstration.
 
-## 当前实现
+## Current RTL Structure
 
-SA_TOP 由以下主要模块组成：
+The SA_TOP implementation is organized around the following modules:
 
 - `sa_top`
 - `sa_ctrl`
@@ -24,15 +24,15 @@ SA_TOP 由以下主要模块组成：
 - `output_collector`
 - `pe_mp/PE_MP_v1`
 
-顶层回归覆盖 smoke、INT4、INT8、FP16、FP32 和 multi 六类场景；Questa 与 Icarus 回归均为 6/6 PASS。工作台内同时注明了当前 INT4/INT8 数据路径、浮点特殊值和动态尺寸等尚待扩展的验证边界。
+Top-level regression covers smoke, INT4, INT8, FP16, FP32, and multi-task scenarios. Both the Questa and Icarus regression sets pass 6 out of 6 cases. The workbench also documents the remaining verification boundaries, including packed INT4/INT8 sub-lanes, dynamic active sizes, and floating-point special cases.
 
-## 目录说明
+## Repository Layout
 
-- `sa_workbench.html`：完整设计工作台入口。
-- `sa_code_design.html`：RTL/TB 代码浏览页。
-- `sa_sim_waveforms.html`：仿真波形浏览页。
-- `sa_wavedrom_int4.html`：多精度 WaveDrom 时序图。
-- `code/`：工作台展示的 RTL、TB 和构建文件快照。
-- `sim/`：五组顶层仿真波形。
+- `sa_workbench.html`: Main design workbench.
+- `sa_code_design.html`: RTL and testbench source browser.
+- `sa_sim_waveforms.html`: Simulation waveform browser.
+- `sa_wavedrom_int4.html`: Multi-mode WaveDrom timing diagrams.
+- `code/`: RTL, testbench, and build-file snapshots displayed by the workbench.
+- `sim/`: Five top-level simulation waveform images.
 
-本仓库为纯静态页面，使用 `.nojekyll` 保留原始目录和文件路径。
+This is a static GitHub Pages repository. The `.nojekyll` file preserves the original asset and source-file paths.
