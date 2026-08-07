@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SA 权重预加载与流水计算演示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --ink: #182131;
+      --muted: #68758a;
+      --line: #d8dee8;
+      --blue: #2878d4;
+      --blue-deep: #145ca9;
+      --blue-soft: #ddecff;
+      --green: #13845f;
+      --green-soft: #def4eb;
+      --amber: #b86908;
+      --amber-soft: #fff0d4;
+      --rose: #b84a62;
+      --rose-soft: #fde8ed;
+      --idle: #f0f2f5;
+      --cell: 34px;
+      --gap: 3px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    code {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 0.94em;
+    }
+
+    .page {
+      width: min(1280px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 46px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 25px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      max-width: 760px;
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 38px;
+      min-height: 38px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .control-btn.primary {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .control-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .speed {
+      height: 38px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: minmax(170px, auto) minmax(220px, 1fr) minmax(250px, auto);
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      margin-bottom: 12px;
+    }
+
+    .clock-group {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .phase-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 0 8px;
+      border: 1px solid #e4bd78;
+      border-radius: 4px;
+      background: var(--amber-soft);
+      color: #704308;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .phase-tag.flow {
+      border-color: #9cc7f4;
+      background: var(--blue-soft);
+      color: #184f89;
+    }
+
+    .clock {
+      font-size: 14px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .timeline input {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .phase-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .truth-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .truth-item {
+      padding: 11px 14px;
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .truth-item:last-child {
+      border-right: 0;
+    }
+
+    .truth-item b {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .section {
+      padding: 19px 0 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .section-head span {
+      max-width: 580px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      text-align: right;
+    }
+
+    .bus-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .bus-label b {
+      color: var(--ink);
+      font-weight: 650;
+    }
+
+    .wide-scroll {
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .lane-bus {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(52px, 1fr));
+      gap: 4px;
+      min-width: 900px;
+    }
+
+    .lane {
+      min-width: 0;
+      padding: 7px 3px;
+      border: 1px solid var(--line);
+      background: var(--idle);
+      text-align: center;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+
+    .lane.valid-a {
+      border-color: #8ebff1;
+      background: var(--blue-soft);
+      color: #184f89;
+    }
+
+    .lane.valid-b {
+      border-color: #e3b15f;
+      background: var(--amber-soft);
+      color: #744606;
+    }
+
+    .lane.locked {
+      border-color: #95cfba;
+      background: var(--green-soft);
+      color: #0c6147;
+    }
+
+    .lane small,
+    .lane b {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lane small {
+      margin-bottom: 2px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .lane b {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      margin-top: 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .flow-arrow .line {
+      width: min(380px, 45vw);
+      height: 2px;
+      background: currentColor;
+      position: relative;
+    }
+
+    .flow-arrow .line::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid currentColor;
+      border-right: 2px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .skew-wrap {
+      overflow-x: auto;
+      padding: 3px 0 7px;
+    }
+
+    .skew-grid {
+      display: grid;
+      grid-template-columns: 54px repeat(31, 23px);
+      grid-template-rows: 18px repeat(16, 18px);
+      gap: 2px;
+      width: max-content;
+      min-width: 790px;
+      margin: 0 auto;
+    }
+
+    .skew-axis,
+    .skew-row-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .skew-row-label {
+      justify-content: flex-end;
+      padding-right: 5px;
+      font-family: Consolas, "SFMono-Regular", monospace;
+    }
+
+    .skew-cell {
+      border: 1px solid #e5e9ef;
+      background: #fff;
+    }
+
+    .skew-cell.has-a {
+      border-color: #a7cdf4;
+      background: var(--blue-soft);
+    }
+
+    .skew-cell.past {
+      opacity: 0.48;
+    }
+
+    .skew-cell.current {
+      border-color: var(--blue-deep);
+      background: var(--blue);
+      box-shadow: inset 0 0 0 1px #fff;
+    }
+
+    .skew-cell.now-column:not(.has-a) {
+      background: #edf0f4;
+    }
+
+    .skew-caption {
+      max-width: 900px;
+      margin: 9px auto 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .array-wrap {
+      overflow-x: auto;
+      padding: 4px 0 10px;
+    }
+
+    .array-stage {
+      display: grid;
+      grid-template-columns: 82px auto 58px;
+      grid-template-rows: 26px auto 30px;
+      gap: 8px;
+      width: max-content;
+      margin: 0 auto;
+    }
+
+    .col-labels {
+      grid-column: 2;
+      display: grid;
+      grid-template-columns: repeat(16, var(--cell));
+      gap: var(--gap);
+    }
+
+    .col-label {
+      color: var(--muted);
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .row-labels {
+      grid-column: 1;
+      grid-row: 2;
+      display: grid;
+      grid-template-rows: repeat(16, var(--cell));
+      gap: var(--gap);
+    }
+
+    .row-label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: var(--muted);
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 9px;
+      white-space: nowrap;
+    }
+
+    .pe-grid {
+      grid-column: 2;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: repeat(16, var(--cell));
+      grid-template-rows: repeat(16, var(--cell));
+      gap: var(--gap);
+    }
+
+    .pe {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: var(--idle);
+      color: #8792a2;
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 8px;
+      cursor: pointer;
+      transition: background 130ms ease, border-color 130ms ease, color 130ms ease, transform 130ms ease;
+    }
+
+    .pe[data-state="loading"] {
+      border-color: #d99a37;
+      background: var(--amber-soft);
+      color: #754608;
+    }
+
+    .pe[data-state="loaded"] {
+      border-color: #a7cdbf;
+      background: var(--green-soft);
+      color: #33715e;
+    }
+
+    .pe[data-state="active"] {
+      border-color: var(--blue-deep);
+      background: var(--blue);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .pe[data-state="bypass"] {
+      border-color: #d48a9c;
+      background: var(--rose-soft);
+      color: #8c3047;
+    }
+
+    .pe[data-state="bypass"]::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      left: 50%;
+      width: 2px;
+      background: var(--rose);
+      opacity: 0.58;
+      transform: translateX(-50%);
+    }
+
+    .pe[data-state="bypass"] {
+      text-shadow: 0 0 3px #fff;
+    }
+
+    .pe[data-state="passed"] {
+      border-color: #8fcab5;
+      background: var(--green-soft);
+      color: #17684f;
+    }
+
+    .pe[data-selected="true"] {
+      outline: 2px solid var(--rose);
+      outline-offset: 1px;
+    }
+
+    .a-direction {
+      grid-column: 2;
+      grid-row: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .psum-direction {
+      grid-column: 3;
+      grid-row: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 650;
+      writing-mode: vertical-rl;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 17px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      margin-right: 5px;
+      border: 1px solid var(--line);
+      vertical-align: -1px;
+    }
+
+    .legend .weight {
+      border-color: #d99a37;
+      background: var(--amber-soft);
+    }
+
+    .legend .mac {
+      border-color: var(--blue);
+      background: var(--blue);
+    }
+
+    .legend .bypass {
+      border-color: #d48a9c;
+      background: var(--rose-soft);
+    }
+
+    .legend .passed {
+      border-color: #8fcab5;
+      background: var(--green-soft);
+    }
+
+    .array-status {
+      max-width: 900px;
+      margin: 13px auto 0;
+      padding: 11px 13px;
+      border-left: 3px solid var(--blue);
+      background: #eaf3ff;
+      color: #244766;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .pe-detail {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.34fr) minmax(280px, 1fr);
+      max-width: 900px;
+      margin: 13px auto 0;
+      border-left: 3px solid var(--rose);
+      background: var(--rose-soft);
+    }
+
+    .pe-detail strong,
+    .pe-detail span {
+      padding: 11px 13px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .pe-detail strong {
+      border-right: 1px solid #efbdc8;
+      font-weight: 650;
+    }
+
+    .output-wrap {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 4px 0 10px;
+    }
+
+    .bottom-bus-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 0 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .bottom-bus-label b {
+      color: var(--ink);
+      font-weight: 650;
+    }
+
+    .bottom-bus {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(72px, 1fr));
+      gap: 4px;
+      min-width: 1212px;
+    }
+
+    .bottom-lane {
+      min-height: 58px;
+      padding: 6px 3px;
+      border: 1px solid var(--line);
+      background: var(--idle);
+      text-align: center;
+    }
+
+    .flow-map {
+      display: grid;
+      grid-template-columns: 420px 54px minmax(650px, 1fr);
+      grid-template-areas:
+        "input into-array array"
+        ". . down"
+        ". . output";
+      align-items: start;
+      gap: 14px 10px;
+      min-width: 1130px;
+    }
+
+    .flow-map-scroll {
+      overflow-x: auto;
+      padding: 2px 0 12px;
+    }
+
+    .flow-node {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+
+    .flow-node-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 11px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .flow-node-title b {
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .flow-node-title span {
+      color: var(--muted);
+      font-size: 10px;
+      text-align: right;
+    }
+
+    .input-node {
+      grid-area: input;
+      align-self: center;
+    }
+
+    .input-node .skew-wrap {
+      padding: 10px 7px 5px;
+    }
+
+    .input-node .skew-grid {
+      grid-template-columns: 40px repeat(31, 11px);
+      grid-template-rows: 14px repeat(16, 14px);
+      gap: 1px;
+      min-width: 411px;
+      margin: 0;
+    }
+
+    .input-node .skew-axis,
+    .input-node .skew-row-label {
+      font-size: 7px;
+    }
+
+    .input-node .skew-row-label {
+      padding-right: 3px;
+    }
+
+    .input-node .skew-caption {
+      margin: 5px 10px 10px;
+      font-size: 10px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .array-node {
+      grid-area: array;
+      --cell: 30px;
+      --gap: 2px;
+    }
+
+    .array-node .array-wrap {
+      padding: 8px 6px 11px;
+    }
+
+    .array-node .array-stage {
+      grid-template-columns: 70px auto 48px;
+      grid-template-rows: 22px auto 26px;
+      gap: 6px;
+    }
+
+    .array-node .row-label,
+    .array-node .col-label {
+      font-size: 7px;
+    }
+
+    .array-node .pe {
+      font-size: 7px;
+    }
+
+    .array-node .a-direction {
+      font-size: 10px;
+    }
+
+    .array-node .psum-direction {
+      font-size: 9px;
+    }
+
+    .into-array {
+      grid-area: into-array;
+      align-self: center;
+    }
+
+    .down-output {
+      grid-area: down;
+      justify-self: center;
+      min-height: 54px;
+    }
+
+    .flow-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .flow-connector.horizontal {
+      flex-direction: column;
+    }
+
+    .flow-connector.vertical {
+      flex-direction: column;
+      color: var(--green);
+    }
+
+    .connector-line {
+      position: relative;
+      display: block;
+      width: 44px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    .connector-line::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid currentColor;
+      border-right: 2px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    .vertical .connector-line {
+      width: 2px;
+      height: 30px;
+    }
+
+    .vertical .connector-line::after {
+      top: auto;
+      right: -4px;
+      bottom: -1px;
+      transform: rotate(135deg);
+    }
+
+    .output-node {
+      grid-area: output;
+    }
+
+    .output-node .bottom-bus-label {
+      margin: 9px 10px 6px;
+    }
+
+    .output-node .wide-scroll,
+    .output-node .output-wrap {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+
+    .output-node .bottom-bus {
+      grid-template-columns: repeat(16, minmax(38px, 1fr));
+      gap: 2px;
+      min-width: 638px;
+    }
+
+    .output-node .bottom-lane {
+      min-height: 52px;
+      padding: 5px 2px;
+    }
+
+    .output-node .bottom-lane small {
+      font-size: 7px;
+    }
+
+    .output-node .bottom-lane b {
+      font-size: 8px;
+    }
+
+    .output-node .bottom-summary {
+      margin: 6px 10px 12px;
+      font-size: 10px;
+    }
+
+    .output-node .output-state-key {
+      margin: 0 8px 10px;
+      gap: 10px;
+      font-size: 9px;
+    }
+
+    .output-node .output-grid {
+      grid-template-columns: repeat(16, 30px);
+      gap: 3px;
+      min-height: 520px;
+    }
+
+    .output-node .output-column {
+      grid-template-rows: 22px repeat(16, 24px);
+      gap: 2px;
+      padding-top: calc(var(--col) * 4px);
+    }
+
+    .output-node .output-label {
+      font-size: 7px;
+    }
+
+    .output-node .output-cell {
+      font-size: 6px;
+    }
+
+    .output-node .output-cell.partial {
+      font-size: 7px;
+    }
+
+    .bottom-lane small,
+    .bottom-lane b {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bottom-lane small {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .bottom-lane b {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 10px;
+      font-weight: 650;
+      line-height: 1.3;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
+    .bottom-lane.partial {
+      border-color: #d48a9c;
+      background: var(--rose-soft);
+      color: #8c3047;
+    }
+
+    .bottom-lane.final {
+      border-color: #77bea5;
+      background: var(--green);
+      color: #fff;
+    }
+
+    .bottom-lane.final small {
+      color: #dff8ef;
+    }
+
+    .bottom-summary {
+      margin: 9px 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 36px);
+      gap: 4px;
+      align-items: start;
+      width: max-content;
+      min-height: 630px;
+      margin: 0 auto;
+    }
+
+    .output-column {
+      display: grid;
+      grid-template-rows: 25px repeat(16, 30px);
+      gap: 3px;
+      padding-top: calc(var(--col) * 6px);
+    }
+
+    .output-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 9px;
+      white-space: nowrap;
+    }
+
+    .output-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e2e7ed;
+      background: #fff;
+      color: #9aa4b1;
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 7px;
+      transition: background 130ms ease, border-color 130ms ease, color 130ms ease;
+    }
+
+    .output-cell.produced {
+      border-color: #9bcdbb;
+      background: var(--green-soft);
+      color: #17684f;
+    }
+
+    .output-cell.partial {
+      border-color: #c45a75;
+      background: var(--rose-soft);
+      color: #8c3047;
+      box-shadow: inset 0 0 0 1px #fff;
+      font-size: 8px;
+      font-weight: 700;
+    }
+
+    .output-cell.current {
+      border-color: #076f4d;
+      background: var(--green);
+      color: #fff;
+      box-shadow: inset 0 0 0 1px #fff;
+    }
+
+    .output-state-key {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: -6px 0 15px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .output-state-key span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .output-state-key i {
+      width: 12px;
+      height: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .output-state-key .partial {
+      border-color: #c45a75;
+      background: var(--rose-soft);
+    }
+
+    .output-state-key .current {
+      border-color: #076f4d;
+      background: var(--green);
+    }
+
+    .output-state-key .produced {
+      border-color: #9bcdbb;
+      background: var(--green-soft);
+    }
+
+    .note {
+      margin-top: 11px;
+      padding: 12px 14px;
+      border: 1px solid #e7c88e;
+      border-radius: 6px;
+      background: var(--amber-soft);
+      color: #694108;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 20px, 1280px);
+        padding-top: 16px;
+      }
+
+      .topbar h1 {
+        font-size: 21px;
+      }
+
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-text {
+        text-align: left;
+      }
+
+      .truth-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .truth-item {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .truth-item:last-child {
+        border-bottom: 0;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .section-head span {
+        text-align: left;
+      }
+
+      .pe-detail {
+        grid-template-columns: 1fr;
+      }
+
+      .pe-detail strong {
+        border-right: 0;
+        border-bottom: 1px solid #efbdc8;
+      }
+
+      .flow-map-scroll {
+        margin-right: -10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <h1>SA 权重预加载与流水计算</h1>
+        <p>
+          16 路接口同拍接收数据，但 16 个 lane 空间上连接到 16 个 PE 行入口。
+          A 已由上游 CTRL 完成错拍，进入阵列后立即参与 MAC，不存在“先把 A 全部装完再统一计算”的阶段。
+        </p>
+      </div>
+      <div class="controls" aria-label="动画控制">
+        <button id="play" class="control-btn primary" type="button">
+          <i data-lucide="play" aria-hidden="true"></i>
+          <span>播放</span>
+        </button>
+        <button id="prev" class="control-btn" type="button" title="上一拍" aria-label="上一拍">
+          <i data-lucide="chevron-left" aria-hidden="true"></i>
+        </button>
+        <button id="next" class="control-btn" type="button" title="下一拍" aria-label="下一拍">
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <select id="speed" class="speed" aria-label="播放速度">
+          <option value="1100">0.5x</option>
+          <option value="650" selected>1x</option>
+          <option value="320">2x</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="timeline">
+      <div class="clock-group">
+        <span id="phase-tag" class="phase-tag">B 预加载</span>
+        <strong id="clock" class="clock">配置拍 1 / 16</strong>
+      </div>
+      <input id="range" type="range" min="0" max="61" value="0" step="1" aria-label="选择演示时钟拍">
+      <span id="phase-text" class="phase-text">sel=0：把 B[0][0...15] 写入 PE 第0行</span>
+    </div>
+
+    <div class="truth-strip">
+      <div class="truth-item">
+        <b>B 是预加载数据</b>
+        先写入各 PE 的本地 <code>b_reg</code>，本轮计算期间保持不变。
+      </div>
+      <div class="truth-item">
+        <b>A 是运行时数据流</b>
+        每个有效拍接收 16 个物理 lane；lane k 对应 PE 第 k 行的左入口。
+      </div>
+      <div class="truth-item">
+        <b>未计算的 PE 是纵向导线</b>
+        本拍 <code>pe_en=0</code> 时，<code>dat_out=dat_in_add</code>，partial sum 零延迟穿过该 PE。
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>1. 当前接口拍</h2>
+        <span id="interface-summary">当前为权重配置拍，<code>cpu_dat_in_b_sel=0</code></span>
+      </div>
+
+      <div class="bus-label">
+        <b id="bus-name">cpu_dat_in_b[511:0]</b>
+        <span id="bus-valid">cpu_dat_in_b_lock = 1</span>
+      </div>
+      <div class="wide-scroll">
+        <div id="lane-bus" class="lane-bus" role="img" aria-label="当前16路并行接口数据"></div>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">
+        <span id="flow-source">16 个 B 权重同拍写入</span>
+        <span class="line"></span>
+        <span>SA_TOP</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>2. A → PE 阵列 → C 的真实空间关系</h2>
+        <span>
+          A 从阵列左侧进入并向右传播；partial sum 在阵列中向下传播，最终从阵列底部形成 C 输出波前。
+        </span>
+      </div>
+
+      <div class="flow-map-scroll">
+        <div class="flow-map">
+          <div class="flow-node input-node">
+            <div class="flow-node-title">
+              <b>A 输入错拍波前</b>
+              <span>上横靠右，下横靠左</span>
+            </div>
+            <div class="skew-wrap">
+              <div id="skew-grid" class="skew-grid" role="img" aria-label="CTRL完成错拍后的16路A输入时序"></div>
+            </div>
+            <p class="skew-caption">
+              画面从上到下对应 lane0 → lane15；右侧紧贴 PE 入口，时间刻度从右向左递增。
+              因此 T0 只有右上角 lane0 的 A[0][0] 进入，lane1～lane15 同拍均为 0。
+            </p>
+          </div>
+
+          <div class="flow-connector horizontal into-array" aria-hidden="true">
+            <span>A 输入</span>
+            <i class="connector-line"></i>
+          </div>
+
+          <div class="flow-node array-node">
+            <div class="flow-node-title">
+              <b>16×16 PE 阵列</b>
+              <span>B[k][j] 固定在 PE[k][j]</span>
+            </div>
+            <div class="array-wrap">
+              <div class="array-stage">
+                <div id="col-labels" class="col-labels" aria-hidden="true"></div>
+                <div id="row-labels" class="row-labels" aria-hidden="true"></div>
+                <div id="pe-grid" class="pe-grid" role="grid" aria-label="16乘16 PE阵列"></div>
+                <div class="psum-direction">partial sum 向下 ↓</div>
+                <div class="a-direction">A 在每一行中向右传播 →</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-connector vertical down-output" aria-hidden="true">
+            <span>16列 dat_out</span>
+            <i class="connector-line"></i>
+          </div>
+
+          <div class="flow-node output-node">
+            <div class="flow-node-title">
+              <b>C 输出波前</b>
+              <span>列0先出，后续列逐拍错开</span>
+            </div>
+            <div class="bottom-bus-label">
+              <b>阵列底部 16 列 raw dat_out</b>
+              <span>粉色 = 中间 partial sum；绿色 = 最终 C</span>
+            </div>
+            <div class="wide-scroll">
+              <div id="bottom-bus" class="bottom-bus" role="img" aria-label="阵列底部当前拍的16路原始输出"></div>
+            </div>
+            <p id="bottom-summary" class="bottom-summary">权重配置期间，阵列底部没有计算数据。</p>
+            <div class="output-state-key" aria-label="C结果矩阵颜色图例">
+              <span><i class="partial"></i>中间部分和</span>
+              <span><i class="current"></i>本拍最终 C</span>
+              <span><i class="produced"></i>此前已完成</span>
+            </div>
+            <div class="output-wrap">
+              <div id="output-grid" class="output-grid" role="img" aria-label="阵列底部错拍输出的C矩阵结果"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span><i class="weight"></i>正在写 B</span>
+        <span><i class="mac"></i>本拍执行 MAC</span>
+        <span><i class="bypass"></i>本拍不计算，partial sum 直通</span>
+        <span><i class="passed"></i>该批 A 已通过</span>
+        <span><i></i>等待波前</span>
+      </div>
+      <div id="array-status" class="array-status">
+        权重预加载阶段：暂时还没有 A 和 partial sum 进入阵列。
+      </div>
+      <div class="pe-detail">
+        <strong id="detail-title">PE[0][0]</strong>
+        <span id="detail-text">权重配置开始：B[0][0] 写入本地 b_reg。</span>
+      </div>
+      <div class="note">
+        本动画按 PE 设计方案中的透传语义绘制：<code>pe_en=0</code> 时，
+        <code>dat_out=dat_in_add</code>，所以底部可以很早看到 partial sum；但它还不是可写入 FIFO_OUT 的最终 C，
+        SA_TOP 必须用输出 valid/阶段控制加以区分。本动画用 <b>PE 单级延迟 L=1</b> 演示空间关系，
+        从第一拍 A 到最后一个最终结果覆盖
+        <code>3×16-2=46</code> 个流水拍。这 46 拍不是“先输入46拍再计算”：每一拍都可能同时发生
+        A 输入、多个 PE 的 MAC、下方 PE 的直通和底部结果输出。项目中 INT4/INT8/FP16/FP32 的真实总延迟，
+        还要结合对应 PE 延迟 L、输出对齐方式和最新版 RTL 确定。
+      </div>
+      <div class="note">
+        <b>RTL 对齐提醒：</b>当前 <code>PE_MP_v1.v</code> 的纵向 <code>dat_out</code> 旁路已经符合上述逻辑，
+        但它在 <code>pe_en=0</code> 时还会清空 <code>b_reg</code>。若 SA 需要某个 PE 先直通、后续再参与 MAC，
+        应把“保存 B 权重”和“本拍是否执行 MAC”拆开控制，否则该 PE 后续计算时会丢失权重。
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js"></script>
+  <script>
+    (() => {
+      const size = 16;
+      const weightSteps = size;
+      const flowCycles = 3 * size - 2;
+      const finalStep = weightSteps + flowCycles - 1;
+
+      const laneBus = document.getElementById("lane-bus");
+      const skewGrid = document.getElementById("skew-grid");
+      const rowLabels = document.getElementById("row-labels");
+      const colLabels = document.getElementById("col-labels");
+      const peGrid = document.getElementById("pe-grid");
+      const bottomBus = document.getElementById("bottom-bus");
+      const bottomSummary = document.getElementById("bottom-summary");
+      const outputGrid = document.getElementById("output-grid");
+      const range = document.getElementById("range");
+      const play = document.getElementById("play");
+      const prev = document.getElementById("prev");
+      const next = document.getElementById("next");
+      const speed = document.getElementById("speed");
+      const phaseTag = document.getElementById("phase-tag");
+      const clock = document.getElementById("clock");
+      const phaseText = document.getElementById("phase-text");
+      const interfaceSummary = document.getElementById("interface-summary");
+      const busName = document.getElementById("bus-name");
+      const busValid = document.getElementById("bus-valid");
+      const flowSource = document.getElementById("flow-source");
+      const detailTitle = document.getElementById("detail-title");
+      const detailText = document.getElementById("detail-text");
+      const arrayStatus = document.getElementById("array-status");
+
+      const laneCells = [];
+      const skewCells = [];
+      const peCells = [];
+      const bottomCells = [];
+      const outputCells = [];
+
+      let step = 0;
+      let timer = null;
+      let selectedRow = 0;
+      let selectedCol = 0;
+
+      for (let lane = 0; lane < size; lane += 1) {
+        const cell = document.createElement("div");
+        cell.className = "lane";
+        cell.innerHTML = `<small>lane ${lane}</small><b>-</b>`;
+        laneBus.appendChild(cell);
+        laneCells.push(cell);
+      }
+
+      const corner = document.createElement("span");
+      corner.className = "skew-axis";
+      corner.textContent = "lane / T";
+      skewGrid.appendChild(corner);
+
+      for (let t = 30; t >= 0; t -= 1) {
+        const axis = document.createElement("span");
+        axis.className = "skew-axis";
+        axis.textContent = String(t);
+        skewGrid.appendChild(axis);
+      }
+
+      for (let lane = 0; lane < size; lane += 1) {
+        const label = document.createElement("span");
+        label.className = "skew-row-label";
+        label.textContent = `lane${lane}`;
+        skewGrid.appendChild(label);
+
+        for (let t = 30; t >= 0; t -= 1) {
+          const m = t - lane;
+          const hasA = m >= 0 && m < size;
+          const cell = document.createElement("span");
+          cell.className = `skew-cell${hasA ? " has-a" : ""}`;
+          cell.dataset.time = String(t);
+          cell.dataset.lane = String(lane);
+          cell.dataset.hasA = String(hasA);
+          cell.title = hasA ? `T${t}: lane${lane} = A[${m}][${lane}]` : `T${t}: lane${lane} = bubble/0`;
+          skewGrid.appendChild(cell);
+          skewCells.push(cell);
+        }
+      }
+
+      for (let col = 0; col < size; col += 1) {
+        const label = document.createElement("span");
+        label.className = "col-label";
+        label.textContent = `列${col}`;
+        colLabels.appendChild(label);
+      }
+
+      for (let row = 0; row < size; row += 1) {
+        const label = document.createElement("span");
+        label.className = "row-label";
+        label.textContent = `lane${row} → 行${row}`;
+        rowLabels.appendChild(label);
+      }
+
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          const pe = document.createElement("button");
+          pe.className = "pe";
+          pe.type = "button";
+          pe.dataset.row = String(row);
+          pe.dataset.col = String(col);
+          pe.dataset.state = "idle";
+          pe.dataset.selected = "false";
+          pe.textContent = `B${row},${col}`;
+          pe.setAttribute("role", "gridcell");
+          pe.addEventListener("click", () => {
+            selectedRow = row;
+            selectedCol = col;
+            render(step);
+          });
+          peGrid.appendChild(pe);
+          peCells.push(pe);
+        }
+      }
+
+      for (let col = 0; col < size; col += 1) {
+        const cell = document.createElement("div");
+        cell.className = "bottom-lane";
+        cell.innerHTML = `<small>底部列 ${col}</small><b>无数据</b>`;
+        bottomBus.appendChild(cell);
+        bottomCells.push(cell);
+      }
+
+      for (let col = 0; col < size; col += 1) {
+        const column = document.createElement("div");
+        column.className = "output-column";
+        column.style.setProperty("--col", String(col));
+
+        const label = document.createElement("span");
+        label.className = "output-label";
+        label.textContent = `C列${col}`;
+        column.appendChild(label);
+
+        for (let m = 0; m < size; m += 1) {
+          const cell = document.createElement("span");
+          cell.className = "output-cell";
+          cell.dataset.row = String(m);
+          cell.dataset.col = String(col);
+          cell.textContent = `C${m},${col}`;
+          cell.title = `C[${m}][${col}]`;
+          column.appendChild(cell);
+          outputCells.push(cell);
+        }
+        outputGrid.appendChild(column);
+      }
+
+      function setIcons() {
+        if (window.lucide) {
+          window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+        }
+      }
+
+      function updateDetail(isWeightPhase, weightRow, flowTime) {
+        const k = selectedRow;
+        const j = selectedCol;
+        detailTitle.textContent = `PE[${k}][${j}]`;
+
+        if (isWeightPhase) {
+          if (k === weightRow) {
+            detailText.textContent =
+              `配置拍 ${weightRow + 1}：lane ${j} 携带 B[${k}][${j}]，本拍写入这个 PE 的 b_reg。`;
+          } else if (k < weightRow) {
+            detailText.textContent = `B[${k}][${j}] 已经锁存在本地 b_reg，等待 A 数据流。`;
+          } else {
+            detailText.textContent = `这个 PE 尚未轮到配置；后续 sel=${k} 时写入 B[${k}][${j}]。`;
+          }
+          return;
+        }
+
+        const m = flowTime - k - j;
+        const activeMax = Math.min(size - 1, flowTime - j);
+        const bypassing = flowTime >= j && flowTime - j < size - 1 && k > activeMax;
+        if (m >= 0 && m < size) {
+          detailText.textContent =
+            `T${flowTime}：A[${m}][${k}] 与来自上方、属于 C[${m}][${j}] 的 partial sum 同拍到达，` +
+            `执行 psum_out = psum_in + A[${m}][${k}] × B[${k}][${j}]。`;
+        } else if (bypassing) {
+          detailText.textContent =
+            `T${flowTime}：这个 PE 本拍不做 MAC，纵向选择直通路径：` +
+            `dat_out = dat_in_add，dat_out_vld = dat_in_add_vld。上方形成的 partial sum 由它直接送往下方。`;
+        } else if (m < 0) {
+          detailText.textContent =
+            `T${flowTime}：A 波前还没有到达；B[${k}][${j}] 已固定在本地 b_reg。`;
+        } else {
+          detailText.textContent =
+            `T${flowTime}：本任务的16批 A 已通过这个 PE，新的 partial sum 已送往下一行。`;
+        }
+      }
+
+      function render(nextStep) {
+        step = Math.max(0, Math.min(finalStep, nextStep));
+        range.value = String(step);
+
+        const isWeightPhase = step < weightSteps;
+        const weightRow = isWeightPhase ? step : size - 1;
+        const flowTime = isWeightPhase ? -1 : step - weightSteps;
+
+        phaseTag.classList.toggle("flow", !isWeightPhase);
+        phaseTag.textContent = isWeightPhase ? "B 预加载" : "A / MAC / 输出流水";
+
+        if (isWeightPhase) {
+          clock.textContent = `配置拍 ${weightRow + 1} / 16`;
+          phaseText.textContent = `sel=${weightRow}：把 B[${weightRow}][0...15] 写入 PE 第${weightRow}行`;
+          interfaceSummary.innerHTML =
+            `当前为权重配置拍，<code>cpu_dat_in_b_sel=${weightRow}</code>`;
+          busName.textContent = "cpu_dat_in_b[511:0]";
+          busValid.textContent = "cpu_dat_in_b_lock = 1";
+          flowSource.textContent = "16 个 B 权重同拍写入";
+        } else {
+          const activeLanes = [];
+          for (let lane = 0; lane < size; lane += 1) {
+            const m = flowTime - lane;
+            if (m >= 0 && m < size) activeLanes.push(lane);
+          }
+          clock.textContent = `计算流水 T${flowTime} / T${flowCycles - 1}`;
+          phaseText.textContent =
+            activeLanes.length > 0
+              ? `CTRL 同拍送入16个物理 lane，其中 ${activeLanes.length} 路携带当前任务的有效 A`
+              : "A 输入已经结束，阵列中的 partial sum 继续向底部排空";
+          interfaceSummary.innerHTML =
+            `<code>dat_in_a[511:0]</code> 同拍到达，lane k 空间上连接 PE 第 k 行入口`;
+          busName.textContent = "dat_in_a[511:0]";
+          busValid.textContent = activeLanes.length > 0 ? "dat_in_vld = 1" : "dat_in_vld = 0";
+          flowSource.textContent = "16 lane 扇出到 16 个行入口";
+        }
+
+        laneCells.forEach((cell, lane) => {
+          const value = cell.querySelector("b");
+          cell.className = "lane";
+
+          if (isWeightPhase) {
+            cell.classList.add("valid-b");
+            value.textContent = `B[${weightRow}][${lane}]`;
+          } else {
+            const m = flowTime - lane;
+            if (m >= 0 && m < size) {
+              cell.classList.add("valid-a");
+              value.textContent = `A[${m}][${lane}]`;
+            } else {
+              value.textContent = "0 / bubble";
+            }
+          }
+        });
+
+        skewCells.forEach((cell) => {
+          const cellTime = Number(cell.dataset.time);
+          const hasA = cell.dataset.hasA === "true";
+          cell.className = `skew-cell${hasA ? " has-a" : ""}`;
+
+          if (!isWeightPhase) {
+            if (cellTime < flowTime && hasA) cell.classList.add("past");
+            if (cellTime === flowTime) {
+              cell.classList.add("now-column");
+              if (hasA) cell.classList.add("current");
+            }
+          }
+        });
+
+        if (isWeightPhase) {
+          arrayStatus.textContent = "权重预加载阶段：暂时还没有 A 和 partial sum 进入阵列。";
+        } else if (flowTime === 0) {
+          arrayStatus.textContent =
+            "T0 关键拍：A[0][0] 进入 PE00 并产生第一项 partial sum；PE10、PE20 … PE150 本拍不做 MAC，" +
+            "它们的纵向 dat_out 选择直通路径，因此该 partial sum 会一路到达第0列底部。";
+        } else if (flowTime < size - 1) {
+          arrayStatus.textContent =
+            `T${flowTime}：第0列已有 PE00…PE${flowTime}0 依次参与累加；` +
+            `PE${flowTime + 1}0…PE150 继续作为纵向导线，底部看到的是已累加 ${flowTime + 1}/16 项的 partial sum。`;
+        } else {
+          const completedRow = flowTime - (size - 1);
+          arrayStatus.textContent =
+            completedRow < size
+              ? `T${flowTime}：第0列最下方 PE150 已完成 C[${completedRow}][0] 的第16项累加，底部该拍得到最终结果。`
+              : `T${flowTime}：第0列的最终结果已经全部排空，其他列仍按各自错拍继续完成。`;
+        }
+
+        peCells.forEach((pe) => {
+          const row = Number(pe.dataset.row);
+          const col = Number(pe.dataset.col);
+          pe.dataset.selected = String(row === selectedRow && col === selectedCol);
+
+          if (isWeightPhase) {
+            if (row === weightRow) {
+              pe.dataset.state = "loading";
+            } else if (row < weightRow) {
+              pe.dataset.state = "loaded";
+            } else {
+              pe.dataset.state = "idle";
+            }
+            pe.textContent = `B${row},${col}`;
+            pe.title =
+              row === weightRow
+                ? `本拍写入 B[${row}][${col}]`
+                : `PE[${row}][${col}] 的本地权重 B[${row}][${col}]`;
+            return;
+          }
+
+          const m = flowTime - row - col;
+          const activeMax = Math.min(size - 1, flowTime - col);
+          const bypassing =
+            flowTime >= col &&
+            flowTime - col < size - 1 &&
+            row > activeMax;
+          if (m >= 0 && m < size) {
+            pe.dataset.state = "active";
+            pe.textContent = `A${m},${row}`;
+            pe.title =
+              `T${flowTime}: A[${m}][${row}] × B[${row}][${col}]，累加到 C[${m}][${col}]`;
+          } else if (bypassing) {
+            pe.dataset.state = "bypass";
+            pe.textContent = "↓PS";
+            pe.title =
+              `T${flowTime}: PE[${row}][${col}] 本拍 pe_en=0，dat_in_add 零延迟直通到 dat_out`;
+          } else if (m >= size) {
+            pe.dataset.state = "passed";
+            pe.textContent = `B${row},${col}`;
+            pe.title = `A 已通过，B[${row}][${col}] 仍保存在本地`;
+          } else {
+            pe.dataset.state = "loaded";
+            pe.textContent = `B${row},${col}`;
+            pe.title = `等待 A 波前，B[${row}][${col}] 已预加载`;
+          }
+        });
+
+        let rawCount = 0;
+        let finalCount = 0;
+        bottomCells.forEach((cell, col) => {
+          const position = flowTime - col;
+          const value = cell.querySelector("b");
+          cell.className = "bottom-lane";
+
+          if (isWeightPhase || position < 0 || position > 2 * size - 2) {
+            value.textContent = "无数据";
+            return;
+          }
+
+          rawCount += 1;
+          if (position < size - 1) {
+            const depth = position + 1;
+            cell.classList.add("partial");
+            value.textContent = `PS C[0][${col}] ${depth}/16`;
+            cell.title =
+              `第${col}列底部当前是 C[0][${col}] 已累加 ${depth} 项的中间 partial sum，不是最终结果`;
+          } else {
+            const m = position - (size - 1);
+            finalCount += 1;
+            cell.classList.add("final");
+            value.textContent = `C[${m}][${col}]`;
+            cell.title = `第${col}列底部当前得到最终结果 C[${m}][${col}]`;
+          }
+        });
+
+        if (isWeightPhase) {
+          bottomSummary.textContent = "权重配置期间，阵列底部没有计算数据。";
+        } else if (rawCount === 0) {
+          bottomSummary.textContent = "当前拍没有新的 raw out 到达阵列底部。";
+        } else {
+          bottomSummary.textContent =
+            `当前拍共有 ${rawCount} 个底部列带数据，其中 ${finalCount} 个已经完成16项累加；` +
+            `其余 ${rawCount - finalCount} 个仍是经下方 PE 直通出来的中间 partial sum。`;
+        }
+
+        outputCells.forEach((cell) => {
+          const m = Number(cell.dataset.row);
+          const col = Number(cell.dataset.col);
+          const producedAt = m + col + size - 1;
+          const position = flowTime - col;
+          cell.className = "output-cell";
+          cell.textContent = `C${m},${col}`;
+          cell.title = `C[${m}][${col}] 尚未完成`;
+
+          if (
+            !isWeightPhase &&
+            m === 0 &&
+            position >= 0 &&
+            position < size - 1
+          ) {
+            const depth = position + 1;
+            cell.classList.add("partial");
+            cell.textContent = `${depth}/16`;
+            cell.title =
+              `C[0][${col}] 当前只完成 ${depth}/16 项累加；底部虽然有 dat_out，` +
+              "但它仍是经未使用 PE 直通出来的中间 partial sum";
+          } else if (!isWeightPhase && producedAt < flowTime) {
+            cell.classList.add("produced");
+            cell.title = `C[${m}][${col}] 已经完成16项累加`;
+          } else if (!isWeightPhase && producedAt === flowTime) {
+            cell.classList.add("current");
+            cell.title = `C[${m}][${col}] 在本拍完成第16项累加，成为最终结果`;
+          }
+        });
+
+        updateDetail(isWeightPhase, weightRow, flowTime);
+        prev.disabled = step === 0;
+        next.disabled = step === finalStep;
+      }
+
+      function stop() {
+        if (timer !== null) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+        play.classList.add("primary");
+        play.innerHTML = '<i data-lucide="play" aria-hidden="true"></i><span>播放</span>';
+        setIcons();
+      }
+
+      function start() {
+        if (step >= finalStep) render(0);
+        play.classList.remove("primary");
+        play.innerHTML = '<i data-lucide="pause" aria-hidden="true"></i><span>暂停</span>';
+        setIcons();
+        timer = window.setInterval(() => {
+          if (step >= finalStep) {
+            stop();
+            return;
+          }
+          render(step + 1);
+        }, Number(speed.value));
+      }
+
+      play.addEventListener("click", () => {
+        if (timer === null) start();
+        else stop();
+      });
+
+      prev.addEventListener("click", () => {
+        stop();
+        render(step - 1);
+      });
+
+      next.addEventListener("click", () => {
+        stop();
+        render(step + 1);
+      });
+
+      range.addEventListener("input", () => {
+        stop();
+        render(Number(range.value));
+      });
+
+      speed.addEventListener("change", () => {
+        if (timer !== null) {
+          stop();
+          start();
+        }
+      });
+
+      render(0);
+      setIcons();
+    })();
+  </script>
+</body>
+</html>

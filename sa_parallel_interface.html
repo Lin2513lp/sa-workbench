@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>SA 16路并行输入接口动图</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="SA 16路并行输入接口动图" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;SA 16路并行输入接口动图&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --red: light-dark(rgb(186 38 35), rgb(250 66 62));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;sa-parallel-interface-stream&quot;&gt;
+  &lt;style&gt;
+    #sa-parallel-interface-stream {
+      width: 100%;
+      color: var(--foreground);
+    }
+
+    #sa-parallel-interface-stream .sa-controls {
+      align-items: end;
+      margin-bottom: 0.8rem;
+    }
+
+    #sa-parallel-interface-stream .sa-clock-control {
+      flex: 1 1 300px;
+      min-width: 0;
+    }
+
+    #sa-parallel-interface-stream .sa-speed-control {
+      flex: 0 1 110px;
+    }
+
+    #sa-parallel-interface-stream .sa-milestones {
+      margin-bottom: 0.9rem;
+    }
+
+    #sa-parallel-interface-stream .sa-section {
+      margin: 0.8rem 0;
+    }
+
+    #sa-parallel-interface-stream .sa-section-label {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.35rem 0.75rem;
+      margin-bottom: 0.35rem;
+      font-weight: 500;
+    }
+
+    #sa-parallel-interface-stream .sa-muted {
+      color: var(--muted-foreground);
+      font-weight: 400;
+    }
+
+    #sa-parallel-interface-stream .sa-beats {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+    }
+
+    #sa-parallel-interface-stream .sa-beat {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      height: 22px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--muted) 44%, transparent);
+      color: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+    }
+
+    #sa-parallel-interface-stream .sa-beat[data-state=&quot;accepted&quot;] {
+      border-color: color-mix(in srgb, var(--viz-series-1) 36%, var(--border));
+      background: color-mix(in srgb, var(--viz-series-1) 18%, transparent);
+    }
+
+    #sa-parallel-interface-stream .sa-beat[data-state=&quot;current&quot;] {
+      border-color: color-mix(in srgb, var(--viz-series-1) 70%, var(--border));
+      background: var(--viz-series-1);
+      color: var(--foreground);
+    }
+
+    #sa-parallel-interface-stream .sa-vector {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+    }
+
+    #sa-parallel-interface-stream .sa-vector.is-entering {
+      animation: sa-vector-enter 320ms ease-out;
+    }
+
+    #sa-parallel-interface-stream .sa-lane {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      height: clamp(44px, 6vw, 58px);
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--viz-series-1) 65%, var(--border));
+      border-radius: 2px;
+      background: var(--viz-series-1);
+      color: var(--foreground);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    #sa-parallel-interface-stream .sa-lane small {
+      max-width: 100%;
+      overflow: hidden;
+      color: var(--muted-foreground);
+      text-overflow: ellipsis;
+    }
+
+    #sa-parallel-interface-stream .sa-lane[data-valid=&quot;false&quot;] {
+      border-color: var(--border);
+      background: color-mix(in srgb, var(--muted) 44%, transparent);
+      color: var(--muted-foreground);
+    }
+
+    #sa-parallel-interface-stream .sa-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-height: 34px;
+      color: var(--muted-foreground);
+    }
+
+    #sa-parallel-interface-stream .sa-array-wrap {
+      position: relative;
+      width: min(100%, 560px);
+      margin: 0 auto;
+    }
+
+    #sa-parallel-interface-stream .sa-array {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+      aspect-ratio: 1;
+    }
+
+    #sa-parallel-interface-stream .sa-pe {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--muted) 44%, transparent);
+    }
+
+    #sa-parallel-interface-stream .sa-array-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: color-mix(in srgb, var(--background) 78%, transparent);
+      color: var(--foreground);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #sa-parallel-interface-stream .sa-array-overlay[data-receiving=&quot;true&quot;] {
+      background: color-mix(in srgb, var(--viz-series-1) 22%, var(--background));
+    }
+
+    #sa-parallel-interface-stream .sa-array-overlay strong {
+      font-weight: 500;
+    }
+
+    #sa-parallel-interface-stream .sa-output-row {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+    }
+
+    #sa-parallel-interface-stream .sa-output-lane {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      height: 34px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--muted) 44%, transparent);
+      color: var(--muted-foreground);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    #sa-parallel-interface-stream .sa-facts {
+      justify-content: flex-start;
+      margin-top: 0.8rem;
+    }
+
+    #sa-parallel-interface-stream .sa-readout {
+      margin-top: 0.8rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+    }
+
+    @keyframes sa-vector-enter {
+      from {
+        transform: translateX(-24px);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 520px) {
+      #sa-parallel-interface-stream .sa-lane small,
+      #sa-parallel-interface-stream .sa-lane span,
+      #sa-parallel-interface-stream .sa-output-lane span {
+        display: none;
+      }
+
+      #sa-parallel-interface-stream .sa-array {
+        gap: 2px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #sa-parallel-interface-stream .sa-vector.is-entering {
+        animation: none;
+      }
+    }
+  &lt;/style&gt;
+
+  &lt;div class=&quot;viz-controls sa-controls&quot;&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;sa-parallel-play&quot;&gt;
+      &lt;i data-lucide=&quot;play&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+      &lt;span&gt;播放&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;sa-parallel-prev&quot; aria-label=&quot;上一拍&quot; data-tooltip=&quot;上一拍&quot;&gt;
+      &lt;i data-lucide=&quot;step-back&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;sa-parallel-next&quot; aria-label=&quot;下一拍&quot; data-tooltip=&quot;下一拍&quot;&gt;
+      &lt;i data-lucide=&quot;step-forward&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;/button&gt;
+    &lt;label class=&quot;form-label sa-clock-control&quot;&gt;
+      输入拍：&lt;span id=&quot;sa-parallel-clock&quot;&gt;等待 dat_in_vld&lt;/span&gt;
+      &lt;input class=&quot;form-range&quot; id=&quot;sa-parallel-range&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;16&quot; value=&quot;0&quot; step=&quot;1&quot;&gt;
+    &lt;/label&gt;
+    &lt;label class=&quot;form-label sa-speed-control&quot;&gt;
+      速度
+      &lt;select class=&quot;form-select&quot; id=&quot;sa-parallel-speed&quot;&gt;
+        &lt;option value=&quot;1200&quot;&gt;0.5×&lt;/option&gt;
+        &lt;option value=&quot;700&quot; selected&gt;1×&lt;/option&gt;
+        &lt;option value=&quot;350&quot;&gt;2×&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/label&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;viz-row sa-milestones&quot; aria-label=&quot;输入关键拍&quot;&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-parallel-beat=&quot;1&quot;&gt;第1拍&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-parallel-beat=&quot;8&quot;&gt;第8拍&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-parallel-beat=&quot;16&quot;&gt;第16拍 · dat_in_last&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;section class=&quot;sa-section&quot; aria-labelledby=&quot;sa-parallel-progress-label&quot;&gt;
+    &lt;div class=&quot;sa-section-label&quot;&gt;
+      &lt;span id=&quot;sa-parallel-progress-label&quot;&gt;示例：16个输入beat&lt;/span&gt;
+      &lt;span class=&quot;sa-muted&quot;&gt;每个小格都代表一个完整的512-bit传输&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;sa-parallel-beats&quot; class=&quot;sa-beats&quot; role=&quot;img&quot; aria-label=&quot;16个512位输入beat的接收进度&quot;&gt;&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;sa-section&quot; aria-labelledby=&quot;sa-parallel-input-label&quot;&gt;
+    &lt;div class=&quot;sa-section-label&quot;&gt;
+      &lt;span id=&quot;sa-parallel-input-label&quot;&gt;&lt;code&gt;dat_in_a[511:0]&lt;/code&gt; · 本拍整体输入&lt;/span&gt;
+      &lt;span id=&quot;sa-parallel-input-status&quot; class=&quot;sa-muted&quot;&gt;16条32-bit lane在同一个时钟沿锁存&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;sa-parallel-vector&quot; class=&quot;sa-vector&quot; role=&quot;img&quot; aria-label=&quot;当前拍同时输入的16个32位A数据&quot;&gt;&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;div class=&quot;sa-flow&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;span&gt;整排16个数据一起移动&lt;/span&gt;
+    &lt;i data-lucide=&quot;arrow-down&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;span&gt;不是在同一PE行中逐格填入&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;section class=&quot;sa-section&quot; aria-labelledby=&quot;sa-parallel-array-label&quot;&gt;
+    &lt;div class=&quot;sa-section-label&quot;&gt;
+      &lt;span id=&quot;sa-parallel-array-label&quot;&gt;16×16 PE 阵列&lt;/span&gt;
+      &lt;span class=&quot;sa-muted&quot;&gt;只显示已确认的接口接收行为&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sa-array-wrap&quot;&gt;
+      &lt;div id=&quot;sa-parallel-array&quot; class=&quot;sa-array&quot; role=&quot;grid&quot; aria-label=&quot;16乘16 PE阵列，内部lane映射尚未签核&quot;&gt;&lt;/div&gt;
+      &lt;div id=&quot;sa-parallel-overlay&quot; class=&quot;sa-array-overlay&quot; data-receiving=&quot;false&quot;&gt;
+        &lt;strong&gt;lane到PE的映射、partial sum连接和内部传播拍数：待SA互连RTL定义&lt;/strong&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;div class=&quot;sa-flow&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;span&gt;阵列流水完成后&lt;/span&gt;
+    &lt;i data-lucide=&quot;arrow-down&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;span&gt;结果也按16-lane接口输出&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;section class=&quot;sa-section&quot; aria-labelledby=&quot;sa-parallel-output-label&quot;&gt;
+    &lt;div class=&quot;sa-section-label&quot;&gt;
+      &lt;span id=&quot;sa-parallel-output-label&quot;&gt;&lt;code&gt;dat_out[511:0]&lt;/code&gt; · 16-lane 并行输出&lt;/span&gt;
+      &lt;span class=&quot;sa-muted&quot;&gt;首输出拍与总延迟暂不写死&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div id=&quot;sa-parallel-output&quot; class=&quot;sa-output-row&quot; role=&quot;img&quot; aria-label=&quot;16条32位结果输出lane，具体有效周期待定&quot;&gt;&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;div class=&quot;viz-row sa-facts&quot;&gt;
+    &lt;span class=&quot;viz-badge&quot;&gt;输入带宽：16×32-bit/拍&lt;/span&gt;
+    &lt;span class=&quot;viz-badge&quot;&gt;输入吞吐：1个512-bit beat/拍&lt;/span&gt;
+    &lt;span class=&quot;viz-badge&quot;&gt;总延迟：TBD&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div id=&quot;sa-parallel-readout&quot; class=&quot;sa-readout text-small&quot; aria-live=&quot;polite&quot;&gt;
+    B 权重已经预加载；等待第一个512-bit A数据拍。
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&quot;sa-parallel-interface-stream&quot;);
+      if (!root) return;
+
+      const size = 16;
+      const finalBeat = 16;
+      const beats = root.querySelector(&quot;#sa-parallel-beats&quot;);
+      const vector = root.querySelector(&quot;#sa-parallel-vector&quot;);
+      const array = root.querySelector(&quot;#sa-parallel-array&quot;);
+      const output = root.querySelector(&quot;#sa-parallel-output&quot;);
+      const overlay = root.querySelector(&quot;#sa-parallel-overlay&quot;);
+      const inputStatus = root.querySelector(&quot;#sa-parallel-input-status&quot;);
+      const range = root.querySelector(&quot;#sa-parallel-range&quot;);
+      const clock = root.querySelector(&quot;#sa-parallel-clock&quot;);
+      const readout = root.querySelector(&quot;#sa-parallel-readout&quot;);
+      const playButton = root.querySelector(&quot;#sa-parallel-play&quot;);
+      const playText = playButton.querySelector(&quot;span&quot;);
+      const prevButton = root.querySelector(&quot;#sa-parallel-prev&quot;);
+      const nextButton = root.querySelector(&quot;#sa-parallel-next&quot;);
+      const speed = root.querySelector(&quot;#sa-parallel-speed&quot;);
+      const beatCells = [];
+      const laneCells = [];
+      let currentBeat = 0;
+      let timer = null;
+
+      for (let i = 0; i &lt; size; i += 1) {
+        const beatCell = document.createElement(&quot;span&quot;);
+        beatCell.className = &quot;sa-beat&quot;;
+        beatCell.dataset.beat = String(i + 1);
+        beatCell.dataset.state = &quot;pending&quot;;
+        beatCell.textContent = String(i + 1);
+        beats.appendChild(beatCell);
+        beatCells.push(beatCell);
+
+        const lane = document.createElement(&quot;span&quot;);
+        lane.className = &quot;sa-lane&quot;;
+        lane.dataset.lane = String(i);
+        lane.dataset.valid = &quot;false&quot;;
+        lane.innerHTML = `&lt;small&gt;lane ${i}&lt;/small&gt;&lt;span&gt;—&lt;/span&gt;`;
+        vector.appendChild(lane);
+        laneCells.push(lane);
+
+        const outputLane = document.createElement(&quot;span&quot;);
+        outputLane.className = &quot;sa-output-lane&quot;;
+        outputLane.innerHTML = `&lt;span&gt;lane ${i}: TBD&lt;/span&gt;`;
+        output.appendChild(outputLane);
+      }
+
+      for (let i = 0; i &lt; size * size; i += 1) {
+        const pe = document.createElement(&quot;span&quot;);
+        pe.className = &quot;sa-pe&quot;;
+        pe.setAttribute(&quot;role&quot;, &quot;gridcell&quot;);
+        pe.setAttribute(&quot;aria-label&quot;, `PE ${Math.floor(i / size)}, ${i % size}，内部连接待定义`);
+        array.appendChild(pe);
+      }
+
+      function restartVectorAnimation() {
+        vector.classList.remove(&quot;is-entering&quot;);
+        void vector.offsetWidth;
+        vector.classList.add(&quot;is-entering&quot;);
+      }
+
+      function render(nextBeat) {
+        currentBeat = Math.max(0, Math.min(finalBeat, nextBeat));
+        range.value = String(currentBeat);
+        clock.textContent = currentBeat === 0
+          ? &quot;等待 dat_in_vld&quot;
+          : `第 ${currentBeat} / ${finalBeat} 个输入beat`;
+
+        beatCells.forEach((cell) =&gt; {
+          const beat = Number(cell.dataset.beat);
+          cell.dataset.state = beat &lt; currentBeat
+            ? &quot;accepted&quot;
+            : beat === currentBeat
+              ? &quot;current&quot;
+              : &quot;pending&quot;;
+        });
+
+        laneCells.forEach((cell) =&gt; {
+          const lane = Number(cell.dataset.lane);
+          const valid = currentBeat &gt; 0;
+          cell.dataset.valid = String(valid);
+          cell.querySelector(&quot;span&quot;).textContent = valid ? `A${currentBeat - 1},${lane}` : &quot;—&quot;;
+          cell.setAttribute(
+            &quot;aria-label&quot;,
+            valid
+              ? `第${currentBeat}拍，lane ${lane} 同时输入 A ${currentBeat - 1},${lane}`
+              : `lane ${lane} 等待输入`
+          );
+        });
+
+        overlay.dataset.receiving = String(currentBeat &gt; 0);
+        overlay.querySelector(&quot;strong&quot;).textContent = currentBeat &gt; 0
+          ? `第${currentBeat}拍：16条lane已被SA_TOP整体接收；内部连接与延迟仍待定义`
+          : &quot;lane到PE的映射、partial sum连接和内部传播拍数：待SA互连RTL定义&quot;;
+
+        if (currentBeat &gt; 0) {
+          inputStatus.textContent = currentBeat === finalBeat
+            ? &quot;dat_in_vld=1，dat_in_last=1，16条lane同拍锁存&quot;
+            : &quot;dat_in_vld=1，16条lane同拍锁存&quot;;
+          readout.textContent = `第${currentBeat}拍：dat_in_a一次传入 A[${currentBeat - 1}][0…15] 共16个32-bit数据。这里不假设它们随后如何分配到256个PE，也不计算未经签核的总周期。`;
+          restartVectorAnimation();
+        } else {
+          inputStatus.textContent = &quot;16条32-bit lane在同一个时钟沿锁存&quot;;
+          readout.textContent = &quot;B 权重已经预加载；等待第一个512-bit A数据拍。&quot;;
+          vector.classList.remove(&quot;is-entering&quot;);
+        }
+
+        prevButton.disabled = currentBeat === 0;
+        nextButton.disabled = currentBeat === finalBeat;
+        root.querySelectorAll(&quot;[data-parallel-beat]&quot;).forEach((button) =&gt; {
+          button.setAttribute(&quot;aria-pressed&quot;, String(Number(button.dataset.parallelBeat) === currentBeat));
+        });
+      }
+
+      function stop() {
+        if (timer !== null) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+        playButton.classList.add(&quot;btn-primary&quot;);
+        playText.textContent = &quot;播放&quot;;
+        playButton.querySelector(&quot;svg, i&quot;)?.setAttribute(&quot;data-lucide&quot;, &quot;play&quot;);
+        if (window.lucide) window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+
+      function start() {
+        if (currentBeat &gt;= finalBeat) render(0);
+        playText.textContent = &quot;暂停&quot;;
+        playButton.querySelector(&quot;svg, i&quot;)?.setAttribute(&quot;data-lucide&quot;, &quot;pause&quot;);
+        if (window.lucide) window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+        timer = window.setInterval(() =&gt; {
+          if (currentBeat &gt;= finalBeat) {
+            stop();
+            return;
+          }
+          render(currentBeat + 1);
+        }, Number(speed.value));
+      }
+
+      playButton.addEventListener(&quot;click&quot;, () =&gt; {
+        if (timer === null) start();
+        else stop();
+      });
+      prevButton.addEventListener(&quot;click&quot;, () =&gt; {
+        stop();
+        render(currentBeat - 1);
+      });
+      nextButton.addEventListener(&quot;click&quot;, () =&gt; {
+        stop();
+        render(currentBeat + 1);
+      });
+      range.addEventListener(&quot;input&quot;, () =&gt; {
+        stop();
+        render(Number(range.value));
+      });
+      speed.addEventListener(&quot;change&quot;, () =&gt; {
+        if (timer !== null) {
+          stop();
+          start();
+        }
+      });
+      root.querySelectorAll(&quot;[data-parallel-beat]&quot;).forEach((button) =&gt; {
+        button.addEventListener(&quot;click&quot;, () =&gt; {
+          stop();
+          render(Number(button.dataset.parallelBeat));
+        });
+      });
+
+      render(0);
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

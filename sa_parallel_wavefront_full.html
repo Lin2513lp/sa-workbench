@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SA 16路整排输入与PE波前演示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f9fc;
+      --surface: #ffffff;
+      --ink: #172033;
+      --muted: #68758a;
+      --line: #d9e0e9;
+      --blue: #2f80ed;
+      --blue-soft: #dcecff;
+      --green: #0a8f68;
+      --green-soft: #dff6ee;
+      --amber: #b76706;
+      --amber-soft: #fff0d5;
+      --inactive: #f2f4f7;
+      --cell: 31px;
+      --gap: 3px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 42px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .control-btn.primary {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .control-btn:disabled {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    .speed {
+      height: 38px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: auto minmax(180px, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      margin-bottom: 18px;
+    }
+
+    .timeline strong {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .timeline input {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .phase {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .section {
+      padding: 18px 0 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .section:first-of-type {
+      border-top: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .interface-beat {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(46px, 1fr));
+      gap: 4px;
+      min-width: 830px;
+    }
+
+    .lane {
+      min-width: 0;
+      padding: 8px 3px;
+      border: 1px solid #9cc9ff;
+      background: var(--blue-soft);
+      text-align: center;
+      color: #184c86;
+    }
+
+    .lane small,
+    .lane b {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lane small {
+      color: var(--muted);
+      font-size: 10px;
+      margin-bottom: 2px;
+    }
+
+    .lane b {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .wide-scroll {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .bus-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0 0;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .bus-arrow .line {
+      width: min(340px, 46vw);
+      height: 2px;
+      background: var(--blue);
+      position: relative;
+    }
+
+    .bus-arrow .line::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid var(--blue);
+      border-right: 2px solid var(--blue);
+      transform: rotate(45deg);
+    }
+
+    .wave-window {
+      overflow-x: auto;
+      padding: 4px 2px 8px;
+    }
+
+    .wave-stack {
+      width: 930px;
+      min-height: 268px;
+      position: relative;
+      padding-top: 5px;
+    }
+
+    .wave-row {
+      display: grid;
+      grid-template-columns: 52px repeat(16, 42px);
+      gap: 3px;
+      align-items: center;
+      height: 16px;
+      margin-bottom: 1px;
+      transform: translateX(calc(var(--row) * 8px));
+      transition: opacity 180ms ease, filter 180ms ease;
+    }
+
+    .wave-row[data-state="future"] {
+      opacity: 0.18;
+    }
+
+    .wave-row[data-state="accepted"] {
+      opacity: 0.46;
+    }
+
+    .wave-row[data-state="current"] {
+      opacity: 1;
+      filter: saturate(1.15);
+    }
+
+    .wave-label {
+      color: var(--muted);
+      font-size: 10px;
+      text-align: right;
+      padding-right: 4px;
+    }
+
+    .wave-cell {
+      height: 13px;
+      border: 1px solid #9cc9ff;
+      background: var(--blue-soft);
+    }
+
+    .wave-row[data-state="current"] .wave-cell {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .mapping-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin: 2px 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mapping-note b {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .array-wrap {
+      overflow-x: auto;
+      padding: 4px 0 10px;
+    }
+
+    .array-stage {
+      display: grid;
+      grid-template-columns: 64px auto;
+      gap: 8px;
+      width: max-content;
+      margin: 0 auto;
+    }
+
+    .row-labels {
+      display: grid;
+      grid-template-rows: repeat(16, var(--cell));
+      gap: var(--gap);
+    }
+
+    .row-label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .pe-area {
+      display: grid;
+      gap: 7px;
+    }
+
+    .col-labels {
+      display: grid;
+      grid-template-columns: repeat(16, var(--cell));
+      gap: var(--gap);
+    }
+
+    .col-label {
+      text-align: center;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .pe-grid {
+      display: grid;
+      grid-template-columns: repeat(16, var(--cell));
+      grid-template-rows: repeat(16, var(--cell));
+      gap: var(--gap);
+    }
+
+    .pe {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: var(--inactive);
+      color: #8893a3;
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 8px;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+    }
+
+    .pe[data-active="true"] {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .pe[data-current="true"] {
+      border-color: #0b5fc7;
+      box-shadow: inset 0 0 0 1px #fff;
+    }
+
+    .pe[data-drain="true"] {
+      border-color: var(--green);
+      background: var(--green-soft);
+      color: #086047;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      margin-right: 5px;
+      border: 1px solid var(--line);
+      vertical-align: -1px;
+    }
+
+    .legend .active {
+      border-color: var(--blue);
+      background: var(--blue);
+    }
+
+    .legend .drain {
+      border-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .array-status {
+      max-width: 760px;
+      margin: 12px auto 0;
+      padding: 10px 12px;
+      border-left: 3px solid var(--blue);
+      background: #edf5ff;
+      color: #24415f;
+      font-size: 13px;
+    }
+
+    .output-column-window {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 4px 2px 10px;
+    }
+
+    .output-columns {
+      display: grid;
+      grid-template-columns: repeat(16, 36px);
+      gap: 4px;
+      align-items: start;
+      width: max-content;
+      min-height: 660px;
+      margin: 0 auto;
+      padding: 4px 0 0;
+    }
+
+    .output-column {
+      display: grid;
+      grid-template-rows: 28px repeat(16, 30px);
+      gap: 3px;
+      padding-top: calc(var(--col) * 8px);
+      transition: opacity 180ms ease, filter 180ms ease;
+    }
+
+    .output-column[data-state="future"] {
+      opacity: 0.16;
+    }
+
+    .output-column[data-state="accepted"] {
+      opacity: 0.46;
+    }
+
+    .output-column[data-state="current"] {
+      opacity: 1;
+      filter: saturate(1.15);
+    }
+
+    .output-column-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .output-cell {
+      border: 1px solid #8bd3bb;
+      background: var(--green-soft);
+    }
+
+    .output-column[data-state="current"] .output-cell {
+      border-color: var(--green);
+      background: var(--green);
+    }
+
+    .footnote {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #efd39d;
+      border-radius: 6px;
+      background: var(--amber-soft);
+      color: #6e4309;
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 20px, 1220px);
+        padding-top: 16px;
+      }
+
+      .topbar h1 {
+        font-size: 20px;
+      }
+
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .phase {
+        text-align: left;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .section-head span {
+        text-align: left;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <h1>SA 16路整排输入与 PE 波前</h1>
+        <p>每拍输入一个完整的 512-bit A 数据拍，16 条 lane 同时有效。</p>
+      </div>
+      <div class="controls" aria-label="动画控制">
+        <button id="play" class="control-btn primary" type="button">
+          <i data-lucide="play" aria-hidden="true"></i>
+          <span>播放</span>
+        </button>
+        <button id="prev" class="control-btn" type="button" aria-label="上一拍">
+          <i data-lucide="chevron-left" aria-hidden="true"></i>
+        </button>
+        <button id="next" class="control-btn" type="button" aria-label="下一拍">
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <select id="speed" class="speed" aria-label="播放速度">
+          <option value="1000">0.5x</option>
+          <option value="600" selected>1x</option>
+          <option value="300">2x</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="timeline">
+      <strong id="clock">演示拍 1 / 31</strong>
+      <input id="range" type="range" min="0" max="30" value="0" step="1" aria-label="选择演示拍">
+      <span id="phase" class="phase">输入第 1 个整排 A 数据拍</span>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>1. SA_TOP 接口：一整排 16 个 A 同拍进入</h2>
+        <span><code>dat_in_a[511:0]</code> = 16 × 32-bit lane</span>
+      </div>
+      <div class="wide-scroll">
+        <div id="interface-beat" class="interface-beat" role="img" aria-label="当前拍同时输入的16个A数据"></div>
+      </div>
+      <div class="bus-arrow" aria-hidden="true">
+        <span>整条 512-bit 总线一起移动</span>
+        <span class="line"></span>
+        <span>SA_TOP</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>2. 横向输入平行四边形：第一行先入 SA</h2>
+        <span>每一条横带都是 A 的完整一行，16 个元素同拍进入</span>
+      </div>
+      <div class="wave-window">
+        <div id="input-wave" class="wave-stack" role="img" aria-label="16个整排A数据拍组成的输入平行四边形"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>3. 16×16 PE 阵列：收到 A 的 PE 才染色</h2>
+        <span>同一拍进入的 16 个 lane 映射到 16 个 PE 行入口</span>
+      </div>
+      <div class="mapping-note">
+        <b>lane 0...15</b>
+        <span>分别进入</span>
+        <b>PE 第 0...15 行</b>
+        <span>，整列同时点亮后向右推进</span>
+      </div>
+      <div class="array-wrap">
+        <div class="array-stage">
+          <div id="row-labels" class="row-labels" aria-hidden="true"></div>
+          <div class="pe-area">
+            <div id="col-labels" class="col-labels" aria-hidden="true"></div>
+            <div id="pe-grid" class="pe-grid" role="grid" aria-label="16乘16 PE阵列"></div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i></i>等待 A</span>
+        <span><i class="active"></i>本拍收到 A 并执行本地 MAC</span>
+        <span><i class="drain"></i>A 已经过该 PE</span>
+      </div>
+      <div id="array-status" class="array-status"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>4. 纵向输出平行四边形：第一列先出 SA</h2>
+        <span>每条竖带表示结果矩阵的一列 <code>C[0...15][j]</code></span>
+      </div>
+      <div class="output-column-window">
+        <div id="output-wave" class="output-columns" role="img" aria-label="第一列先出的纵向C结果平行四边形"></div>
+      </div>
+      <div class="footnote">
+        这里的 31 个“演示拍”只用于表现：16 个整排输入拍依次进入，并横向穿过 16 列 PE。
+        PE 的可变延迟、partial-sum 归约和最终 <code>dat_out_vld</code> 对齐仍需 SA 互连 RTL 确定，
+        因而本图不把 31 拍写成模块最终总延迟。
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js"></script>
+  <script>
+    (() => {
+      const size = 16;
+      const finalStep = 30;
+      const interfaceBeat = document.getElementById("interface-beat");
+      const inputWave = document.getElementById("input-wave");
+      const outputWave = document.getElementById("output-wave");
+      const rowLabels = document.getElementById("row-labels");
+      const colLabels = document.getElementById("col-labels");
+      const peGrid = document.getElementById("pe-grid");
+      const clock = document.getElementById("clock");
+      const phase = document.getElementById("phase");
+      const range = document.getElementById("range");
+      const play = document.getElementById("play");
+      const prev = document.getElementById("prev");
+      const next = document.getElementById("next");
+      const speed = document.getElementById("speed");
+      const arrayStatus = document.getElementById("array-status");
+
+      let step = 0;
+      let timer = null;
+
+      const laneCells = [];
+      const inputRows = [];
+      const outputColumns = [];
+      const peCells = [];
+
+      for (let lane = 0; lane < size; lane += 1) {
+        const cell = document.createElement("div");
+        cell.className = "lane";
+        cell.innerHTML = `<small>lane ${lane}</small><b>A[0][${lane}]</b>`;
+        interfaceBeat.appendChild(cell);
+        laneCells.push(cell);
+      }
+
+      function createWaveRow(container, row) {
+        const waveRow = document.createElement("div");
+        waveRow.className = "wave-row";
+        waveRow.style.setProperty("--row", String(row));
+        waveRow.dataset.state = "future";
+
+        const label = document.createElement("span");
+        label.className = "wave-label";
+        label.textContent = `A行${row}`;
+        waveRow.appendChild(label);
+
+        for (let lane = 0; lane < size; lane += 1) {
+          const cell = document.createElement("span");
+          cell.className = "wave-cell";
+          cell.setAttribute("aria-label", `A[${row}][${lane}]`);
+          waveRow.appendChild(cell);
+        }
+        container.appendChild(waveRow);
+        return waveRow;
+      }
+
+      function createOutputColumn(container, col) {
+        const outputColumn = document.createElement("div");
+        outputColumn.className = "output-column";
+        outputColumn.style.setProperty("--col", String(col));
+        outputColumn.dataset.state = "future";
+
+        const label = document.createElement("span");
+        label.className = "output-column-label";
+        label.textContent = `C列${col}`;
+        outputColumn.appendChild(label);
+
+        for (let row = 0; row < size; row += 1) {
+          const cell = document.createElement("span");
+          cell.className = "output-cell";
+          cell.setAttribute("aria-label", `C[${row}][${col}]`);
+          outputColumn.appendChild(cell);
+        }
+        container.appendChild(outputColumn);
+        return outputColumn;
+      }
+
+      for (let row = 0; row < size; row += 1) {
+        inputRows.push(createWaveRow(inputWave, row));
+
+        const rowLabel = document.createElement("span");
+        rowLabel.className = "row-label";
+        rowLabel.textContent = `lane ${row} →`;
+        rowLabels.appendChild(rowLabel);
+
+        const colLabel = document.createElement("span");
+        colLabel.className = "col-label";
+        colLabel.textContent = `列${row}`;
+        colLabels.appendChild(colLabel);
+      }
+
+      for (let col = 0; col < size; col += 1) {
+        outputColumns.push(createOutputColumn(outputWave, col));
+      }
+
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          const pe = document.createElement("div");
+          pe.className = "pe";
+          pe.dataset.row = String(row);
+          pe.dataset.col = String(col);
+          pe.dataset.active = "false";
+          pe.dataset.current = "false";
+          pe.dataset.drain = "false";
+          pe.textContent = `B${row},${col}`;
+          pe.setAttribute("role", "gridcell");
+          peGrid.appendChild(pe);
+          peCells.push(pe);
+        }
+      }
+
+      function stateForInputRow(row, current) {
+        if (row < Math.min(current, size - 1)) return "accepted";
+        if (row === current && current < size) return "current";
+        return "future";
+      }
+
+      function render(nextStep) {
+        step = Math.max(0, Math.min(finalStep, nextStep));
+        range.value = String(step);
+        clock.textContent = `演示拍 ${step + 1} / ${finalStep + 1}`;
+
+        const enteringRow = step < size ? step : null;
+        const outputColumn = step >= size - 1 ? step - (size - 1) : null;
+
+        if (enteringRow !== null) {
+          phase.textContent = `输入第 ${enteringRow + 1} 个整排 A 数据拍`;
+        } else {
+          phase.textContent = `输入结束，阵列继续排空；结果矩阵第 ${outputColumn + 1} 列先后输出`;
+        }
+
+        laneCells.forEach((cell, lane) => {
+          const value = enteringRow === null ? "本拍无新输入" : `A[${enteringRow}][${lane}]`;
+          cell.querySelector("b").textContent = value;
+          cell.style.opacity = enteringRow === null ? "0.28" : "1";
+        });
+
+        inputRows.forEach((row, index) => {
+          row.dataset.state = stateForInputRow(index, step);
+        });
+
+        outputColumns.forEach((column, index) => {
+          if (outputColumn === null) {
+            column.dataset.state = "future";
+          } else if (index < outputColumn) {
+            column.dataset.state = "accepted";
+          } else if (index === outputColumn && outputColumn < size) {
+            column.dataset.state = "current";
+          } else {
+            column.dataset.state = "future";
+          }
+        });
+
+        let activeColumns = 0;
+        peCells.forEach((pe) => {
+          const row = Number(pe.dataset.row);
+          const col = Number(pe.dataset.col);
+          const dataRow = step - col;
+          const active = dataRow >= 0 && dataRow < size;
+          const current = active && dataRow === enteringRow;
+          const drained = !active && step > col;
+
+          pe.dataset.active = String(active);
+          pe.dataset.current = String(current);
+          pe.dataset.drain = String(drained);
+          pe.textContent = active ? `A${dataRow},${row}` : `B${row},${col}`;
+          pe.setAttribute(
+            "aria-label",
+            active
+              ? `PE ${row},${col} 本拍收到 A[${dataRow}][${row}]，使用固定权重 B[${row}][${col}] 执行MAC`
+              : `PE ${row},${col} 等待A，固定权重 B[${row}][${col}]`
+          );
+        });
+
+        for (let col = 0; col < size; col += 1) {
+          const dataRow = step - col;
+          if (dataRow >= 0 && dataRow < size) activeColumns += 1;
+        }
+
+        if (step < size) {
+          arrayStatus.textContent =
+            `第 ${step + 1} 拍：新的 16-lane A 整排同时进入第 0 列；此前的整排继续向右。` +
+            `当前共有 ${activeColumns} 个完整 PE 列在工作，即 ${activeColumns * size} 个 PE 同拍执行 MAC。`;
+        } else {
+          arrayStatus.textContent =
+            `输入已结束，阵列正在排空。当前还有 ${activeColumns} 个完整 PE 列携带 A 数据，` +
+            `${activeColumns * size} 个 PE 同拍执行 MAC。`;
+        }
+
+        prev.disabled = step === 0;
+        next.disabled = step === finalStep;
+      }
+
+      function stop() {
+        if (timer !== null) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+        play.classList.add("primary");
+        play.innerHTML = '<i data-lucide="play" aria-hidden="true"></i><span>播放</span>';
+        lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+
+      function start() {
+        if (step >= finalStep) render(0);
+        play.classList.remove("primary");
+        play.innerHTML = '<i data-lucide="pause" aria-hidden="true"></i><span>暂停</span>';
+        lucide.createIcons({ attrs: { width: 16, height: 16 } });
+        timer = window.setInterval(() => {
+          if (step >= finalStep) {
+            stop();
+            return;
+          }
+          render(step + 1);
+        }, Number(speed.value));
+      }
+
+      play.addEventListener("click", () => {
+        if (timer === null) start();
+        else stop();
+      });
+
+      prev.addEventListener("click", () => {
+        stop();
+        render(step - 1);
+      });
+
+      next.addEventListener("click", () => {
+        stop();
+        render(step + 1);
+      });
+
+      range.addEventListener("input", () => {
+        stop();
+        render(Number(range.value));
+      });
+
+      speed.addEventListener("change", () => {
+        if (timer !== null) {
+          stop();
+          start();
+        }
+      });
+
+      render(0);
+      lucide.createIcons({ attrs: { width: 16, height: 16 } });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+rtl/pe_mp/fp32_adder.v
+rtl/pe_mp/fp32_multi.v
+rtl/pe_mp/fp2fix.v
+rtl/pe_mp/fix2fp.v
+rtl/pe_mp/PE_MP_v1.v
+rtl/sa_ctrl.sv
+rtl/pe_array_16x16.sv
+rtl/output_collector.sv
+rtl/sa_top.sv

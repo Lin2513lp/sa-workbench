@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SA_TOP 多精度 WaveDrom 时序图</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #5b6472;
+      --line: #d7dde7;
+      --blue: #1d4ed8;
+      --blue-soft: #eef5ff;
+      --green: #047857;
+      --green-soft: #ecfdf5;
+      --amber: #a16207;
+      --amber-soft: #fffbeb;
+      --wave-scale: 1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      line-height: 1.68;
+    }
+
+    main {
+      width: min(1480px, calc(100% - 24px));
+      margin: 24px auto 48px;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2 {
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 27px;
+    }
+
+    h2 {
+      margin: 0 0 7px;
+      font-size: 20px;
+    }
+
+    p {
+      margin: 6px 0;
+    }
+
+    .subtitle,
+    .figure-copy,
+    .caption {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+    }
+
+    .toolbar button {
+      width: 34px;
+      height: 32px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .toolbar button:hover {
+      border-color: #bfdbfe;
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .zoom-value {
+      min-width: 50px;
+      color: var(--muted);
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .assumptions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .mode-tabs {
+      display: inline-flex;
+      gap: 4px;
+      margin-bottom: 14px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+
+    .mode-tabs button {
+      min-height: 34px;
+      padding: 0 14px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .mode-tabs button:hover {
+      background: #f8fafc;
+      color: var(--ink);
+    }
+
+    .mode-tabs button.active {
+      border-color: #bfdbfe;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .assumption {
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .assumption b {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .figure {
+      margin-bottom: 18px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .timeline-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      width: 100%;
+      margin-top: 15px;
+      border-top: 1px solid #eef0f4;
+      border-bottom: 1px solid #eef0f4;
+      background: #fff;
+    }
+
+    .part-strip {
+      display: grid;
+      grid-template-columns: 19fr 33fr;
+      gap: 3px;
+      width: calc(2400px * var(--wave-scale));
+      margin: 0 auto;
+      padding: 10px 22px 6px 250px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .part-strip span {
+      padding: 7px 10px;
+      border-radius: 5px;
+    }
+
+    .part-a {
+      background: var(--amber-soft);
+      color: #713f12;
+    }
+
+    .part-b {
+      background: var(--blue-soft);
+      color: #1e3a8a;
+    }
+
+    .wave-host {
+      overflow: visible;
+      width: calc(2400px * var(--wave-scale));
+      margin: 0 auto;
+      padding: 8px 4px 4px;
+      background: #fff;
+    }
+
+    .wave-host svg {
+      display: block;
+      width: 100% !important;
+      max-width: none !important;
+      height: auto !important;
+    }
+
+    .caption {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #f3f4f6;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.94em;
+    }
+
+    @media (max-width: 780px) {
+      main {
+        width: min(100% - 12px, 1480px);
+        margin-top: 12px;
+      }
+
+      .page-head {
+        flex-direction: column;
+      }
+
+      .assumptions {
+        grid-template-columns: 1fr;
+      }
+
+      .mode-tabs {
+        display: flex;
+        overflow-x: auto;
+        width: 100%;
+      }
+
+    }
+  </style>
+  <script src="./vendor/wavedrom/default.js"></script>
+  <script src="./vendor/wavedrom/wavedrom.min.js"></script>
+</head>
+<body>
+  <main>
+    <div class="page-head">
+      <div>
+        <h1>SA_TOP 多精度 WaveDrom 时序图</h1>
+        <div class="subtitle">INT4 / INT8、FP32、FP16：动态 B 配置、A 流水、计算延迟与完整输出窗口。</div>
+      </div>
+      <div class="toolbar" aria-label="波形缩放">
+        <button type="button" data-zoom="out" title="缩小" aria-label="缩小">−</button>
+        <span class="zoom-value" id="zoom-value">100%</span>
+        <button type="button" data-zoom="in" title="放大" aria-label="放大">+</button>
+        <button type="button" data-zoom="reset" title="重置缩放" aria-label="重置缩放">1:1</button>
+      </div>
+    </div>
+
+    <div class="mode-tabs" role="tablist" aria-label="计算精度">
+      <button class="active" type="button" role="tab" aria-selected="true" data-mode="int">INT4 / INT8 · L=1</button>
+      <button type="button" role="tab" aria-selected="false" data-mode="fp32">FP32 · L=4</button>
+      <button type="button" role="tab" aria-selected="false" data-mode="fp16">FP16 · L=7</button>
+    </div>
+
+    <div class="assumptions">
+      <div class="assumption"><b>计算模式</b><span id="mode-assumption"><code>cpu_cpt_mode = 00/01</code>，INT4 与 INT8 共用 <code>L=1</code> 时序。</span></div>
+      <div class="assumption"><b>权重阶段</b><code>lock</code> 两级同步并取上升沿，DMUX 在该脉冲下锁存稳定的多比特 <code>B/sel</code>。</div>
+      <div class="assumption"><b>输出延迟</b><span id="delay-assumption">A-T15 完成后，首拍有效结果按 <code>L=1</code> 出现。</span></div>
+    </div>
+
+    <section class="figure">
+      <h2 id="mode-title">INT4 / INT8 共用时序：B 权重配置 → A 流水计算 → 输出有效</h2>
+      <p class="figure-copy" id="mode-copy">
+        下图使用同一条 <code>sys_ckg</code> 时间轴。橙色 PART A 表示 100MHz 动态 B 配置、lock 两级同步和 DMUX 锁存；
+        B2～B13 的 12 个 CPU 配置拍用时间断点省略，每个 CPU 配置拍等于 4 个 <code>sys_ckg</code> 周期。
+        蓝色 PART B 表示 A-T0～A-T15、L=1 计算延迟以及 16 拍有效输出。
+      </p>
+      <div class="timeline-scroll">
+        <div class="part-strip" aria-hidden="true">
+          <span class="part-a">PART A · B0、B1 ··· B14、B15（DMUX CDC）</span>
+          <span class="part-b" id="part-b-label">PART B · 16 拍 A + L=1 + 16 拍输出</span>
+        </div>
+        <div class="wave-host" id="wave-combined"></div>
+      </div>
+      <div class="caption" id="mode-caption">图 1. SA_TOP INT4 / INT8 从动态 B 配置到最后一拍有效输出的完整连续时序。</div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const digitalWave = (values) => values.map((value, index) => {
+        if (index === 0) return String(value);
+        return value === values[index - 1] ? "." : String(value);
+      }).join("");
+
+      const busWave = (values, symbol = "2") => {
+        const data = [];
+        const wave = values.map((value, index) => {
+          if (value === null) {
+            return index > 0 && values[index - 1] === null ? "." : "x";
+          }
+          if (index > 0 && value === values[index - 1]) return ".";
+          data.push(value);
+          return symbol;
+        }).join("");
+        return { wave, data };
+      };
+
+      const clockWave = (length) => `p${".".repeat(length - 1)}`;
+      const idle = (length, value = 0) => Array.from({ length }, () => value);
+      const shifted = (length, start, items) => {
+        const values = Array.from({ length }, () => null);
+        items.forEach((item, index) => {
+          if (start + index < length) values[start + index] = item;
+        });
+        return values;
+      };
+
+      const displayedBRows = ["B0", "B1", "B14", "B15"];
+      const displayedBSelectors = ["0", "1", "14", "15"];
+      const bSourceStarts = [1, 5, 9, 13];
+      const bCaptureStarts = bSourceStarts.map((start) => start + 2);
+      const cdcGapAt = 9;
+      const aStart = 16;
+      const aEnd = aStart + 15;
+      const datInAValues = Array.from(
+        { length: 16 },
+        (_, index) => `A-T${index}`
+      );
+      const modeOptions = {
+        int: {
+          label: "INT4 / INT8",
+          modeValue: "00 / INT4 或 01 / INT8",
+          latency: 1,
+          modeText: "<code>cpu_cpt_mode = 00/01</code>，INT4 与 INT8 共用 <code>L=1</code> 时序。"
+        },
+        fp32: {
+          label: "FP32",
+          modeValue: "11 / FP32",
+          latency: 4,
+          modeText: "<code>cpu_cpt_mode = 11</code>，FP32 的 PE 局部计算延迟为 <code>L=4</code> 拍。"
+        },
+        fp16: {
+          label: "FP16",
+          modeValue: "10 / FP16",
+          latency: 7,
+          modeText: "<code>cpu_cpt_mode = 10</code>，FP16 的 PE 局部计算延迟为 <code>L=7</code> 拍。"
+        }
+      };
+
+      const buildDiagram = (mode) => {
+        const dataStart = aStart + mode.latency;
+        const outputStart = aEnd + mode.latency;
+        const outputEnd = outputStart + 15;
+        const combinedLength = outputEnd + 3;
+        const rawLock = idle(combinedLength);
+        const ff1Lock = idle(combinedLength);
+        const ff2Lock = idle(combinedLength);
+        const lockRisePulse = idle(combinedLength);
+        bSourceStarts.forEach((start) => {
+          rawLock[start] = 1;
+          rawLock[start + 1] = 1;
+          ff1Lock[start + 1] = 1;
+          ff1Lock[start + 2] = 1;
+          ff2Lock[start + 2] = 1;
+          ff2Lock[start + 3] = 1;
+          lockRisePulse[start + 2] = 1;
+        });
+
+        const rawBValues = displayedBRows.flatMap((value) => Array(4).fill(value));
+        const rawSelValues = displayedBSelectors.flatMap((value) => Array(4).fill(value));
+        const rawB = busWave(shifted(combinedLength, 1, rawBValues), "3");
+        const rawSel = busWave(shifted(combinedLength, 1, rawSelValues), "3");
+
+        const dmuxValues = (values) => {
+          const result = Array.from({ length: combinedLength }, () => null);
+          let current = null;
+          for (let index = 0; index < combinedLength; index += 1) {
+            const captureIndex = bCaptureStarts.indexOf(index);
+            if (captureIndex !== -1) current = values[captureIndex];
+            result[index] = current;
+          }
+          return result;
+        };
+        const primeB = busWave(dmuxValues(displayedBRows), "5");
+        const primeSel = busWave(dmuxValues(displayedBSelectors), "5");
+        const withCdcGap = (wave) => `${wave.slice(0, cdcGapAt)}|${wave.slice(cdcGapAt)}`;
+
+        const addCdcGap = (signal) => {
+          signal.forEach((group) => {
+            group.slice(1).forEach((entry) => {
+              entry.wave = withCdcGap(entry.wave);
+            });
+          });
+          return signal;
+        };
+
+        const aValid = idle(combinedLength);
+        for (let index = aStart; index <= aEnd; index += 1) aValid[index] = 1;
+        const aLast = idle(combinedLength);
+        aLast[aEnd] = 1;
+        const startPulse = idle(combinedLength);
+        startPulse[aStart] = 1;
+        const enable = idle(combinedLength);
+        for (let index = 1; index <= outputEnd; index += 1) enable[index] = 1;
+        const outValid = idle(combinedLength);
+        for (let index = outputStart; index <= outputEnd; index += 1) outValid[index] = 1;
+        const outLast = idle(combinedLength);
+        outLast[outputEnd] = 1;
+
+        const outBusValues = [
+          ...Array.from({ length: outputStart - dataStart }, () => "pipeline / bypass"),
+          ...Array.from({ length: 16 }, (_, index) => `C${index}`)
+        ];
+        const datInABus = busWave(shifted(combinedLength, aStart, datInAValues), "3");
+        const outBus = busWave(shifted(combinedLength, dataStart, outBusValues), "5");
+        const staticMode = busWave(Array.from({ length: combinedLength }, () => mode.modeValue), "2");
+        const staticHSize = busWave(Array.from({ length: combinedLength }, () => "15 / 16 rows"), "2");
+        const staticWSize = busWave(Array.from({ length: combinedLength }, () => "15 / 16 cols"), "2");
+        const reportSize = busWave(
+          Array.from({ length: combinedLength }, (_, index) => index < aStart ? null : "H=16, W=16"),
+          "4"
+        );
+        const reset = Array.from({ length: combinedLength }, () => 1);
+
+        const signal = addCdcGap([
+          ["SYS",
+            { name: "sys_ckg", wave: clockWave(combinedLength), period: 1 },
+            { name: "pe_ckg", wave: clockWave(combinedLength), period: 1 },
+            { name: "tpu_rst_n", wave: digitalWave(reset) }
+          ],
+          ["REGMAP 100M",
+            { name: "cpu_dat_in_b_lock", wave: digitalWave(rawLock) },
+            { name: "cpu_dat_in_b", wave: rawB.wave, data: rawB.data },
+            { name: "cpu_dat_in_b_sel", wave: rawSel.wave, data: rawSel.data },
+            { name: "cpu_h_size", wave: staticHSize.wave, data: staticHSize.data },
+            { name: "cpu_w_size", wave: staticWSize.wave, data: staticWSize.data },
+            { name: "cpu_cpt_mode", wave: staticMode.wave, data: staticMode.data },
+            { name: "rpt_active_size", wave: reportSize.wave, data: reportSize.data }
+          ],
+          ["LOCK CDC",
+            { name: "cpu_dat_in_b_lock_ff1", wave: digitalWave(ff1Lock) },
+            { name: "cpu_dat_in_b_lock_ff2", wave: digitalWave(ff2Lock) },
+            { name: "cpu_dat_in_b_lock'", wave: digitalWave(lockRisePulse) }
+          ],
+          ["DMUX",
+            { name: "cpu_dat_in_b'", wave: primeB.wave, data: primeB.data },
+            { name: "cpu_dat_in_b_sel'", wave: primeSel.wave, data: primeSel.data }
+          ],
+          ["CTRL",
+            { name: "cpu_tpu_start_sync", wave: digitalWave(startPulse) },
+            { name: "cpu_tpu_en_sync", wave: digitalWave(enable) },
+            { name: "dat_in_a", wave: datInABus.wave, data: datInABus.data },
+            { name: "dat_in_vld", wave: digitalWave(aValid) },
+            { name: "dat_in_last", wave: digitalWave(aLast) }
+          ],
+          ["FIFO OUT",
+            { name: "dat_out", wave: outBus.wave, data: outBus.data },
+            { name: "dat_out_vld", wave: digitalWave(outValid) },
+            { name: "dat_out_last", wave: digitalWave(outLast) }
+          ]
+        ]);
+
+        return {
+          combinedLength,
+          dataStart,
+          outputStart,
+          outputEnd,
+          diagram: {
+            signal,
+            head: { text: `${mode.label} · sys_ckg=400MHz；B2-B13 配置事务省略` },
+            config: { hscale: 1 }
+          }
+        };
+      };
+
+      const host = document.getElementById("wave-combined");
+      const timeline = document.querySelector(".timeline-scroll");
+      const partStrip = document.querySelector(".part-strip");
+      const modeAssumption = document.getElementById("mode-assumption");
+      const delayAssumption = document.getElementById("delay-assumption");
+      const modeTitle = document.getElementById("mode-title");
+      const modeCopy = document.getElementById("mode-copy");
+      const partBLabel = document.getElementById("part-b-label");
+      const modeCaption = document.getElementById("mode-caption");
+
+      const renderMode = (key) => {
+        const mode = modeOptions[key];
+        const built = buildDiagram(mode);
+        host.replaceChildren();
+        const source = document.createElement("script");
+        source.type = "WaveDrom";
+        source.textContent = JSON.stringify(built.diagram);
+        host.appendChild(source);
+        WaveDrom.ProcessAll();
+
+        partStrip.style.gridTemplateColumns = `${aStart}fr ${built.combinedLength - aStart}fr`;
+        modeAssumption.innerHTML = mode.modeText;
+        delayAssumption.innerHTML = `A-T0 被采样后，<code>dat_out</code> 从第 ${mode.latency} 拍开始变化；A-T15 后同样延迟 ${mode.latency} 拍得到首个最终结果。`;
+        modeTitle.textContent = `${mode.label} 时序：B 权重配置 → A 流水计算 → 输出有效`;
+        modeCopy.innerHTML = `下图使用同一条 <code>sys_ckg</code> 时间轴。橙色 PART A 完整画出 B0、B1、B14、B15：每个 100MHz 配置拍跨 4 个 <code>sys_ckg</code> 周期，<code>lock</code> 经两级同步和上升沿检测后驱动 DMUX 锁存多比特 B/sel；B2～B13 的 12 个配置拍（48 个 <code>sys_ckg</code> 周期）以时间断点省略。蓝色 PART B 表示 A-T0～A-T15、L=${mode.latency} 计算延迟以及 16 拍有效输出。`;
+        partBLabel.textContent = `PART B · 16 拍 A + L=${mode.latency} + 16 拍输出`;
+        modeCaption.textContent = `图 1. SA_TOP ${mode.label} 从动态 B 配置到最后一拍有效输出的完整连续时序。`;
+        timeline.scrollLeft = 0;
+
+        document.querySelectorAll("[data-mode]").forEach((button) => {
+          const active = button.dataset.mode === key;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-selected", String(active));
+        });
+      };
+
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.addEventListener("click", () => renderMode(button.dataset.mode));
+      });
+
+      let zoom = 0.52;
+      const zoomValue = document.getElementById("zoom-value");
+      const applyZoom = (next) => {
+        zoom = Math.min(1.1, Math.max(0.4, next));
+        document.documentElement.style.setProperty("--wave-scale", zoom.toFixed(2));
+        zoomValue.textContent = `${Math.round(zoom * 100)}%`;
+      };
+
+      document.querySelectorAll("[data-zoom]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.dataset.zoom === "in") applyZoom(zoom + 0.1);
+          if (button.dataset.zoom === "out") applyZoom(zoom - 0.1);
+          if (button.dataset.zoom === "reset") applyZoom(1);
+        });
+      });
+      applyZoom(zoom);
+      renderMode("int");
+    })();
+  </script>
+</body>
+</html>

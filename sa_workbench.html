@@ -1,0 +1,1838 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SA_TOP 设计工作台</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #5b6472;
+      --line: #d7dde7;
+      --blue: #1d4ed8;
+      --blue-soft: #eef5ff;
+      --green: #047857;
+      --green-soft: #ecfdf5;
+      --amber: #a16207;
+      --amber-soft: #fffbeb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      line-height: 1.72;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 54px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .title {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    button,
+    .link-button {
+      height: 34px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 0 12px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    button:hover,
+    .link-button:hover {
+      border-color: var(--line);
+      background: #f9fafb;
+      color: var(--ink);
+    }
+
+    button.active {
+      border-color: #bfdbfe;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 24px auto 44px;
+      padding: 0 18px;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .page {
+      padding: 34px 42px 46px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 32px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5e7eb;
+      font-size: 23px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 24px 0 8px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .note {
+      margin: 16px 0;
+      padding: 12px 16px;
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      background: var(--blue-soft);
+      color: #1e3a8a;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .status {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .status b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .status span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 22px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f4f6;
+      text-align: left;
+    }
+
+    code,
+    pre {
+      font-family: Consolas, "Cascadia Mono", monospace;
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #f3f4f6;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 14px 16px;
+      border: 1px solid #dbeafe;
+      border-radius: 7px;
+      background: #f8fafc;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .diagram {
+      overflow-x: auto;
+      margin: 16px 0 22px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .diagram .topology-image {
+      display: block;
+      min-width: 1400px;
+      width: 100%;
+      height: auto;
+    }
+
+    .diagram .verilog-draft-image {
+      display: block;
+      width: min(100%, 1240px);
+      height: auto;
+      margin: 0 auto;
+    }
+
+    svg {
+      display: block;
+      min-width: 860px;
+      width: 100%;
+      height: auto;
+    }
+
+    .block {
+      fill: #ffffff;
+      stroke: #111827;
+      stroke-width: 1.3;
+    }
+
+    .soft {
+      fill: #eef5ff;
+      stroke: #1d4ed8;
+    }
+
+    .ok {
+      fill: #ecfdf5;
+      stroke: #047857;
+    }
+
+    .wire {
+      fill: none;
+      stroke: #111827;
+      stroke-width: 1.4;
+      marker-end: url(#arrow);
+    }
+
+    .label {
+      fill: #111827;
+      font-family: Consolas, "Microsoft YaHei", monospace;
+      font-size: 15px;
+    }
+
+    .small {
+      fill: #4b5563;
+      font-size: 12px;
+    }
+
+    .group-row td {
+      background: #f8fafc;
+      color: #111827;
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    .notes-shell {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      min-height: 620px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .notes-sidebar {
+      padding: 18px 12px;
+      border-right: 1px solid var(--line);
+      background: #f8fafc;
+    }
+
+    .notes-sidebar h2 {
+      margin: 0 0 12px;
+      padding: 0;
+      border: 0;
+      font-size: 16px;
+    }
+
+    .note-tab {
+      width: 100%;
+      justify-content: flex-start;
+      margin-bottom: 8px;
+      border-color: transparent;
+      text-align: left;
+    }
+
+    .note-tab.active {
+      border-color: #bfdbfe;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .notes-content {
+      min-width: 0;
+      padding: 30px 38px 44px;
+      background: #fff;
+    }
+
+    .note-window {
+      display: none;
+    }
+
+    .note-window.active {
+      display: block;
+    }
+
+    .demo-note-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .demo-note-head h1 {
+      margin: 0 0 7px;
+    }
+
+    .demo-note-head p {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .demo-open-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 650;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .demo-frame {
+      display: block;
+      width: 100%;
+      height: 1120px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f5f7fa;
+    }
+
+    .wavedrom-shell,
+    .artifact-shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .wavedrom-head,
+    .artifact-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .wavedrom-head b,
+    .artifact-head b {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .wavedrom-head span,
+    .artifact-head span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .wavedrom-frame {
+      display: block;
+      width: 100%;
+      height: 1080px;
+      border: 0;
+      background: #f5f7fb;
+    }
+
+    .artifact-frame {
+      display: block;
+      width: 100%;
+      height: 1120px;
+      border: 0;
+      background: #f5f7fb;
+    }
+
+    .source-note p {
+      margin: 13px 0;
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    .source-note .red {
+      color: #ef1f1f;
+    }
+
+    .principle-note p,
+    .principle-note li {
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .principle-note ul {
+      padding-left: 22px;
+    }
+
+    .principle-note .formula {
+      margin: 14px 0;
+      padding: 12px 16px;
+      border: 1px dashed #9ca3af;
+      border-radius: 7px;
+      background: #f8fafc;
+      font-family: Consolas, "Microsoft YaHei", monospace;
+      text-align: center;
+    }
+
+    .reference-box {
+      margin: 16px 0;
+      padding: 12px 16px;
+      border-left: 4px solid var(--green);
+      border-radius: 6px;
+      background: var(--green-soft);
+      color: #064e3b;
+    }
+
+    .reference-box a {
+      color: #065f46;
+      font-weight: 650;
+    }
+
+    .article-figure {
+      margin: 16px 0 24px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: auto;
+    }
+
+    .article-figure img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    .article-figure.wide img {
+      max-width: none;
+      width: 840px;
+    }
+
+    .article-figure.clock-first img {
+      max-width: 100%;
+      width: 760px;
+    }
+
+    .caption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .sa-timing-demo {
+      margin: 18px 0 26px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow-x: auto;
+    }
+
+    .sa-demo-matrices,
+    .sa-demo-controls,
+    .sa-demo-output {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 18px;
+    }
+
+    .sa-demo-matrices {
+      margin-bottom: 14px;
+    }
+
+    .sa-demo-controls {
+      margin-bottom: 10px;
+    }
+
+    .sa-demo-controls button {
+      border-color: var(--line);
+    }
+
+    .sa-demo-controls button.active {
+      border-color: #bfdbfe;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .sa-timing-demo svg {
+      min-width: 760px;
+    }
+
+    .sa-demo-wire {
+      fill: none;
+      stroke: #6b7280;
+      stroke-width: 2;
+    }
+
+    .sa-demo-pe {
+      fill: #f8fafc;
+      stroke: var(--line);
+      stroke-width: 2;
+    }
+
+    .sa-demo-pe-group[data-active="true"] .sa-demo-pe {
+      fill: var(--blue-soft);
+      stroke: var(--blue);
+    }
+
+    .sa-demo-text {
+      fill: var(--ink);
+      font-family: Consolas, "Microsoft YaHei", monospace;
+      font-size: 15px;
+    }
+
+    .sa-demo-muted {
+      fill: var(--muted);
+      font-family: Consolas, "Microsoft YaHei", monospace;
+      font-size: 13px;
+    }
+
+    .sa-demo-output {
+      margin-top: 10px;
+    }
+
+    .sa-demo-summary {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .sa16-demo {
+      margin: 18px 0 26px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .sa16-toolbar {
+      display: grid;
+      grid-template-columns: auto minmax(180px, 1fr) auto auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .sa16-toolbar button,
+    .sa16-milestones button {
+      border-color: var(--line);
+    }
+
+    .sa16-toolbar button {
+      width: 36px;
+      padding: 0;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .sa16-toolbar input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .sa16-clock {
+      min-width: 76px;
+      color: var(--ink);
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .sa16-milestones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .sa16-milestones button.active {
+      border-color: #bfdbfe;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .sa16-stage {
+      overflow-x: auto;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f8fafc;
+    }
+
+    .sa16-grid {
+      display: grid;
+      grid-template-columns: 54px repeat(16, 38px);
+      grid-auto-rows: 38px;
+      gap: 3px;
+      width: max-content;
+      min-width: 100%;
+      align-items: stretch;
+    }
+
+    .sa16-axis,
+    .sa16-corner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 10px;
+    }
+
+    .sa16-row-axis {
+      justify-content: flex-end;
+      padding-right: 7px;
+    }
+
+    .sa16-pe {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 1px;
+      background: #fff;
+      color: #64748b;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      cursor: pointer;
+    }
+
+    .sa16-pe:hover,
+    .sa16-pe:focus-visible {
+      border-color: var(--blue);
+      outline: 2px solid #bfdbfe;
+      outline-offset: 1px;
+    }
+
+    .sa16-pe .sa16-main {
+      overflow: hidden;
+      max-width: 100%;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.05;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sa16-pe .sa16-sub {
+      margin-top: 2px;
+      font-size: 7px;
+      line-height: 1;
+    }
+
+    .sa16-pe[data-active="true"] {
+      border-color: #2563eb;
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .sa16-pe[data-output="true"] {
+      border-color: #059669;
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .sa16-pe[data-selected="true"] {
+      box-shadow: 0 0 0 2px #f59e0b;
+    }
+
+    .sa16-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .sa16-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sa16-swatch {
+      width: 13px;
+      height: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      background: #fff;
+    }
+
+    .sa16-swatch.active {
+      border-color: #2563eb;
+      background: #dbeafe;
+    }
+
+    .sa16-swatch.output {
+      border-color: #059669;
+      background: #d1fae5;
+    }
+
+    .sa16-readout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .sa16-status,
+    .sa16-pe-detail {
+      min-width: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+
+    .sa16-status b,
+    .sa16-pe-detail b {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .sa16-status p,
+    .sa16-pe-detail p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .sa16-outputs {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+
+    .sa16-output-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      margin-top: 7px;
+    }
+
+    .sa16-output-chip {
+      padding: 2px 6px;
+      border: 1px solid #a7f3d0;
+      border-radius: 5px;
+      background: #ecfdf5;
+      color: #065f46;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 11px;
+    }
+
+    .sa16-empty {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .sa16-toolbar {
+        grid-template-columns: auto minmax(120px, 1fr) auto;
+      }
+
+      .sa16-clock {
+        grid-column: 1 / -1;
+        text-align: left;
+      }
+
+      .sa16-readout {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-note-head {
+        flex-direction: column;
+      }
+
+      .demo-frame {
+        height: 900px;
+      }
+
+      .wavedrom-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .artifact-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .wavedrom-frame {
+        height: 1320px;
+      }
+
+      .artifact-frame {
+        height: 1320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">SA_TOP 设计工作台</div>
+    <nav>
+      <button class="active" type="button" data-panel="report">设计报告</button>
+      <button type="button" data-panel="code">代码设计</button>
+      <button type="button" data-panel="simulation">仿真波形</button>
+      <button type="button" data-panel="wavedrom">WaveDrom 时序图</button>
+      <button type="button" data-panel="notes">材料与笔记</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel active" data-panel-content="report">
+      <article class="page">
+        <h1>SA_TOP 脉动阵列设计报告</h1>
+        <div class="subtitle">工作台建立于 2026-07-22，当前已收录 RTL、TB、时序图、仿真波形与回归结论。</div>
+
+        <div class="status-grid">
+          <div class="status"><b>阵列规模</b><span>物理固定 16x16 PE</span></div>
+          <div class="status"><b>动态尺寸</b><span>cpu_h_size / cpu_w_size 指定 active 子阵列</span></div>
+          <div class="status"><b>计算精度</b><span>INT4 / INT8 / FP16 / FP32</span></div>
+        </div>
+
+        <h2>1 Architecture</h2>
+        <p>
+          SA_TOP 模块是 TPU 计算数据通路中的核心计算阵列，由固定规模的 <code>16x16</code> PE 阵列和 SA 控制逻辑组成。
+          它接收 TPU_CTRL 输入的 A 数据流，并使用寄存器预加载的 B 权重，在有效 PE 子阵列范围内完成矩阵乘法或等价 MAC 密集型计算。
+        </p>
+
+        <h3>1.1 SA_TOP 架构拓扑图</h3>
+        <div class="diagram">
+          <a href="./sa_top_topology.svg" target="_blank" rel="noopener">
+            <img class="topology-image" src="./sa_top_topology.svg" alt="SA_TOP 架构拓扑图">
+          </a>
+          <div class="caption">
+            图 1. SA_TOP 架构拓扑图。图中给出了外部接口、单比特 lock 两级同步与边沿检测、
+            多比特 B/sel 的 DMUX 锁存、SA_CTRL、
+            2×2 PE 时钟分组、16×16 PE 阵列以及 FIFO OUT/RegMap Report 的连接关系。
+          </div>
+        </div>
+
+        <h3>1.2 L=1 假设下的数据流与输出有效时序</h3>
+        <p>
+          本节先采用最容易理解的基准模型：每个 PE 从接收输入到给出本级 MAC 结果的延迟为
+          <code>L=1</code> 拍。INT4、INT8、FP16、FP32 模式若采用更长流水延迟，应在相同空间关系上增加相应延迟，
+          不能直接照搬本节的绝对拍数。
+        </p>
+        <p>
+          B 配置接口位于 100MHz CPU 时钟域，而 SA_CTRL 工作在 400MHz <code>sys_ckg</code> 域。
+          一次 B 配置数据会稳定保持 1 个 CPU 周期，即 4 个 <code>sys_ckg</code> 周期；完整加载 16 行 B
+          需要 16 个 CPU 配置拍。时序图为避免过长，只展开 B0、B1、B14、B15，中间 B2～B13 用时间断点省略。
+        </p>
+        <table>
+          <thead>
+            <tr><th>阶段</th><th>拍数</th><th>阵列内发生的事情</th><th>输出有效含义</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>B 权重预加载</td>
+              <td>16 个 100MHz 配置拍</td>
+              <td>
+                <code>cpu_dat_in_b_lock</code> 经两级同步后取上升沿形成 400MHz 单拍脉冲；该脉冲通过 DMUX
+                锁存稳定保持的 <code>cpu_dat_in_b[511:0]</code> 和 <code>cpu_dat_in_b_sel[3:0]</code>，形成
+                <code>cpu_dat_in_b'</code> 与 <code>cpu_dat_in_b_sel'</code>，并将对应一行的 16 个权重写入 PE。
+              </td>
+              <td><code>dat_out_vld=0</code>，此阶段不输出计算结果。</td>
+            </tr>
+            <tr>
+              <td>A 首拍进入</td>
+              <td>A-T0</td>
+              <td>
+                <code>lane0=A[0][0]</code> 进入 PE00，其余 lane 为 0。PE00 执行第一项 MAC；
+                下方未参与本拍计算的 PE10～PE150 选择 <code>dat_out=dat_in_add</code>，作为纵向直通导线。
+              </td>
+              <td>约 1 拍后左下角可观察到 raw partial sum，但它只完成了 1/16 项累加，不能作为最终 C 接收。</td>
+            </tr>
+            <tr>
+              <td>A 波前填充</td>
+              <td>A-T1～T14</td>
+              <td>
+                A 的有效 lane 按阶梯形逐拍展开并向右传播；执行 MAC 的 PE 波前扩大，
+                其下方未使用 PE 继续把 partial sum 直通到阵列底部。
+              </td>
+              <td>物理底部端口可能持续出现 raw 数据，但 <code>dat_out_vld</code> 仍保持低，避免把中间部分和写入 FIFO。</td>
+            </tr>
+            <tr>
+              <td>输出有效窗口开启</td>
+              <td>A-T15 后按模式延迟 L</td>
+              <td>A 的第 16 个计算拍完成，首个最终结果 <code>C[0][0]</code> 到达输出端。</td>
+              <td>从该拍开始拉高 <code>dat_out_vld</code>，FIFO 开始接收有效结果。</td>
+            </tr>
+            <tr>
+              <td>持续输出与排空</td>
+              <td>后续流水拍</td>
+              <td>后续 C 元素按阵列波前持续到达底部，最后一个结果离开后本轮计算结束。</td>
+              <td><code>dat_out_vld</code> 覆盖有效输出窗口，<code>dat_out_last</code> 与最后一个最终结果对齐。</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">
+          <code>cpu_tpu_en_sync</code> 必须在 B 权重配置开始前拉高，并覆盖权重加载、A 流水和结果输出全过程。
+          首个最终结果到达时拉高 <code>dat_out_vld</code>；逐拍数据位置与输出颜色含义详见
+          “材料与笔记 → SA权重加载与流水演示”。
+        </div>
+
+        <h2>2 时钟、复位与 CDC 处理</h2>
+        <h3>2.1 时钟域与门控时钟</h3>
+        <p>
+          SA_TOP 的控制逻辑和数据通路工作在 400 MHz 系统时钟域。PE 阵列使用由系统时钟门控后得到的
+          <code>pe_ckg[63:0]</code>：256 个 PE 按每 4 个一组划分为 64 个时钟组，未参与当前 H×W
+          子阵列计算的时钟组可关闭，以降低无效翻转功耗。
+        </p>
+        <p>
+          A 数据及其 valid/last 由 400 MHz Control 侧输入，计算结果也在同一工作时钟域送往 FIFO Out；
+          因而主计算流水内部不需要额外的异步跨域处理。
+        </p>
+
+        <h3>2.2 复位策略</h3>
+        <p>
+          <code>tpu_rst_n</code> 为低有效全局复位。复位期间，SA_CTRL 状态机、拍数计数器、
+          <code>dat_out_vld</code>/<code>dat_out_last</code>、PE 数据流水和 partial sum 状态均回到空闲值，
+          防止复位后把残留数据误判为有效输出。
+        </p>
+        <p>
+          复位采用异步拉低、同步释放的原则：复位可以立即清除状态，但解除复位需分别在系统时钟和各启用的
+          PE 门控时钟域内同步完成。门控时钟控制还需保证复位释放阶段相关时钟可达，避免部分 PE 停留在复位状态。
+        </p>
+
+        <h3>2.3 外部接口与 CDC</h3>
+        <table>
+          <thead>
+            <tr><th>信号分类</th><th>时钟关系</th><th>处理方式</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Control 侧 A 数据、Start/En</td>
+              <td>400 MHz 同步域</td>
+              <td>
+                <code>cpu_tpu_start_sync</code> 和 <code>cpu_tpu_en_sync</code> 已在上游完成同步，可在 SA_TOP
+                内直接用于启动、使能和状态锁存。其中 <code>cpu_tpu_en_sync</code> 必须先于首个 B 权重写脉冲拉高，
+                并保持到最后一拍结果输出完成；<code>cpu_tpu_start_sync</code> 则在 B 权重加载结束后启动 A 计算。
+              </td>
+            </tr>
+            <tr>
+              <td>RegMap 动态配置</td>
+              <td>100 MHz → 400 MHz</td>
+              <td>
+                只有单比特 <code>cpu_dat_in_b_lock</code> 进入两级同步器；对同步后的电平做上升沿检测，形成
+                400MHz 域单拍脉冲 <code>cpu_dat_in_b_lock'</code>。多比特 <code>cpu_dat_in_b</code> 和
+                <code>cpu_dat_in_b_sel</code> 不逐位打两拍，而是在 CPU 侧稳定保持至少 1 个 100MHz 周期，
+                再由该脉冲通过 DMUX 锁存到 400MHz 域寄存器，形成稳定的 <code>cpu_dat_in_b'</code> 和
+                <code>cpu_dat_in_b_sel'</code>。
+              </td>
+            </tr>
+            <tr>
+              <td>RegMap 静态配置</td>
+              <td>100 MHz 配置，400 MHz 使用</td>
+              <td>
+                <code>cpu_h_size</code>、<code>cpu_w_size</code> 和 <code>cpu_cpt_mode</code>
+                在一次计算开始前完成配置，并在计算过程中保持不变，因此本方案不对这三组信号增加两拍 CDC 寄存器；
+                SA_TOP 在 start 时使用并锁存相关配置。
+              </td>
+            </tr>
+            <tr>
+              <td><code>rpt_active_size</code> 上报寄存器</td>
+              <td>400 MHz → 100 MHz</td>
+              <td>
+                在 <code>start</code> 有效时锁存本轮 H/W 配置，在 <code>en</code> 上升沿清零。
+                CPU 仅在计算结束后读取，此时信号已经经历较长的稳定窗口，因此无需增加复杂的 CDC 同步逻辑。
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">
+          <b>后续时序图信号约定：</b>CPU 侧原始信号画为 <code>cpu_dat_in_b_lock</code>、
+          <code>cpu_dat_in_b</code>、<code>cpu_dat_in_b_sel</code>；图中额外展开
+          <code>cpu_dat_in_b_lock_ff1</code>、<code>cpu_dat_in_b_lock_ff2</code> 和上升沿脉冲
+          <code>cpu_dat_in_b_lock'</code>。DMUX 锁存后的多比特域内信号画为
+          <code>cpu_dat_in_b'</code>、<code>cpu_dat_in_b_sel'</code>。
+        </div>
+
+        <h2>3 接口定义</h2>
+        <table>
+          <thead>
+            <tr><th>信号名</th><th>IO</th><th>位宽</th><th>描述</th></tr>
+          </thead>
+          <tbody>
+            <tr class="group-row"><td colspan="4">System Interface</td></tr>
+            <tr><td><code>sys_ckg</code></td><td>Input</td><td>1</td><td>SA_TOP 系统门控时钟，目标业务频率 400 MHz。</td></tr>
+            <tr><td><code>pe_ckg</code></td><td>Input</td><td>64</td><td>PE 时钟组信号，供 16x16 PE 阵列分组使用。</td></tr>
+            <tr><td><code>tpu_rst_n</code></td><td>Input</td><td>1</td><td>TPU 全局复位信号，低有效。</td></tr>
+            <tr class="group-row"><td colspan="4">Ctrl Interface</td></tr>
+            <tr><td><code>cpu_tpu_start_sync</code></td><td>Input</td><td>1</td><td>启动同步信号，用于锁存本轮 active size 并启动计算。</td></tr>
+            <tr><td><code>cpu_tpu_en_sync</code></td><td>Input</td><td>1</td><td>TPU 使能同步信号，高有效；应在 B 权重配置开始前拉高并覆盖整轮任务。</td></tr>
+            <tr><td><code>dat_in_a</code></td><td>Input</td><td>32*16</td><td>输入 A 数据流，一拍包含 16 个 32-bit lane。</td></tr>
+            <tr><td><code>dat_in_vld</code></td><td>Input</td><td>1</td><td>A 数据输入有效信号。</td></tr>
+            <tr><td><code>dat_in_last</code></td><td>Input</td><td>1</td><td>A 数据输入最后一拍指示。</td></tr>
+            <tr class="group-row"><td colspan="4">RegMap Interface</td></tr>
+            <tr><td><code>cpu_dat_in_b_lock</code></td><td>Input</td><td>1</td><td>动态 B 权重锁存信号；经两级同步并取上升沿后形成 400MHz 域单拍脉冲 <code>cpu_dat_in_b_lock'</code>。</td></tr>
+            <tr><td><code>cpu_dat_in_b</code></td><td>Input</td><td>32*16</td><td>100MHz 域动态 B 权重数据，一次包含 16 个 32-bit lane；由 DMUX 在 <code>cpu_dat_in_b_lock'</code> 有效时锁存为 <code>cpu_dat_in_b'</code>。</td></tr>
+            <tr><td><code>cpu_dat_in_b_sel</code></td><td>Input</td><td>4</td><td>100MHz 域 B 权重写入行选择；由 DMUX 与权重数据同拍锁存为 <code>cpu_dat_in_b_sel'</code>。</td></tr>
+            <tr><td><code>cpu_h_size</code></td><td>Input</td><td>4</td><td>静态 H 维激活尺寸，编码为实际值减一；计算期间保持不变，不增加 CDC 寄存器。</td></tr>
+            <tr><td><code>cpu_w_size</code></td><td>Input</td><td>4</td><td>静态 W 维激活尺寸，编码为实际值减一；计算期间保持不变，不增加 CDC 寄存器。</td></tr>
+            <tr><td><code>cpu_cpt_mode</code></td><td>Input</td><td>2</td><td>静态计算精度配置：00 INT4，01 INT8，10 FP16，11 FP32；不增加 CDC 寄存器。</td></tr>
+            <tr><td><code>rpt_active_size</code></td><td>Output</td><td>32</td><td>[31:16] 为 H，[15:0] 为 W；start 锁存、en 上升沿清零，CPU 在计算结束后读取。</td></tr>
+            <tr class="group-row"><td colspan="4">FIFO OUT Interface</td></tr>
+            <tr><td><code>dat_out</code></td><td>Output</td><td>32*16</td><td>经 SA_CTRL 选择或对齐后的 16-lane SA 结果数据流。</td></tr>
+            <tr><td><code>dat_out_vld</code></td><td>Output</td><td>1</td><td>最终结果输出有效信号；不能被阵列底部提前出现的 raw partial sum 直接触发。</td></tr>
+            <tr><td><code>dat_out_last</code></td><td>Output</td><td>1</td><td>SA 输出最后一拍指示。</td></tr>
+          </tbody>
+        </table>
+
+        <h2>4 模块功能描述</h2>
+        <table>
+          <thead>
+            <tr><th>模块名称</th><th>功能描述</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>sa_top</code></td><td>SA 顶层模块，连接全部外部接口，并完成 <code>sa_ctrl</code>、<code>pe_array_16x16</code> 和 <code>output_collector</code> 的实例化与互连。</td></tr>
+            <tr><td><code>sa_ctrl</code></td><td>负责动态 RegMap 信号的 CDC、active size 锁存与上报、PE 使能生成、B 权重加载控制，以及输入和控制信号向 PE 阵列的组织与传递。</td></tr>
+            <tr><td><code>pe_array_16x16</code></td><td>实例化并连接 256 个 PE，保存静态 B 权重，完成 A 数据横向传播、partial sum 纵向累加及阵列底部结果汇集。</td></tr>
+            <tr><td><code>output_collector</code></td><td>对应方案草图中的 <code>output_fifo</code>。接收阵列底部 16 列结果，按列完成、逐拍累积的形式组织 512-bit 输出总线，并产生 <code>dat_out_vld</code> 和 <code>dat_out_last</code>。</td></tr>
+          </tbody>
+        </table>
+
+        <h2>5 Verilog 设计草图</h2>
+        <div class="diagram">
+          <img
+            class="verilog-draft-image"
+            src="./sa_top_verilog_draft.png"
+            alt="SA_TOP Verilog 设计草图"
+          >
+        </div>
+        <div class="note">
+          <b>图中信号颜色说明：</b>绿色信号表示由 <code>sa_ctrl</code> 直接传递到
+          <code>pe_array_16x16</code> 的信号；<code>sa_ctrl</code> 不改变这些信号的功能含义，
+          仅完成顶层到 PE 阵列的层级传递或扇出。
+        </div>
+
+        <h2>6 RTL 设计</h2>
+        <h3>6.1 顶层组织</h3>
+        <p>
+          当前 RTL 以 <code>sa_top.sv</code> 为集成顶层：<code>sa_ctrl</code> 负责配置与控制，
+          <code>pe_array_16x16</code> 负责 256 个 PE 的数据通路，<code>output_collector</code>
+          负责把阵列底部逐列完成的结果整理成 FIFO OUT 接口。PE 计算单元复用 <code>pe_mp/PE_MP_v1.v</code>
+          及其定点/浮点转换、乘法和加法子模块。
+        </p>
+
+        <h3>6.2 权重 CDC 与写入</h3>
+        <p>
+          单比特 <code>cpu_dat_in_b_lock</code> 在 <code>sa_ctrl</code> 中依次经过
+          <code>b_lock_d1</code>、<code>b_lock_d2</code> 和用于边沿比较的 <code>b_lock_d3</code>；
+          <code>b_lock_d2 &amp;&amp; !b_lock_d3</code> 形成 400MHz 域单拍接收脉冲。
+          当该脉冲与 <code>cpu_tpu_en_sync</code> 同时有效时，控制器一次性锁存稳定的
+          <code>cpu_dat_in_b[511:0]</code> 和 <code>cpu_dat_in_b_sel[3:0]</code>。接收脉冲再延迟一拍后，
+          由行选择生成 one-hot 写使能，把本次 16 个权重同时写入指定 PE 行。
+        </p>
+
+        <h3>6.3 PE 阵列互连</h3>
+        <p>
+          <code>pe_array_16x16</code> 将 A 数据沿行向右传递，将 partial sum 沿列向下传递；每个 PE
+          保留自己的 B 权重寄存器并完成一次本地 MAC。一次 B 写传输携带 16 个 32-bit 权重，
+          <code>cpu_dat_in_b_sel</code> 决定写入 16 行中的哪一行。阵列中的每个 2×2 PE 分组共用一个
+          <code>pe_ckg</code>，共形成 64 个门控时钟组。
+        </p>
+
+        <h3>6.4 输出收集</h3>
+        <p>
+          <code>output_collector</code> 采用 IDLE、WAIT、OUTPUT 三态控制，并按计算模式选择 PE 延迟：
+          INT4/INT8 为 1 拍、FP32 为 4 拍、FP16 为 7 拍。每完成一列，结果写入
+          <code>result_hold_q</code>；第 <code>k</code> 个有效输出拍中，lane 0～k 为已经完成的列，
+          其余 lane 清零。W=16 时第 15 个输出拍同时拉高 <code>dat_out_last</code>。
+        </p>
+        <div class="note">
+          <b>当前实现边界：</b><code>cpu_tpu_start_sync</code> 已保留在 <code>sa_top</code> 外部接口中，
+          但尚未接入 <code>sa_ctrl</code>；当前输出时序由
+          <code>cpu_tpu_en_sync &amp;&amp; dat_in_vld &amp;&amp; dat_in_last</code> 触发。
+          另外，当前 INT4/INT8 路径按一个 32-bit 有符号数完成乘加，尚未实现一个 32-bit lane 内的打包子字并行运算。
+        </div>
+
+        <h2>7 Testbench 搭建与结果对比</h2>
+        <h3>7.1 验证平台结构</h3>
+        <p>
+          顶层回归由公共驱动器 <code>sa_top_case_runner.sv</code> 完成，INT4、INT8、FP16、FP32
+          和 multi 五个薄封装仅负责选择模式与任务数量；<code>sa_top_tb_smoke.sv</code> 提供固定小数据冒烟用例。
+          此外还分别为 <code>sa_ctrl</code>、<code>pe_array_16x16</code> 和
+          <code>output_collector</code> 配置了模块级 testbench。
+        </p>
+
+        <h3>7.2 激励、参考模型与检查规则</h3>
+        <p>
+          TB 先按 16 次 100MHz 配置事务写入 256 个独立 B 权重，再用 16 个 400MHz 有效拍发送 A。
+          A-T0 仅 lane0 有效，A-T1 使用 lane0～1，直至 A-T15 的 16 个 lane 全部有效并拉高
+          <code>dat_in_last</code>。软件参考模型按
+          <code>C[col] = Σ A[row] × B[row][col]</code> 计算预期值；整数模式取低 32 bit 环绕结果，
+          浮点模式比较 FP32 编码。
+        </p>
+        <p>
+          scoreboard 对第 k 个输出拍检查 lane0～k 是否等于预期 C0～Ck、其余 lane 是否为零，
+          同时检查 X/Z、<code>dat_out_vld</code> 窗口及 <code>dat_out_last</code> 是否只在最后一拍出现；
+          任何任务超过 128 拍未完成都会触发超时错误。
+        </p>
+
+        <h3>7.3 预期值与实际结果</h3>
+        <table>
+          <thead>
+            <tr><th>用例</th><th>关键预期值</th><th>实际检查</th><th>结论</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Smoke</td><td>固定数据结果 21</td><td>实际输出 21</td><td>PASS</td></tr>
+            <tr><td>INT4</td><td>C0=<code>f06fa532</code>，C15=<code>8f9864b3</code></td><td>16 列逐拍匹配</td><td>PASS</td></tr>
+            <tr><td>INT8</td><td>C0=<code>12dd8980</code>，C15=<code>f46f1022</code></td><td>最终 512-bit 总线为 {C15…C0}</td><td>PASS</td></tr>
+            <tr><td>FP16</td><td>C0=<code>42ba0000</code> (93)，C15=<code>42940000</code> (74)</td><td>16 列 FP32 编码匹配</td><td>PASS</td></tr>
+            <tr><td>FP32</td><td>C0=<code>42ba0000</code> (93)，C15=<code>42d00000</code> (104)</td><td>16 列 FP32 编码匹配</td><td>PASS</td></tr>
+            <tr><td>Multi</td><td>同一 B 连续处理 3 组 A</td><td>共 48 列检查全部匹配</td><td>PASS</td></tr>
+          </tbody>
+        </table>
+
+        <h3>7.4 回归结论与覆盖边界</h3>
+        <p>
+          2026-08-07 的回归中，Questa 下 smoke、INT4、INT8、FP16、FP32、multi 六个 SA 顶层用例均编译并运行通过，
+          无未抑制错误或警告；Icarus 下同样为 6/6 PASS。波形可在“仿真波形”栏目查看，完整源码可在“代码设计”栏目逐文件阅读。
+        </p>
+        <div class="note">
+          <b>尚未覆盖：</b>打包 INT4/INT8 子 lane、动态 H/W、任务中途复位、各 PE 门控时钟独立驱动，
+          以及 NaN、Inf、subnormal、负数、小数和舍入边界等浮点特殊情况。当前 FP 激励使用可精确表示的 1.0～4.0。
+        </div>
+      </article>
+    </section>
+
+    <section class="panel" data-panel-content="code">
+      <div class="artifact-shell">
+        <div class="artifact-head">
+          <div>
+            <b>SA_TOP 代码设计</b>
+            <span>按 RTL、TB 与构建文件分组浏览当前工程源码。</span>
+          </div>
+          <a class="demo-open-link" href="./sa_code_design.html" target="_blank" rel="noopener">独立页面打开</a>
+        </div>
+        <iframe class="artifact-frame" src="./sa_code_design.html" title="SA_TOP RTL 与 TB 代码设计" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <section class="panel" data-panel-content="simulation">
+      <div class="artifact-shell">
+        <div class="artifact-head">
+          <div>
+            <b>SA_TOP 仿真波形</b>
+            <span>FP16、INT8、multi、FP32 与 INT4 顶层回归波形。</span>
+          </div>
+          <a class="demo-open-link" href="./sa_sim_waveforms.html" target="_blank" rel="noopener">独立页面打开</a>
+        </div>
+        <iframe class="artifact-frame" src="./sa_sim_waveforms.html" title="SA_TOP 仿真波形" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <section class="panel" data-panel-content="wavedrom">
+      <div class="wavedrom-shell">
+        <div class="wavedrom-head">
+          <div>
+            <b>SA_TOP 多精度时序图</b>
+            <span>INT4 / INT8、FP32、FP16 的权重配置、A 流水、计算延迟与完整输出窗口。</span>
+          </div>
+          <a class="demo-open-link" href="./sa_wavedrom_int4.html" target="_blank" rel="noopener">
+            独立页面打开
+          </a>
+        </div>
+        <iframe
+          class="wavedrom-frame"
+          src="./sa_wavedrom_int4.html"
+          title="SA_TOP 多精度 WaveDrom 时序图"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </section>
+
+    <section class="panel" data-panel-content="notes">
+      <div class="notes-shell">
+        <aside class="notes-sidebar">
+          <h2>材料与笔记</h2>
+          <button class="note-tab active" type="button" data-note-panel="scheme">设计方案</button>
+          <button class="note-tab" type="button" data-note-panel="principle">SA原理与实现</button>
+          <button class="note-tab" type="button" data-note-panel="animation">SA权重加载与流水演示</button>
+        </aside>
+        <div class="notes-content">
+          <article class="note-window active source-note" data-note-content="scheme">
+            <h1>SA_TOP设计方案</h1>
+
+            <h2>概述</h2>
+            <p>
+              SA(Systolic Array)模块是 TPU 的核心计算引擎，由 PE 阵列 和 SA_CTRL 控制器 两部分组成。
+              PE 阵列规模为 16×16。允许软件动态指定实际使用的 PE 行数和列数(≤16)，未使用的 PE 可被数据门控以降低功耗。
+              阵列采用脉动数据流：权重矩阵 dat_in_b 静态预加载至各 PE 的寄存器；激活值 dat_in_a 按行错位输入，
+              逐拍向右下方流动；部分和沿列方向累加，最终从底部输出。
+            </p>
+
+            <h2>主要特性</h2>
+            <p>PE阵列尺寸设计：PE尺寸固定为 16×16。</p>
+            <p class="red">动态激活范围：通过 cpu_h_size和 cpu_w_size指定实际参与计算的 PE 子矩阵，其余 PE 进入低功耗空闲模式。</p>
+            <p>支持 PE 可变延迟：不同计算精度（INT4/8/FP16/FP32）对应 PE 内部处理延迟 L（1~7 拍）。</p>
+            <p>流水线设计：无论 PE 延迟多少，阵列每拍均可接收新数据，实现全流水。</p>
+            <p>静态权重预加载：权重数据在计算开始前一次性配置完成，计算期间不变。</p>
+            <p>功耗管理：通过 dat_in_vld 和 tpu_en 信号门控闲置 PE 的数据。</p>
+          </article>
+
+          <article class="note-window principle-note" data-note-content="principle">
+            <h1>SA原理与实现</h1>
+
+            <div class="diagram">
+              <svg viewBox="0 0 1000 520" role="img" aria-label="权重固定数据流映射到 SA_TOP">
+                <defs>
+                  <marker id="arrow2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L9,4.5 L0,9 Z" fill="#111827"></path>
+                  </marker>
+                </defs>
+                <rect x="48" y="64" width="210" height="136" class="block soft"></rect>
+                <text x="153" y="104" text-anchor="middle" class="label">输入 A 数据流</text>
+                <text x="153" y="132" text-anchor="middle" class="label small">上游整理为 16 个 lane</text>
+                <text x="153" y="158" text-anchor="middle" class="label small">按任务顺序连续输入</text>
+
+                <rect x="386" y="44" width="236" height="92" class="block ok"></rect>
+                <text x="504" y="82" text-anchor="middle" class="label">固定 B 权重</text>
+                <text x="504" y="108" text-anchor="middle" class="label small">预加载到 PE B_REG</text>
+
+                <rect x="336" y="208" width="340" height="220" class="block"></rect>
+                <text x="506" y="238" text-anchor="middle" class="label">16x16 PE Array</text>
+                <g transform="translate(404,270)">
+                  <rect x="0" y="0" width="62" height="42" class="block ok"></rect>
+                  <rect x="82" y="0" width="62" height="42" class="block ok"></rect>
+                  <rect x="164" y="0" width="62" height="42" class="block ok"></rect>
+                  <rect x="0" y="62" width="62" height="42" class="block ok"></rect>
+                  <rect x="82" y="62" width="62" height="42" class="block ok"></rect>
+                  <rect x="164" y="62" width="62" height="42" class="block ok"></rect>
+                  <text x="31" y="26" text-anchor="middle" class="label small">MAC</text>
+                  <text x="113" y="26" text-anchor="middle" class="label small">MAC</text>
+                  <text x="195" y="26" text-anchor="middle" class="label small">MAC</text>
+                  <text x="31" y="88" text-anchor="middle" class="label small">MAC</text>
+                  <text x="113" y="88" text-anchor="middle" class="label small">MAC</text>
+                  <text x="195" y="88" text-anchor="middle" class="label small">MAC</text>
+                </g>
+
+                <rect x="760" y="252" width="190" height="114" class="block soft"></rect>
+                <text x="855" y="294" text-anchor="middle" class="label">结果数据流</text>
+                <text x="855" y="322" text-anchor="middle" class="label small">dat_out[511:0]</text>
+
+                <line x1="258" y1="132" x2="336" y2="286" class="wire" marker-end="url(#arrow2)"></line>
+                <line x1="504" y1="136" x2="504" y2="208" class="wire" marker-end="url(#arrow2)"></line>
+                <line x1="676" y1="310" x2="760" y2="310" class="wire" marker-end="url(#arrow2)"></line>
+                <text x="292" y="226" class="label small">dat_in_a stream</text>
+                <text x="530" y="174" class="label small">cpu_dat_in_b</text>
+                <text x="704" y="296" class="label small">partial sums</text>
+              </svg>
+              <div class="caption">图 A.1 本项目 SA_TOP 数据流总览：上游提供 A 数据流，B 权重预加载到 PE，阵列将 partial sum 累加为结果流。</div>
+            </div>
+
+            <h2>1. 这个模块在干什么</h2>
+            <p>
+              SA_TOP 是 TPU 里的核心计算阵列。它不是一个“单独算一次乘法”的小模块，而是把 256 个 PE 排成
+              <code>16x16</code> 的阵列，让很多个乘加运算在同一时间并行发生。
+            </p>
+            <p>
+              本项目最准确的数学描述是矩阵乘法或点积计算。B 权重先加载到各 PE 的本地寄存器，A 数据按拍流入；
+              每个 PE 只贡献一项乘积，属于同一个输出元素的 partial sum 沿列向下累加，抵达有效阵列底部后才成为最终结果。
+            </p>
+
+            <div class="formula">
+              C[m][n] = Σ A[m][k] × B[k][n]<br>
+              PE[k][n]：partial_sum_out = partial_sum_in + A_local × B_local
+            </div>
+
+            <p>
+              SA 本身不认识“图片、RGB、卷积窗口”这些概念，它只认识排好顺序的 A、B 和 partial sum。
+              卷积可以变成很多个点积交给 SA 计算，但滑窗读取和输入顺序应由上游数据通路准备。
+            </p>
+
+            <h2>2. 和我们接口的对应关系</h2>
+            <table>
+              <thead>
+                <tr><th>硬件概念</th><th>SA_TOP 信号/结构</th><th>新手理解</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>B 权重</td><td><code>lock</code> 两级同步并取上升沿，DMUX 锁存 <code>cpu_dat_in_b</code> / <code>sel</code></td><td>SA_CTRL 使用稳定的 <code>cpu_dat_in_b'</code>、<code>cpu_dat_in_b_sel'</code> 和单拍 <code>cpu_dat_in_b_lock'</code>，通过 PE 的 <code>dat_in_b</code> 写入本地 <code>b_reg</code>。</td></tr>
+                <tr><td>A 数据流</td><td><code>dat_in_a[32*16-1:0]</code></td><td>每拍最多输入 16 个 32-bit lane；每个 lane 是当前拍的一部分数据，不是整张矩阵。</td></tr>
+                <tr><td>单个计算单元</td><td><code>PE_MP</code></td><td>负责一次本地 MAC：拿 A、B 和 partial sum 算出新的 partial sum。</td></tr>
+                <tr><td>阵列控制</td><td><code>SA_CTRL</code></td><td>决定哪些 PE 工作、什么时候加载权重、什么时候输入/输出有效。</td></tr>
+                <tr><td>计算结果</td><td><code>dat_out</code>, <code>dat_out_vld</code>, <code>dat_out_last</code></td><td>每拍最多输出 16 个 32-bit 结果 lane；完整结果矩阵通常需要多个输出 beat。</td></tr>
+              </tbody>
+            </table>
+
+            <h2>3. 旧的 2x2 候选互连模型（未签核）</h2>
+            <p>
+              下面的 2x2 图仅记录此前采用的经典候选模型：假设 A 通过 PE 的 <code>out_a</code>
+              逐列寄存前传、partial sum 逐行下传、PE 延迟 <code>L=1</code>。
+              它不能代表当前 SA_TOP 已确定的真实时序，更不能据此推导固定的 16x16 总拍数。
+            </p>
+
+            <div class="note">
+              保留本图是为了说明一种可能的互连方案；在 lane 映射、skew 边界和 partial-sum 接线签核前，
+              不把其中的阶梯输入当作本项目最终设计。
+            </div>
+
+            <div id="sa-2x2-timing-workbench" class="sa-timing-demo">
+              <div class="sa-demo-matrices" aria-label="参与计算的两个二乘二矩阵">
+                <code>A = [[a00, a01], [a10, a11]]</code>
+                <code>B = [[b00, b01], [b10, b11]]</code>
+              </div>
+
+              <div class="sa-demo-controls" aria-label="选择时钟拍">
+                <button type="button" class="active" data-sa-step="0" aria-pressed="true">权重装载</button>
+                <button type="button" data-sa-step="1" aria-pressed="false">第 1 拍</button>
+                <button type="button" data-sa-step="2" aria-pressed="false">第 2 拍</button>
+                <button type="button" data-sa-step="3" aria-pressed="false">第 3 拍</button>
+                <button type="button" data-sa-step="4" aria-pressed="false">第 4 拍</button>
+              </div>
+
+              <svg viewBox="0 0 900 480" role="img" aria-labelledby="sa-wb-title sa-wb-desc">
+                <title id="sa-wb-title">2x2 权重固定脉动阵列时序</title>
+                <desc id="sa-wb-desc">A 数据从左侧进入并向右传播，B 权重固定在四个 PE 中，partial sum 从上向下传播。</desc>
+                <defs>
+                  <marker id="sa-wb-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 Z" fill="#6b7280"></path>
+                  </marker>
+                </defs>
+
+                <text x="18" y="102" class="sa-demo-muted">第 0 行入口</text>
+                <text id="sa-wb-in0" x="18" y="132" class="sa-demo-text">—</text>
+                <path d="M92,128 H168" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+
+                <text x="18" y="282" class="sa-demo-muted">第 1 行入口</text>
+                <text id="sa-wb-in1" x="18" y="312" class="sa-demo-text">—</text>
+                <path d="M92,308 H168" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+
+                <g id="sa-wb-pe00" class="sa-demo-pe-group" data-active="false">
+                  <rect x="180" y="58" width="270" height="120" rx="6" class="sa-demo-pe"></rect>
+                  <text x="195" y="86" class="sa-demo-text">PE[0][0]　B=b00</text>
+                  <text id="sa-wb-pe00-l1" x="195" y="121" class="sa-demo-muted">等待 A</text>
+                  <text id="sa-wb-pe00-l2" x="195" y="151" class="sa-demo-text">out=—</text>
+                </g>
+
+                <g id="sa-wb-pe01" class="sa-demo-pe-group" data-active="false">
+                  <rect x="560" y="58" width="270" height="120" rx="6" class="sa-demo-pe"></rect>
+                  <text x="575" y="86" class="sa-demo-text">PE[0][1]　B=b01</text>
+                  <text id="sa-wb-pe01-l1" x="575" y="121" class="sa-demo-muted">等待 A</text>
+                  <text id="sa-wb-pe01-l2" x="575" y="151" class="sa-demo-text">out=—</text>
+                </g>
+
+                <g id="sa-wb-pe10" class="sa-demo-pe-group" data-active="false">
+                  <rect x="180" y="238" width="270" height="120" rx="6" class="sa-demo-pe"></rect>
+                  <text x="195" y="266" class="sa-demo-text">PE[1][0]　B=b10</text>
+                  <text id="sa-wb-pe10-l1" x="195" y="301" class="sa-demo-muted">等待 A 和 psum</text>
+                  <text id="sa-wb-pe10-l2" x="195" y="331" class="sa-demo-text">out=—</text>
+                </g>
+
+                <g id="sa-wb-pe11" class="sa-demo-pe-group" data-active="false">
+                  <rect x="560" y="238" width="270" height="120" rx="6" class="sa-demo-pe"></rect>
+                  <text x="575" y="266" class="sa-demo-text">PE[1][1]　B=b11</text>
+                  <text id="sa-wb-pe11-l1" x="575" y="301" class="sa-demo-muted">等待 A 和 psum</text>
+                  <text id="sa-wb-pe11-l2" x="575" y="331" class="sa-demo-text">out=—</text>
+                </g>
+
+                <path d="M450,128 H548" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+                <text x="477" y="114" class="sa-demo-muted">A 向右</text>
+                <path d="M450,308 H548" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+                <text x="477" y="294" class="sa-demo-muted">A 向右</text>
+
+                <path d="M315,178 V226" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+                <text x="325" y="210" class="sa-demo-muted">psum 向下</text>
+                <path d="M695,178 V226" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+                <text x="705" y="210" class="sa-demo-muted">psum 向下</text>
+
+                <path d="M315,358 V410" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+                <path d="M695,358 V410" class="sa-demo-wire" marker-end="url(#sa-wb-arrow)"></path>
+                <text x="232" y="442" class="sa-demo-muted">底部第 0 列输出</text>
+                <text x="612" y="442" class="sa-demo-muted">底部第 1 列输出</text>
+              </svg>
+
+              <div class="sa-demo-output">
+                <span>本拍输入：<code id="sa-wb-inputs">row0=—，row1=—</code></span>
+                <span>原始底部输出：<code id="sa-wb-raw">[—, —]</code></span>
+                <span>列对齐后：<code id="sa-wb-aligned">—</code></span>
+              </div>
+              <div id="sa-wb-summary" class="sa-demo-summary">B 已锁存在四个 PE 中，尚未输入 A。</div>
+            </div>
+
+            <div class="note">
+              图中每个高亮 PE 都在执行完整 MAC：<code>out = psum_in + A×B</code>。
+              最上面的 PE 看起来像只做乘法，是因为它的 <code>psum_in=0</code>。
+            </div>
+
+            <h2>4. 候选模型中的矩阵元素映射</h2>
+            <pre>A = [ a00  a01 ]    B = [ b00  b01 ]
+    [ a10  a11 ]        [ b10  b11 ]
+
+C = A × B
+c00 = a00*b00 + a01*b10
+c01 = a00*b01 + a01*b11
+c10 = a10*b00 + a11*b10
+c11 = a10*b01 + a11*b11</pre>
+
+            <p>采用当前 weight-stationary 方向时，B 可以这样放进 2x2 PE：</p>
+            <pre>             输出列 n=0       输出列 n=1
+累加行 k=0   PE[0][0]=b00     PE[0][1]=b01
+累加行 k=1   PE[1][0]=b10     PE[1][1]=b11</pre>
+
+            <p>
+              <code>c00</code> 沿第 0 列向下形成：先得到 <code>a00*b00</code>，再由下一行加入
+              <code>a01*b10</code>。第 1 列同时以相同方式形成 <code>c01</code>。
+              下一组 A 数据进入后，阵列再形成 <code>c10</code> 和 <code>c11</code>。
+            </p>
+
+            <h2>5. SA_CTRL 应该做什么</h2>
+            <ul>
+              <li><b>权重加载控制：</b>对 <code>cpu_dat_in_b_lock</code> 做两级同步和上升沿检测；用生成的单拍脉冲通过 DMUX 锁存 <code>cpu_dat_in_b</code> 与 <code>cpu_dat_in_b_sel</code>，并把 16 个稳定权重 lane 写入目标 PE 的 <code>b_reg</code>。</li>
+              <li><b>入口数据接收：</b><code>dat_in_vld=1</code> 时整体接收 16 个 A lane；lane 到 PE 的路由和是否需要额外 skew 必须在互连方案确定后实现。</li>
+              <li><b>有效区域控制：</b>用 <code>cpu_h_size</code> 和 <code>cpu_w_size</code> 只打开实际参与计算的 PE 子阵列。</li>
+              <li><b>valid 对齐：</b>保证 A valid、partial-sum valid 与对应数据一起穿过阵列。</li>
+              <li><b>输出组织：</b>明确 16 列结果是先做列间反向延迟后同拍输出，还是按斜对角顺序流出，再据此生成 <code>dat_out_vld</code> 和 <code>dat_out_last</code>。</li>
+            </ul>
+
+            <div class="note">
+              <b>RTL 开工前必须锁定的三项：</b>
+              <code>cpu_dat_in_b_sel'</code> 到 PE 行/列的精确映射；四种精度对应的 PE 延迟 <code>L</code>；
+              以及 16 个 <code>dat_out</code> lane 的周期顺序与对齐规则。
+              另外，当前 PE 在 <code>pe_en=0</code> 时会清除 <code>b_reg</code>，所以活动 PE 从权重加载到计算结束必须保持使能，或在后续 RTL 中调整该行为。
+            </div>
+
+            <h2>6. 为什么这样适合当前 SA 项目</h2>
+            <p>
+              当前接口已经天然区分了静态 B 权重和动态 A 数据流：B 侧只在任务前配置，A 侧在任务中连续流动，
+              每个有效输入拍携带 16 个并行 lane。PE 阵列将复用固定权重并完成 partial sum 累加，
+              但具体空间映射和周期模型要由后续 SA 互连设计确定。
+            </p>
+            <div class="note">
+              现在先记住已经确定的一句话：B 在计算前写入 PE，A 每拍以 16×32-bit 的整体数据拍进入 SA_TOP。
+              “A 在 PE 间怎样走、partial sum 怎样接、多少拍输出”仍是下一步需要签核的微架构问题。
+            </div>
+          </article>
+
+          <article class="note-window demo-note" data-note-content="animation">
+            <div class="demo-note-head">
+              <div>
+                <h1>SA权重加载与流水演示</h1>
+                <p>
+                  按拍观察 B 权重预加载、A 错拍输入、PE 阵列中的 MAC 与 partial sum 直通，
+                  以及阵列底部从中间部分和到最终 C 的输出过程。
+                </p>
+              </div>
+              <a class="demo-open-link" href="./sa_row_in_column_out.html" target="_blank" rel="noopener">
+                独立页面打开
+              </a>
+            </div>
+            <iframe
+              class="demo-frame"
+              src="./sa_row_in_column_out.html"
+              title="SA权重预加载与流水计算动态演示"
+              loading="lazy"
+            ></iframe>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll("[data-panel]");
+    const panels = document.querySelectorAll("[data-panel-content]");
+    const noteTabs = document.querySelectorAll("[data-note-panel]");
+    const notePanels = document.querySelectorAll("[data-note-content]");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const name = button.dataset.panel;
+        buttons.forEach((item) => item.classList.toggle("active", item === button));
+        panels.forEach((panel) => panel.classList.toggle("active", panel.dataset.panelContent === name));
+      });
+    });
+
+    noteTabs.forEach((button) => {
+      button.addEventListener("click", () => {
+        const name = button.dataset.notePanel;
+        noteTabs.forEach((item) => item.classList.toggle("active", item === button));
+        notePanels.forEach((panel) => panel.classList.toggle("active", panel.dataset.noteContent === name));
+      });
+    });
+
+    const saTimingRoot = document.getElementById("sa-2x2-timing-workbench");
+    const saTimingStates = [
+      {
+        inputs: ["—", "—"],
+        raw: "[—, —]",
+        aligned: "—",
+        summary: "B 已锁存在四个 PE 中，尚未输入 A。",
+        pe00: ["等待 A", "out=—", false],
+        pe01: ["等待 A", "out=—", false],
+        pe10: ["等待 A 和 psum", "out=—", false],
+        pe11: ["等待 A 和 psum", "out=—", false]
+      },
+      {
+        inputs: ["a00", "—"],
+        raw: "[—, —]",
+        aligned: "—",
+        summary: "首个 A 进入第 0 行；PE00 做 0 + a00×b00，仍然是一次完整 MAC。",
+        pe00: ["A=a00，psum=0", "out=p00=a00×b00", true],
+        pe01: ["等待 a00 向右到达", "out=—", false],
+        pe10: ["等待 a01 和 p00", "out=—", false],
+        pe11: ["等待数据", "out=—", false]
+      },
+      {
+        inputs: ["a10", "a01"],
+        raw: "[c00, —]",
+        aligned: "暂存 c00，等待 c01",
+        summary: "a01 晚一拍进入，正好与 p00 在 PE10 相遇；第 0 列得到最终 c00。",
+        pe00: ["A=a10，psum=0", "out=p10=a10×b00", true],
+        pe01: ["A=a00，psum=0", "out=q00=a00×b01", true],
+        pe10: ["A=a01，psum=p00", "out=c00=p00+a01×b10", true],
+        pe11: ["等待 a01 和 q00", "out=—", false]
+      },
+      {
+        inputs: ["—", "a11"],
+        raw: "[c10, c01]",
+        aligned: "[c00, c01]",
+        summary: "原始输出呈斜对角：本拍同时出现 c10 和 c01；延迟第 0 列后可组成同一行 [c00,c01]。",
+        pe00: ["本拍无新 A", "out=—", false],
+        pe01: ["A=a10，psum=0", "out=q10=a10×b01", true],
+        pe10: ["A=a11，psum=p10", "out=c10=p10+a11×b10", true],
+        pe11: ["A=a01，psum=q00", "out=c01=q00+a01×b11", true]
+      },
+      {
+        inputs: ["—", "—"],
+        raw: "[—, c11]",
+        aligned: "[c10, c11]",
+        summary: "最后一个 partial sum 到达 PE11，得到 c11；列对齐后，第二行 [c10,c11] 完整输出。",
+        pe00: ["计算结束", "out=—", false],
+        pe01: ["计算结束", "out=—", false],
+        pe10: ["本拍无新结果", "out=—", false],
+        pe11: ["A=a11，psum=q10", "out=c11=q10+a11×b11", true]
+      }
+    ];
+
+    const renderSaTimingStep = (step) => {
+      const state = saTimingStates[step];
+      saTimingRoot.querySelector("#sa-wb-in0").textContent = state.inputs[0];
+      saTimingRoot.querySelector("#sa-wb-in1").textContent = state.inputs[1];
+      saTimingRoot.querySelector("#sa-wb-inputs").textContent = `row0=${state.inputs[0]}，row1=${state.inputs[1]}`;
+      saTimingRoot.querySelector("#sa-wb-raw").textContent = state.raw;
+      saTimingRoot.querySelector("#sa-wb-aligned").textContent = state.aligned;
+      saTimingRoot.querySelector("#sa-wb-summary").textContent = state.summary;
+
+      ["pe00", "pe01", "pe10", "pe11"].forEach((name) => {
+        const peState = state[name];
+        saTimingRoot.querySelector(`#sa-wb-${name}`).dataset.active = String(peState[2]);
+        saTimingRoot.querySelector(`#sa-wb-${name}-l1`).textContent = peState[0];
+        saTimingRoot.querySelector(`#sa-wb-${name}-l2`).textContent = peState[1];
+      });
+
+      saTimingRoot.querySelectorAll("[data-sa-step]").forEach((button) => {
+        const selected = Number(button.dataset.saStep) === step;
+        button.setAttribute("aria-pressed", String(selected));
+        button.classList.toggle("active", selected);
+      });
+    };
+
+    if (saTimingRoot) {
+      saTimingRoot.querySelectorAll("[data-sa-step]").forEach((button) => {
+        button.addEventListener("click", () => renderSaTimingStep(Number(button.dataset.saStep)));
+      });
+      renderSaTimingStep(0);
+    }
+
+    const sa16Root = document.getElementById("sa-16x16-timing-workbench");
+
+    if (sa16Root) {
+      const size = 16;
+      const lastBeat = 3 * size - 2;
+      const grid = sa16Root.querySelector("#sa16-grid");
+      const range = sa16Root.querySelector("#sa16-range");
+      const clock = sa16Root.querySelector("#sa16-clock");
+      const phase = sa16Root.querySelector("#sa16-phase");
+      const summary = sa16Root.querySelector("#sa16-summary");
+      const rawOutput = sa16Root.querySelector("#sa16-raw-output");
+      const alignedOutput = sa16Root.querySelector("#sa16-aligned-output");
+      const detailTitle = sa16Root.querySelector("#sa16-detail-title");
+      const detail = sa16Root.querySelector("#sa16-detail");
+      const peCells = [];
+      let currentBeat = 0;
+      let selectedPe = null;
+
+      const corner = document.createElement("div");
+      corner.className = "sa16-corner";
+      corner.textContent = "k\\j";
+      grid.appendChild(corner);
+
+      for (let j = 0; j < size; j += 1) {
+        const axis = document.createElement("div");
+        axis.className = "sa16-axis";
+        axis.textContent = `j${j}`;
+        grid.appendChild(axis);
+      }
+
+      for (let k = 0; k < size; k += 1) {
+        const rowAxis = document.createElement("div");
+        rowAxis.className = "sa16-axis sa16-row-axis";
+        rowAxis.textContent = `k${k} →`;
+        grid.appendChild(rowAxis);
+
+        for (let j = 0; j < size; j += 1) {
+          const pe = document.createElement("button");
+          pe.type = "button";
+          pe.className = "sa16-pe";
+          pe.dataset.k = String(k);
+          pe.dataset.j = String(j);
+          pe.dataset.active = "false";
+          pe.dataset.output = "false";
+          pe.dataset.selected = "false";
+          pe.setAttribute("role", "gridcell");
+          pe.setAttribute("aria-label", `PE ${k}, ${j}`);
+          pe.innerHTML = `<span class="sa16-main">B${k},${j}</span><span class="sa16-sub">PE ${k},${j}</span>`;
+          pe.addEventListener("click", () => {
+            selectedPe = { k, j };
+            renderSa16(currentBeat);
+          });
+          grid.appendChild(pe);
+          peCells.push(pe);
+        }
+      }
+
+      const setOutput = (element, values, fallback) => {
+        element.replaceChildren();
+        if (values.length === 0) {
+          const empty = document.createElement("span");
+          empty.className = "sa16-empty";
+          empty.textContent = fallback;
+          element.appendChild(empty);
+          return;
+        }
+
+        values.forEach((value) => {
+          const chip = document.createElement("span");
+          chip.className = "sa16-output-chip";
+          chip.textContent = value;
+          element.appendChild(chip);
+        });
+      };
+
+      const describePhase = (beat, activeCount, rawCount) => {
+        if (beat === 0) {
+          return {
+            title: "B 权重已经装入 256 个 PE",
+            text: "此时尚未输入 A。每个 PE[k][j] 固定保存 B[k][j]。"
+          };
+        }
+        if (beat < size) {
+          return {
+            title: "波前正在填充阵列",
+            text: `第 ${beat} 拍有 ${activeCount} 个 PE 执行 MAC；partial sum 继续向下，尚未到达第 15 行。`
+          };
+        }
+        if (beat < 2 * size - 1) {
+          return {
+            title: "底部开始出现斜对角结果",
+            text: `第 ${beat} 拍有 ${activeCount} 个 PE 执行 MAC，底部产生 ${rawCount} 个原始结果；不同列尚未对齐成完整矩阵行。`
+          };
+        }
+        if (beat < lastBeat) {
+          return {
+            title: "阵列持续输出并逐步排空",
+            text: `第 ${beat} 拍有 ${activeCount} 个 PE 执行 MAC，列延迟对齐后可以得到 C 的第 ${beat - (2 * size - 1)} 行。`
+          };
+        }
+        return {
+          title: "本次 16x16 矩阵乘法完成",
+          text: "最后一个结果 C[15][15] 已从右下角 PE 输出。"
+        };
+      };
+
+      function renderSa16(beat) {
+        currentBeat = Math.max(0, Math.min(lastBeat, beat));
+        range.value = String(currentBeat);
+        clock.textContent = currentBeat === 0 ? "权重装载" : `第 ${currentBeat} / ${lastBeat} 拍`;
+
+        let activeCount = 0;
+        const rawValues = [];
+
+        peCells.forEach((pe) => {
+          const k = Number(pe.dataset.k);
+          const j = Number(pe.dataset.j);
+          const i = currentBeat - 1 - k - j;
+          const active = currentBeat > 0 && i >= 0 && i < size;
+          const output = active && k === size - 1;
+          const selected = selectedPe && selectedPe.k === k && selectedPe.j === j;
+          const main = pe.querySelector(".sa16-main");
+          const sub = pe.querySelector(".sa16-sub");
+
+          pe.dataset.active = String(active);
+          pe.dataset.output = String(output);
+          pe.dataset.selected = String(Boolean(selected));
+
+          if (currentBeat === 0) {
+            main.textContent = `B${k},${j}`;
+            sub.textContent = `PE ${k},${j}`;
+          } else if (active) {
+            activeCount += 1;
+            main.textContent = `A${i},${k}`;
+            sub.textContent = `C${i},${j}`;
+            if (output) {
+              rawValues.push({ j, label: `C[${i}][${j}]` });
+            }
+          } else {
+            main.textContent = "·";
+            sub.textContent = `B${k},${j}`;
+          }
+
+          const stateText = active
+            ? `本拍计算 A[${i}][${k}] × B[${k}][${j}]，累加到 C[${i}][${j}]`
+            : `本拍空闲，固定权重 B[${k}][${j}]`;
+          pe.title = `PE[${k}][${j}]：${stateText}`;
+          pe.setAttribute("aria-label", `PE ${k}, ${j}。${stateText}`);
+        });
+
+        rawValues.sort((a, b) => a.j - b.j);
+        setOutput(
+          rawOutput,
+          rawValues.map((item) => item.label),
+          currentBeat < size ? "partial sum 尚未到达阵列底部" : "本拍底部没有新结果"
+        );
+
+        const alignedRow = currentBeat - (2 * size - 1);
+        const alignedValues = alignedRow >= 0 && alignedRow < size
+          ? Array.from({ length: size }, (_, j) => `C[${alignedRow}][${j}]`)
+          : [];
+        setOutput(
+          alignedOutput,
+          alignedValues,
+          currentBeat < 2 * size - 1
+            ? "第 31 拍开始，每拍得到 C 的一整行"
+            : "本拍没有新的对齐行"
+        );
+
+        const phaseCopy = describePhase(currentBeat, activeCount, rawValues.length);
+        phase.textContent = phaseCopy.title;
+        summary.textContent = phaseCopy.text;
+
+        if (selectedPe) {
+          const { k, j } = selectedPe;
+          const i = currentBeat - 1 - k - j;
+          detailTitle.textContent = `PE[${k}][${j}]，固定 B[${k}][${j}]`;
+          detail.textContent = currentBeat > 0 && i >= 0 && i < size
+            ? `第 ${currentBeat} 拍：接收 A[${i}][${k}]，执行 psum_in + A[${i}][${k}] × B[${k}][${j}]，为 C[${i}][${j}] 形成第 ${k + 1}/16 项累加。`
+            : currentBeat === 0
+              ? `权重装载阶段：B[${k}][${j}] 被写入这个 PE 的 b_reg。`
+              : "当前拍没有与这个 PE 对齐的 A 和 partial sum，因此不执行有效 MAC。";
+        } else {
+          detailTitle.textContent = "PE 观察窗";
+          detail.textContent = "点击阵列中的任意 PE，查看它在当前拍的数据和计算。";
+        }
+
+        sa16Root.querySelectorAll("[data-sa16-step]").forEach((button) => {
+          button.classList.toggle("active", Number(button.dataset.sa16Step) === currentBeat);
+        });
+
+        sa16Root.querySelector("#sa16-prev").disabled = currentBeat === 0;
+        sa16Root.querySelector("#sa16-next").disabled = currentBeat === lastBeat;
+      }
+
+      range.addEventListener("input", () => renderSa16(Number(range.value)));
+      sa16Root.querySelector("#sa16-prev").addEventListener("click", () => renderSa16(currentBeat - 1));
+      sa16Root.querySelector("#sa16-next").addEventListener("click", () => renderSa16(currentBeat + 1));
+      sa16Root.querySelectorAll("[data-sa16-step]").forEach((button) => {
+        button.addEventListener("click", () => renderSa16(Number(button.dataset.sa16Step)));
+      });
+
+      renderSa16(0);
+    }
+  </script>
+</body>
+</html>
