@@ -1,38 +1,37 @@
 # SA_TOP Design Workbench
 
-## Online Workbench
+**[Open the SA_TOP Workbench](https://lin2513lp.github.io/sa-workbench/sa_workbench.html)**
 
-[Open the SA_TOP Design Workbench](https://lin2513lp.github.io/sa-workbench/)
+A 16 x 16 systolic-array design workbench with multi-precision processing elements. The workbench runs in a browser and requires no installation.
 
-This repository hosts a standalone design workbench for a 16x16 systolic array. The complete workbench runs directly in a browser through GitHub Pages and requires no local installation.
+## Workbench contents
 
-## Workbench Contents
+- Array control, weight loading, PE interconnects, and output collection.
+- INT4, INT8, FP16, and FP32 operation.
+- Dataflow demonstrations, timing diagrams, simulation captures, and source browsing.
 
-- **Design Report**: SA_TOP architecture, external interfaces, clock and reset handling, RegMap CDC, weight loading, PE array interconnects, and output collection.
-- **RTL and Testbench Code**: Browse the current `Makefile`, 11 RTL files, and 11 testbench files online.
-- **Simulation Waveforms**: Review top-level regression waveforms and check results for INT4, INT8, FP16, FP32, and multi-task operation.
-- **WaveDrom Timing Diagrams**: Inspect B-weight clock-domain crossing, A-data flow, and output timing for different compute modes.
-- **Design Notes**: Learn the dataflow from matrix multiplication and local MAC operations to partial-sum propagation across the 16x16 array, including an interactive pipeline demonstration.
+## Source files
 
-## Current RTL Structure
+[`code/`](code/) contains the current source snapshot from the shared `sa` project. Relative paths and file contents are preserved, including RTL, testbenches, Makefiles, file lists, and available helper scripts. The workbench's code viewer displays this same snapshot.
 
-The SA_TOP implementation is organized around the following modules:
+There are **23 project files** in this snapshot. [`source-manifest.json`](source-manifest.json) records the shared-directory mapping and SHA-256 checksums. Generated simulator databases, waveform dumps, editor temporary files, and license logs are excluded.
 
-- `sa_top`
-- `sa_ctrl`
-- `pe_array_16x16`
-- `output_collector`
-- `pe_mp/PE_MP_v1`
+## Repository layout
 
-Top-level regression covers smoke, INT4, INT8, FP16, FP32, and multi-task scenarios. Both the Questa and Icarus regression sets pass 6 out of 6 cases. The workbench also documents the remaining verification boundaries, including packed INT4/INT8 sub-lanes, dynamic active sizes, and floating-point special cases.
+| Path | Contents |
+| --- | --- |
+| [`sa_workbench.html`](sa_workbench.html) | Main design workbench |
+| [`code/`](code/) | Shared-project source files and build entry points |
+| [`source-manifest.json`](source-manifest.json) | Source inventory and checksums |
+| [`index.html`](index.html) | English project introduction and workbench link |
 
-## Repository Layout
+## Using the project
 
-- `sa_workbench.html`: Main design workbench.
-- `sa_code_design.html`: RTL and testbench source browser.
-- `sa_sim_waveforms.html`: Simulation waveform browser.
-- `sa_wavedrom_int4.html`: Multi-mode WaveDrom timing diagrams.
-- `code/`: RTL, testbench, and build-file snapshots displayed by the workbench.
-- `sim/`: Five top-level simulation waveform images.
+Open the workbench through the link above to browse the report, code, and waveforms. For simulation, clone this repository, enter `code/`, and use its Makefile in a configured Linux EDA environment. The original tool paths and environment variables in the shared Makefile are preserved; configure these for your installation.
 
-This is a static GitHub Pages repository. The `.nojekyll` file preserves the original asset and source-file paths.
+## Related workbenches
+
+- [TPU_CRG](https://github.com/Lin2513lp/TPU_CRG_WORKBENCH)
+- [AXI_TOP](https://github.com/Lin2513lp/AXI_TOP_WORKBENCH)
+- [AHB_SLAVE](https://github.com/Lin2513lp/AHB_SLAVE_WORKBENCH)
+- [PE_MP](https://github.com/Lin2513lp/pe-mp-workbench)

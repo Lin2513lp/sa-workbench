@@ -5,12 +5,12 @@ VCS       ?= vcs
 VERDI     ?= verdi
 
 # Select one case by leaving one TOP line uncommented. Makefile comments use '#'.
-TOP       ?= sa_top_tb_smoke
+#TOP       ?= sa_top_tb_smoke
 # TOP     ?= sa_top_tb_int4
 # TOP     ?= sa_top_tb_int8
 # TOP     ?= sa_top_tb_fp16
 # TOP     ?= sa_top_tb_fp32
-# TOP     ?= sa_top_tb_multi
+ TOP     ?= sa_top_tb_multi
 DUMP      ?= fsdb
 
 # VCS creates symbolic links while building its shared objects. VMware hgfs
