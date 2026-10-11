@@ -1117,8 +1117,10 @@
 
     .config-line{margin:0 0 12px;padding:12px 16px;border:1px solid var(--line);border-radius:7px;background:white;color:var(--blue-deep);font-size:14px}
     .pe[data-state="disabled"]{background:#e8ebf0;border-color:#c4cbd6;color:#8a95a6;transform:none}
+    .pe[data-state="disabled"]::after{content:"";position:absolute;top:-1px;bottom:-1px;left:50%;width:2px;background:#8a95a6;opacity:.35;transform:translateX(-50%)}
     .pe[data-state="disabled-pass"]{background:#fcecf0;border-color:#d8a0ae;color:#97485a;transform:none}
-    .pe[data-state="disabled-pass"]::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;background:#b84a62;opacity:.32}
+    .pe[data-state="disabled-pass"]::after{content:"";position:absolute;top:-1px;bottom:-1px;left:50%;width:2px;background:#b84a62;opacity:.58;transform:translateX(-50%)}
+    .pe[data-state="disabled"],.pe[data-state="disabled-pass"]{text-shadow:0 0 3px white}
     .disabled-col,.output-cell.disabled-col{background:#e8ebf0!important;border-color:#d0d6df!important;color:#8a95a6!important}
     .off-key{background:#e8ebf0!important;border:1px solid #c4cbd6}
     .lane[data-ignored="true"]{border-bottom:3px solid #98a3b3}
@@ -1285,9 +1287,9 @@
       <div class="legend">
         <span><i class="weight"></i>正在写 B</span>
         <span><i class="mac"></i>本拍执行 MAC</span>
-        <span><i class="bypass"></i>关闭计算，partial sum 直通</span>
+        <span><i class="bypass"></i>↓PS：关闭乘加，有效部分和纵向直通（可为0）</span>
         <span><i class="passed"></i>该批 A 已通过</span>
-        <span><i class="off-key"></i>H/W范围外关闭</span><span><i></i>已使能，等待波前</span>
+        <span><i class="off-key"></i>↓PS：关闭乘加，直通路径保留，暂无有效数据</span><span><i></i>已使能，等待波前</span>
       </div>
       <div id="array-status" class="array-status">
         权重预加载阶段：暂时还没有 A 和 partial sum 进入阵列。
@@ -1562,9 +1564,11 @@
           const r=Number(pe.dataset.row),c=Number(pe.dataset.col),enabled=r<h&&c<w;
           pe.dataset.enabled=String(enabled);pe.dataset.selected=String(r===selectedRow&&c===selectedCol);
           if(!enabled){
-            const v=weight?0:f.psum[r*16+c];pe.dataset.state=!weight&&c<w&&t>=h-1+c&&t<=15+h-1+c?'disabled-pass':'disabled';
-            pe.textContent=pe.dataset.state==='disabled-pass'?'↓PS':'OFF';
-            pe.title=`PE[${r}][${c}] pe_en=0，A 不向右传；${c<w?`部分和组合直通=${v}`:'该列不计算，纵向结果为0'}`;return;
+            const v=weight?0:f.psum[r*16+c],valid=!weight&&Boolean(f.raw_vld[c]);
+            pe.dataset.state=valid?'disabled-pass':'disabled';
+            pe.textContent='↓PS';
+            pe.title=`PE[${r}][${c}] pe_en=0：关闭乘加，纵向组合直通 dat_out=dat_in_add=${v}；${valid?'有效部分和':weight?'权重配置，尚无有效部分和':'无有效部分和'}；A 不向右传`;
+            return;
           }
           if(weight){pe.dataset.state=r===row?'weight':r<row?'loaded':'idle';pe.textContent=`B${r},${c}`;pe.title=`B[${r}][${c}]=${B(r,c)}`;return;}
           const m=t-r-c;
