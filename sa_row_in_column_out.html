@@ -1138,6 +1138,7 @@
       </div>
       <div class="controls" aria-label="动画控制">
         <label>H=W <select id="active-size" class="speed" aria-label="有效尺寸 H=W"></select></label>
+        <label>显示 <select id="pe-view" class="speed" aria-label="PE显示方式"><option value="original">原版波前示意</option><option value="rtl">当前RTL使能</option></select></label>
         <button id="four-size" class="control-btn">4×4</button><button id="full-size" class="control-btn">16×16</button>
         <button id="start-a" class="control-btn">跳到 A 输入</button>
         <button id="play" class="control-btn primary" type="button">
@@ -1168,6 +1169,7 @@
     </div>
 
     <div id="config-label" class="config-line"></div>
+    <div id="display-semantics" class="note"></div>
     <div class="truth-strip">
       <div class="truth-item">
         <b>B 是预加载数据</b>
@@ -1284,7 +1286,7 @@
       <div class="legend">
         <span><i class="weight"></i>正在写 B</span>
         <span><i class="mac"></i>本拍执行 MAC</span>
-        <span><i class="bypass"></i>粉红框 / 竖线 / ↓PS：纵向直通（包括0与无有效数据拍）</span>
+        <span><i class="bypass"></i>粉红框 / 竖线 / ↓PS：原版波前直通示意或H/W关闭直通</span>
         <span><i class="passed"></i>该批 A 已通过</span>
         <span><i></i>已使能，等待波前</span>
       </div>
@@ -1296,7 +1298,7 @@
         <span id="detail-text">权重配置开始：B[0][0] 写入本地 b_reg。</span>
       </div>
       <div class="note"><b>输入原样保留：</b>每个 lane 仍有16个 A 元素，T0～T30逐列进入；H 不改变输入长度。H 只减少每个 C 的累加项数，W 只减少结果列数。H=W=4 时结果是16×4，每个 C 累加4项。上面的 C 表是 raw 端观察记录。</div>
-      <div class="note"><b>源码语义：</b>按当前 INT8 单级路径（L=1）绘制，H/W 范围内 pe_en 始终为1，范围外为0。关闭 PE 的部分和组合直通，out_a / out_a_vld 清零；活动 PE 在 A 波前尚未到达时接收补零，不动态切换 pe_en。本页显示计算使能，不模拟 CRG 的实际时钟门控。</div>
+      <div class="note"><b>两种显示：</b>默认恢复原版波前示意：波前尚未到达的下方PE显示粉红框、竖线与↓PS；H/W范围外也显示关闭直通。切换“当前RTL使能”可查看实际固定使能状态。当前 sa_ctrl 不动态关闭波前下方PE，而 PE_MP_v1 在关闭后的时钟沿可能清除权重，因此原版动态直通示意不代表当前RTL已经实现该调度。下方所有数值与总线仍来自当前INT8 RTL模型，不因显示方式改变。</div>
       <div class="note"><b>保持原版的46个计算观察拍：</b>H=W=4 时 raw 最终 C 在 T3～T21出现，而完整输入仍持续至T30。当前 output_collector 在 last 后才打开 W 拍窗口，早期 raw C 没有被它完整保存。下方对外总线按现有寄存器逻辑显示，不能把 raw C 表当作硬件输出缓存。</div>
       <div class="note">基于 SA 工作台 → 材料与笔记 → SA权重加载与流水演示的原独立页面修改。输入符号和排版沿用原页；数值样例 A[m][k]=1+(3m+k)%5，B[k][j]=1+(k+2j)%3。浏览器模型按当前 INT8 RTL 的寄存器更新和旁路语义运行。</div>
 
@@ -1461,6 +1463,9 @@
       // Exact clocked INT8 model of the existing PE array and collector.
       // H/W only change the fixed PE enable mask; the A stimulus stays 16x16.
       const sizeSelect = document.getElementById('active-size');
+      const peView = document.getElementById('pe-view');
+      const originalWavefront = ()=>peView.value==='original';
+      const wavefrontBypass = (t,r,c,h)=>t>=c&&t-c<h-1&&r>t-c;
       const configLabel = document.getElementById('config-label');
       const externalBus = document.getElementById('external-bus');
       const externalSummary = document.getElementById('external-summary');
@@ -1513,7 +1518,7 @@
       }
       function updateDetail(isWeightPhase,weightRow,t){
         const h=Number(sizeSelect.value),w=h,r=selectedRow,c=selectedCol;
-        const enabled=r<h&&c<w;detailTitle.textContent=`PE[${r}][${c}] · pe_en=${enabled?1:0}`;
+        const enabled=r<h&&c<w;detailTitle.textContent=`PE[${r}][${c}] · 当前RTL pe_en=${enabled?1:0}`;
         if(!enabled){
           let input='';if(!isWeightPhase&&c===0&&t-r>=0&&t-r<16)input=`左侧仍到达 A[${t-r}][${r}]=${A(t-r,r)}，但不参与乘加。`;
           detailText.textContent=`H=${h}, W=${w} 范围外：计算关闭，out_a=0、out_a_vld=0；纵向 dat_out=dat_in_add。${input}`;
@@ -1521,6 +1526,10 @@
           return;
         }
         if(isWeightPhase){detailText.textContent=r===weightRow?`本拍把 B[${r}][${c}]=${B(r,c)} 写入 b_reg。`:r<weightRow?`B[${r}][${c}] 已加载，pe_en 持续为1。`:`等待 sel=${r} 加载 B[${r}][${c}]。`;return;}
+        if(originalWavefront()&&wavefrontBypass(t,r,c,h)){
+          detailText.textContent=`T${t}：沿用原版波前示意，本行 A 尚未到达，粉红框与竖线表示设想中的部分和向下直通。当前RTL该PE的 pe_en 仍为1，并未动态选择旁路；当前RTL部分和输出=${frameAt(t).psum[r*16+c]}。`;
+          return;
+        }
         const m=t-r-c,f=frameAt(t);
         if(m>=0&&m<16){
           const product=A(m,r)*B(r,c),sum=f.psum[r*16+c];
@@ -1534,6 +1543,9 @@
         const h=Number(sizeSelect.value),w=h,f=weight?null:frameAt(t);
         configLabel.textContent=`H=${h}, W=${w} · cpu_h_size=${h-1}, cpu_w_size=${w-1} · ${h*w} 个 PE 计算 / ${256-h*w} 个关闭`;
         document.getElementById('array-config').textContent=`左上 ${h}×${w} 开启，其余关闭计算`;
+        document.getElementById('display-semantics').textContent=originalWavefront()
+          ?'PE阵列：原版波前示意，保留波前下方的粉红框与竖线。H/W范围外为实际关闭直通；范围内的动态直通是原版示意。下方数值与输出总线仍按当前RTL计算。'
+          :'PE阵列：当前RTL使能状态，H/W范围内固定开启，范围外关闭直通；未到达的A以补零拍处理。';
         phaseTag.classList.toggle('flow',!weight);phaseTag.textContent=weight?'B 预加载':'A / MAC / 输出流水';
         if(weight){
           clock.textContent=`配置拍 ${row+1} / 16`;phaseText.textContent=`原样加载 B 第${row}行的16个字；仅 H/W 内的 PE 保持权重`;
@@ -1567,9 +1579,13 @@
             pe.title=`PE[${r}][${c}] pe_en=0：关闭乘加，纵向组合直通 dat_out=dat_in_add=${v}；${valid?'有效部分和':weight?'权重配置，尚无有效部分和':'无有效部分和'}；A 不向右传`;
             return;
           }
-          if(weight){pe.dataset.state=r===row?'weight':r<row?'loaded':'idle';pe.textContent=`B${r},${c}`;pe.title=`B[${r}][${c}]=${B(r,c)}`;return;}
+          if(weight){pe.dataset.state=r===row?'loading':r<row?'loaded':'idle';pe.textContent=`B${r},${c}`;pe.title=`B[${r}][${c}]=${B(r,c)}`;return;}
           const m=t-r-c;
           if(m>=0&&m<16){mac++;pe.dataset.state='active';pe.textContent=`A${m},${r}`;pe.title=`A[${m}][${r}]×B[${r}][${c}]；psum=${f.psum[r*16+c]}`;}
+          else if(originalWavefront()&&wavefrontBypass(t,r,c,h)){
+            pe.dataset.state='bypass';pe.textContent='↓PS';
+            pe.title=`T${t}：原版波前下方的纵向直通示意；当前RTL pe_en=1，不代表已实现动态旁路`;
+          }
           else{pe.dataset.state=m<0?'loaded':'passed';pe.textContent=`B${r},${c}`;pe.title=`pe_en=1，${m<0?'等待 A / 补零':'本行有效 A 已通过 / 排空'}`;}
         });
         let finals=0;
@@ -1605,6 +1621,7 @@
       }
       function changeConfig(){stop();modelCache={};previousRenderedStep=-1;render(step);}
       sizeSelect.addEventListener('change',changeConfig);
+      peView.addEventListener('change',()=>{stop();previousRenderedStep=-1;render(step);});
       document.getElementById('full-size').addEventListener('click',()=>{sizeSelect.value='16';changeConfig();});
       document.getElementById('four-size').addEventListener('click',()=>{sizeSelect.value='4';changeConfig();});
       document.getElementById('start-a').addEventListener('click',()=>{stop();render(16);});
