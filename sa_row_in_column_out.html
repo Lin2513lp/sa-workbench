@@ -1116,11 +1116,8 @@
     }
 
     .config-line{margin:0 0 12px;padding:12px 16px;border:1px solid var(--line);border-radius:7px;background:white;color:var(--blue-deep);font-size:14px}
-    .pe[data-state="disabled"]{background:#e8ebf0;border-color:#c4cbd6;color:#8a95a6;transform:none}
-    .pe[data-state="disabled"]::after{content:"";position:absolute;top:-1px;bottom:-1px;left:50%;width:2px;background:#8a95a6;opacity:.35;transform:translateX(-50%)}
-    .pe[data-state="disabled-pass"]{background:#fcecf0;border-color:#d8a0ae;color:#97485a;transform:none}
-    .pe[data-state="disabled-pass"]::after{content:"";position:absolute;top:-1px;bottom:-1px;left:50%;width:2px;background:#b84a62;opacity:.58;transform:translateX(-50%)}
-    .pe[data-state="disabled"],.pe[data-state="disabled-pass"]{text-shadow:0 0 3px white}
+    .pe[data-state="disabled"],.pe[data-state="disabled-pass"]{background:var(--rose-soft);border-color:#d48a9c;color:#8c3047;transform:none;text-shadow:0 0 3px white}
+    .pe[data-state="disabled"]::after,.pe[data-state="disabled-pass"]::after{content:"";position:absolute;top:-1px;bottom:-1px;left:50%;width:2px;background:var(--rose);opacity:.58;transform:translateX(-50%)}
     .disabled-col,.output-cell.disabled-col{background:#e8ebf0!important;border-color:#d0d6df!important;color:#8a95a6!important}
     .off-key{background:#e8ebf0!important;border:1px solid #c4cbd6}
     .lane[data-ignored="true"]{border-bottom:3px solid #98a3b3}
@@ -1287,9 +1284,9 @@
       <div class="legend">
         <span><i class="weight"></i>正在写 B</span>
         <span><i class="mac"></i>本拍执行 MAC</span>
-        <span><i class="bypass"></i>↓PS：关闭乘加，有效部分和纵向直通（可为0）</span>
+        <span><i class="bypass"></i>粉红框 / 竖线 / ↓PS：纵向直通（包括0与无有效数据拍）</span>
         <span><i class="passed"></i>该批 A 已通过</span>
-        <span><i class="off-key"></i>↓PS：关闭乘加，直通路径保留，暂无有效数据</span><span><i></i>已使能，等待波前</span>
+        <span><i></i>已使能，等待波前</span>
       </div>
       <div id="array-status" class="array-status">
         权重预加载阶段：暂时还没有 A 和 partial sum 进入阵列。
