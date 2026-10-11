@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SA 权重预加载与流水计算演示</title>
+  <title>SA 完整16×16 A输入 · H/W关闭PE对照</title>
   <style>
     :root {
       color-scheme: light;
@@ -1114,19 +1114,33 @@
         animation-duration: 0.01ms !important;
       }
     }
+
+    .config-line{margin:0 0 12px;padding:12px 16px;border:1px solid var(--line);border-radius:7px;background:white;color:var(--blue-deep);font-size:14px}
+    .pe[data-state="disabled"]{background:#e8ebf0;border-color:#c4cbd6;color:#8a95a6;transform:none}
+    .pe[data-state="disabled-pass"]{background:#fcecf0;border-color:#d8a0ae;color:#97485a;transform:none}
+    .pe[data-state="disabled-pass"]::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;background:#b84a62;opacity:.32}
+    .disabled-col,.output-cell.disabled-col{background:#e8ebf0!important;border-color:#d0d6df!important;color:#8a95a6!important}
+    .off-key{background:#e8ebf0!important;border:1px solid #c4cbd6}
+    .lane[data-ignored="true"]{border-bottom:3px solid #98a3b3}
+    .external-head{padding:14px 12px 4px;font-size:12px;border-top:1px solid var(--line)}
+    .topbar .controls{max-width:520px}.topbar>div:first-child{flex:1;min-width:280px}
+    @media(max-width:600px){.timeline{grid-template-columns:1fr}.phase-text{text-align:left}.truth-strip{grid-template-columns:1fr}.page{width:calc(100% - 20px)}.controls{max-width:100%}.topbar>div:first-child{min-width:0}.section{padding:12px}}
   </style>
 </head>
 <body>
   <main class="page">
     <header class="topbar">
       <div>
-        <h1>SA 权重预加载与流水计算</h1>
+        <h1>完整16×16 A输入 · H/W关闭PE对照</h1>
         <p>
           16 路接口同拍接收数据，但 16 个 lane 空间上连接到 16 个 PE 行入口。
-          A 已由上游 CTRL 完成错拍，进入阵列后立即参与 MAC，不存在“先把 A 全部装完再统一计算”的阶段。
+          A 与 B 都保留原来的16×16波前与16路接口。H/W 始终相等，通过一个尺寸控件一起调整；默认4×4，可在同一拍切换16×16对照。
         </p>
       </div>
       <div class="controls" aria-label="动画控制">
+        <label>H=W <select id="active-size" class="speed" aria-label="有效尺寸 H=W"></select></label>
+        <button id="four-size" class="control-btn">4×4</button><button id="full-size" class="control-btn">16×16</button>
+        <button id="start-a" class="control-btn">跳到 A 输入</button>
         <button id="play" class="control-btn primary" type="button">
           <i data-lucide="play" aria-hidden="true"></i>
           <span>播放</span>
@@ -1154,6 +1168,7 @@
       <span id="phase-text" class="phase-text">sel=0：把 B[0][0...15] 写入 PE 第0行</span>
     </div>
 
+    <div id="config-label" class="config-line"></div>
     <div class="truth-strip">
       <div class="truth-item">
         <b>B 是预加载数据</b>
@@ -1164,8 +1179,8 @@
         每个有效拍接收 16 个物理 lane；lane k 对应 PE 第 k 行的左入口。
       </div>
       <div class="truth-item">
-        <b>未计算的 PE 是纵向导线</b>
-        本拍 <code>pe_en=0</code> 时，<code>dat_out=dat_in_add</code>，partial sum 零延迟穿过该 PE。
+        <b>H/W 范围外的 PE 关闭计算</b>
+        <code>pe_en=0</code> 时部分和纵向直通，A 不继续向右传；范围内的 PE 持续使能。
       </div>
     </div>
 
@@ -1221,7 +1236,7 @@
           <div class="flow-node array-node">
             <div class="flow-node-title">
               <b>16×16 PE 阵列</b>
-              <span>B[k][j] 固定在 PE[k][j]</span>
+              <span id="array-config">左上4×4开启，其余关闭计算</span>
             </div>
             <div class="array-wrap">
               <div class="array-stage">
@@ -1246,20 +1261,23 @@
             </div>
             <div class="bottom-bus-label">
               <b>阵列底部 16 列 raw dat_out</b>
-              <span>粉色 = 中间 partial sum；绿色 = 最终 C</span>
+              <span>绿色 = 本拍最终 C；灰色 = 关闭列</span>
             </div>
             <div class="wide-scroll">
               <div id="bottom-bus" class="bottom-bus" role="img" aria-label="阵列底部当前拍的16路原始输出"></div>
             </div>
             <p id="bottom-summary" class="bottom-summary">权重配置期间，阵列底部没有计算数据。</p>
             <div class="output-state-key" aria-label="C结果矩阵颜色图例">
-              <span><i class="partial"></i>中间部分和</span>
+              <span><i class="off-key"></i>关闭列，无 C</span>
               <span><i class="current"></i>本拍最终 C</span>
-              <span><i class="produced"></i>此前已完成</span>
+              <span><i class="produced"></i>此前 raw 已完成</span>
             </div>
             <div class="output-wrap">
               <div id="output-grid" class="output-grid" role="img" aria-label="阵列底部错拍输出的C矩阵结果"></div>
             </div>
+            <div class="external-head"><b>SA_TOP 对外 dat_out[511:0] · 当前 RTL</b></div>
+            <div class="wide-scroll"><div id="external-bus" class="bottom-bus"></div></div>
+            <p id="external-summary" class="bottom-summary"></p>
           </div>
         </div>
       </div>
@@ -1267,9 +1285,9 @@
       <div class="legend">
         <span><i class="weight"></i>正在写 B</span>
         <span><i class="mac"></i>本拍执行 MAC</span>
-        <span><i class="bypass"></i>本拍不计算，partial sum 直通</span>
+        <span><i class="bypass"></i>关闭计算，partial sum 直通</span>
         <span><i class="passed"></i>该批 A 已通过</span>
-        <span><i></i>等待波前</span>
+        <span><i class="off-key"></i>H/W范围外关闭</span><span><i></i>已使能，等待波前</span>
       </div>
       <div id="array-status" class="array-status">
         权重预加载阶段：暂时还没有 A 和 partial sum 进入阵列。
@@ -1278,24 +1296,14 @@
         <strong id="detail-title">PE[0][0]</strong>
         <span id="detail-text">权重配置开始：B[0][0] 写入本地 b_reg。</span>
       </div>
-      <div class="note">
-        本动画按 PE 设计方案中的透传语义绘制：<code>pe_en=0</code> 时，
-        <code>dat_out=dat_in_add</code>，所以底部可以很早看到 partial sum；但它还不是可写入 FIFO_OUT 的最终 C，
-        SA_TOP 必须用输出 valid/阶段控制加以区分。本动画用 <b>PE 单级延迟 L=1</b> 演示空间关系，
-        从第一拍 A 到最后一个最终结果覆盖
-        <code>3×16-2=46</code> 个流水拍。这 46 拍不是“先输入46拍再计算”：每一拍都可能同时发生
-        A 输入、多个 PE 的 MAC、下方 PE 的直通和底部结果输出。项目中 INT4/INT8/FP16/FP32 的真实总延迟，
-        还要结合对应 PE 延迟 L、输出对齐方式和最新版 RTL 确定。
-      </div>
-      <div class="note">
-        <b>RTL 对齐提醒：</b>当前 <code>PE_MP_v1.v</code> 的纵向 <code>dat_out</code> 旁路已经符合上述逻辑，
-        但它在 <code>pe_en=0</code> 时还会清空 <code>b_reg</code>。若 SA 需要某个 PE 先直通、后续再参与 MAC，
-        应把“保存 B 权重”和“本拍是否执行 MAC”拆开控制，否则该 PE 后续计算时会丢失权重。
-      </div>
+      <div class="note"><b>输入原样保留：</b>每个 lane 仍有16个 A 元素，T0～T30逐列进入；H 不改变输入长度。H 只减少每个 C 的累加项数，W 只减少结果列数。H=W=4 时结果是16×4，每个 C 累加4项。上面的 C 表是 raw 端观察记录。</div>
+      <div class="note"><b>源码语义：</b>按当前 INT8 单级路径（L=1）绘制，H/W 范围内 pe_en 始终为1，范围外为0。关闭 PE 的部分和组合直通，out_a / out_a_vld 清零；活动 PE 在 A 波前尚未到达时接收补零，不动态切换 pe_en。本页显示计算使能，不模拟 CRG 的实际时钟门控。</div>
+      <div class="note"><b>保持原版的46个计算观察拍：</b>H=W=4 时 raw 最终 C 在 T3～T21出现，而完整输入仍持续至T30。当前 output_collector 在 last 后才打开 W 拍窗口，早期 raw C 没有被它完整保存。下方对外总线按现有寄存器逻辑显示，不能把 raw C 表当作硬件输出缓存。</div>
+      <div class="note">基于 SA 工作台 → 材料与笔记 → SA权重加载与流水演示的原独立页面修改。输入符号和排版沿用原页；数值样例 A[m][k]=1+(3m+k)%5，B[k][j]=1+(k+2j)%3。浏览器模型按当前 INT8 RTL 的寄存器更新和旁路语义运行。</div>
+
     </section>
   </main>
 
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js"></script>
   <script>
     (() => {
       const size = 16;
@@ -1445,255 +1453,161 @@
       }
 
       function setIcons() {
-        if (window.lucide) {
-          window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
-        }
+        document.querySelectorAll('[data-lucide]').forEach(icon=>{
+          icon.textContent=({play:'▶',pause:'Ⅱ','chevron-left':'‹','chevron-right':'›'})[icon.dataset.lucide]||'';
+          icon.style.fontStyle='normal';
+        });
       }
 
-      function updateDetail(isWeightPhase, weightRow, flowTime) {
-        const k = selectedRow;
-        const j = selectedCol;
-        detailTitle.textContent = `PE[${k}][${j}]`;
-
-        if (isWeightPhase) {
-          if (k === weightRow) {
-            detailText.textContent =
-              `配置拍 ${weightRow + 1}：lane ${j} 携带 B[${k}][${j}]，本拍写入这个 PE 的 b_reg。`;
-          } else if (k < weightRow) {
-            detailText.textContent = `B[${k}][${j}] 已经锁存在本地 b_reg，等待 A 数据流。`;
-          } else {
-            detailText.textContent = `这个 PE 尚未轮到配置；后续 sel=${k} 时写入 B[${k}][${j}]。`;
+      // Exact clocked INT8 model of the existing PE array and collector.
+      // H/W only change the fixed PE enable mask; the A stimulus stays 16x16.
+      const sizeSelect = document.getElementById('active-size');
+      const configLabel = document.getElementById('config-label');
+      const externalBus = document.getElementById('external-bus');
+      const externalSummary = document.getElementById('external-summary');
+      const externalCells = [];
+      for (let n=1;n<=16;n++) {
+        sizeSelect.add(new Option(`${n}×${n}`,String(n)));
+      }
+      sizeSelect.value='4';
+      for(let c=0;c<16;c++){
+        const cell=document.createElement('div');cell.className='bottom-lane';
+        cell.innerHTML=`<small>输出 lane ${c}</small><b>—</b>`;
+        externalBus.append(cell);externalCells.push(cell);
+      }
+      const A=(m,k)=>1+(m*3+k)%5;
+      const B=(k,j)=>1+(k+2*j)%3;
+      const matrix=()=>Array.from({length:16},()=>Array(16).fill(0));
+      const C=(m,j,h)=>Array.from({length:h},(_,k)=>A(m,k)*B(k,j)).reduce((a,b)=>a+b,0);
+      let modelCache={};let previousRenderedStep=-1;
+      function buildFrames(h,w){
+        let ps=matrix(),pv=matrix(),ar=matrix(),av=matrix(),raw=Array(16).fill(0),rv=Array(16).fill(0);
+        let hold=Array(16).fill(0),state=0,outStep=0;
+        const frames=[];
+        for(let t=0;t<flowCycles;t++){
+          const input=Array.from({length:16},(_,r)=>t-r>=0&&t-r<16?A(t-r,r):0);
+          const iv=t<=30?1:0,il=t===30?1:0;
+          const p=matrix(),v=matrix(),a=matrix(),aV=matrix();
+          for(let r=0;r<16;r++)for(let c=0;c<16;c++){
+            if(r<h&&c<w){
+              const ai=c===0?input[r]:ar[r][c-1],valid=c===0?iv:av[r][c-1];
+              a[r][c]=ai;aV[r][c]=valid;
+              // PE output mux returns zero if the current product-valid is low.
+              p[r][c]=valid?ai*B(r,c)+(r?ps[r-1][c]:0):0;v[r][c]=valid;
+            }else{
+              p[r][c]=r?p[r-1][c]:0;v[r][c]=r?v[r-1][c]:0;
+            }
           }
+          hold=il?Array(16).fill(0):hold.map((value,c)=>c<w&&rv[c]?raw[c]:value);
+          if(state===0){outStep=0;if(il)state=1;}
+          else if(outStep===w-1){state=0;outStep=0;}else outStep++;
+          ps=p;pv=v;ar=a;av=aV;raw=p[15].slice();rv=v[15].slice();
+          const out=state?hold.map((value,c)=>c<w&&rv[c]?raw[c]:value):Array(16).fill(0);
+          frames.push({h,w,tick:t,a_in:input,raw,raw_vld:rv,out,out_vld:state,out_last:state&&outStep===w-1?1:0,
+            psum:p.flat(),a_right:a.flat(),a_vld:aV.flat(),in_vld:iv,in_last:il});
+        }
+        return frames;
+      }
+      function frameAt(t,h=Number(sizeSelect.value),w=h){
+        const key=h+','+w;if(!modelCache[key])modelCache[key]=buildFrames(h,w);
+        return modelCache[key][t];
+      }
+      function updateDetail(isWeightPhase,weightRow,t){
+        const h=Number(sizeSelect.value),w=h,r=selectedRow,c=selectedCol;
+        const enabled=r<h&&c<w;detailTitle.textContent=`PE[${r}][${c}] · pe_en=${enabled?1:0}`;
+        if(!enabled){
+          let input='';if(!isWeightPhase&&c===0&&t-r>=0&&t-r<16)input=`左侧仍到达 A[${t-r}][${r}]=${A(t-r,r)}，但不参与乘加。`;
+          detailText.textContent=`H=${h}, W=${w} 范围外：计算关闭，out_a=0、out_a_vld=0；纵向 dat_out=dat_in_add。${input}`;
+          if(!isWeightPhase&&c<w)detailText.textContent+=` 当前直通的部分和为 ${frameAt(t).psum[r*16+c]}。`;
           return;
         }
-
-        const m = flowTime - k - j;
-        const activeMax = Math.min(size - 1, flowTime - j);
-        const bypassing = flowTime >= j && flowTime - j < size - 1 && k > activeMax;
-        if (m >= 0 && m < size) {
-          detailText.textContent =
-            `T${flowTime}：A[${m}][${k}] 与来自上方、属于 C[${m}][${j}] 的 partial sum 同拍到达，` +
-            `执行 psum_out = psum_in + A[${m}][${k}] × B[${k}][${j}]。`;
-        } else if (bypassing) {
-          detailText.textContent =
-            `T${flowTime}：这个 PE 本拍不做 MAC，纵向选择直通路径：` +
-            `dat_out = dat_in_add，dat_out_vld = dat_in_add_vld。上方形成的 partial sum 由它直接送往下方。`;
-        } else if (m < 0) {
-          detailText.textContent =
-            `T${flowTime}：A 波前还没有到达；B[${k}][${j}] 已固定在本地 b_reg。`;
-        } else {
-          detailText.textContent =
-            `T${flowTime}：本任务的16批 A 已通过这个 PE，新的 partial sum 已送往下一行。`;
-        }
+        if(isWeightPhase){detailText.textContent=r===weightRow?`本拍把 B[${r}][${c}]=${B(r,c)} 写入 b_reg。`:r<weightRow?`B[${r}][${c}] 已加载，pe_en 持续为1。`:`等待 sel=${r} 加载 B[${r}][${c}]。`;return;}
+        const m=t-r-c,f=frameAt(t);
+        if(m>=0&&m<16){
+          const product=A(m,r)*B(r,c),sum=f.psum[r*16+c];
+          detailText.textContent=`T${t}：A[${m}][${r}]=${A(m,r)} 与 B[${r}][${c}]=${B(r,c)} 相乘；${sum-product} + ${A(m,r)}×${B(r,c)} = ${sum}。${r===h-1?`已完成 H=${h} 项，得到 C[${m}][${c}]。`:'部分和继续向下。'}`;
+        }else detailText.textContent=`pe_en 持续为1，${m<0?'尚未等到本行的 A，输入为补零拍。':'本行16批 A 已通过，后续是补零或排空。'} 本拍寄存器输出=${f.psum[r*16+c]}；有效位=${f.a_vld[r*16+c]}。`;
       }
-
-      function render(nextStep) {
-        step = Math.max(0, Math.min(finalStep, nextStep));
-        range.value = String(step);
-
-        const isWeightPhase = step < weightSteps;
-        const weightRow = isWeightPhase ? step : size - 1;
-        const flowTime = isWeightPhase ? -1 : step - weightSteps;
-
-        phaseTag.classList.toggle("flow", !isWeightPhase);
-        phaseTag.textContent = isWeightPhase ? "B 预加载" : "A / MAC / 输出流水";
-
-        if (isWeightPhase) {
-          clock.textContent = `配置拍 ${weightRow + 1} / 16`;
-          phaseText.textContent = `sel=${weightRow}：把 B[${weightRow}][0...15] 写入 PE 第${weightRow}行`;
-          interfaceSummary.innerHTML =
-            `当前为权重配置拍，<code>cpu_dat_in_b_sel=${weightRow}</code>`;
-          busName.textContent = "cpu_dat_in_b[511:0]";
-          busValid.textContent = "cpu_dat_in_b_lock = 1";
-          flowSource.textContent = "16 个 B 权重同拍写入";
-        } else {
-          const activeLanes = [];
-          for (let lane = 0; lane < size; lane += 1) {
-            const m = flowTime - lane;
-            if (m >= 0 && m < size) activeLanes.push(lane);
-          }
-          clock.textContent = `计算流水 T${flowTime} / T${flowCycles - 1}`;
-          phaseText.textContent =
-            activeLanes.length > 0
-              ? `CTRL 同拍送入16个物理 lane，其中 ${activeLanes.length} 路携带当前任务的有效 A`
-              : "A 输入已经结束，阵列中的 partial sum 继续向底部排空";
-          interfaceSummary.innerHTML =
-            `<code>dat_in_a[511:0]</code> 同拍到达，lane k 空间上连接 PE 第 k 行入口`;
-          busName.textContent = "dat_in_a[511:0]";
-          busValid.textContent = activeLanes.length > 0 ? "dat_in_vld = 1" : "dat_in_vld = 0";
-          flowSource.textContent = "16 lane 扇出到 16 个行入口";
+      function render(nextStep){
+        const oldStep=previousRenderedStep;
+        step=Math.max(0,Math.min(finalStep,nextStep));range.value=String(step);
+        const weight=step<weightSteps,row=weight?step:15,t=weight?-1:step-weightSteps;
+        const h=Number(sizeSelect.value),w=h,f=weight?null:frameAt(t);
+        configLabel.textContent=`H=${h}, W=${w} · cpu_h_size=${h-1}, cpu_w_size=${w-1} · ${h*w} 个 PE 计算 / ${256-h*w} 个关闭`;
+        document.getElementById('array-config').textContent=`左上 ${h}×${w} 开启，其余关闭计算`;
+        phaseTag.classList.toggle('flow',!weight);phaseTag.textContent=weight?'B 预加载':'A / MAC / 输出流水';
+        if(weight){
+          clock.textContent=`配置拍 ${row+1} / 16`;phaseText.textContent=`原样加载 B 第${row}行的16个字；仅 H/W 内的 PE 保持权重`;
+          interfaceSummary.innerHTML=`<code>cpu_dat_in_b_sel=${row}</code>，接口仍为16路 B`;
+          busName.textContent='cpu_dat_in_b[511:0]';busValid.textContent='cpu_dat_in_b_lock = 1';flowSource.textContent='16 个 B 权重同拍送入';
+        }else{
+          const count=f.a_in.filter(x=>x!==0).length;
+          clock.textContent=`计算流水 T${t} / T${flowCycles-1}`;
+          phaseText.textContent=count?`完整16路 A 拍，其中${count}路携带 A；H/W 不裁剪上游波前`:'A 输入结束，继续排空';
+          interfaceSummary.innerHTML='<code>dat_in_a[511:0]</code>：原样保留16×16 A 的纵向输入切片';
+          busName.textContent='dat_in_a[511:0]';busValid.textContent=`dat_in_vld=${f.in_vld} · dat_in_last=${f.in_last}`;flowSource.textContent='16 lane 仍送到16个行入口';
         }
-
-        laneCells.forEach((cell, lane) => {
-          const value = cell.querySelector("b");
-          cell.className = "lane";
-
-          if (isWeightPhase) {
-            cell.classList.add("valid-b");
-            value.textContent = `B[${weightRow}][${lane}]`;
-          } else {
-            const m = flowTime - lane;
-            if (m >= 0 && m < size) {
-              cell.classList.add("valid-a");
-              value.textContent = `A[${m}][${lane}]`;
-            } else {
-              value.textContent = "0 / bubble";
-            }
-          }
+        laneCells.forEach((cell,k)=>{
+          cell.className='lane';const value=cell.querySelector('b');
+          if(weight){cell.classList.add('valid-b');value.textContent=`B[${row}][${k}]`;cell.title=`B=${B(row,k)}，${row<h&&k<w?'活动 PE 接收':'关闭 PE 不参与本轮计算'}`;}
+          else{const m=t-k,has=m>=0&&m<16;value.textContent=has?`A[${m}][${k}]`:'0 / bubble';if(has)cell.classList.add('valid-a');cell.dataset.ignored=String(k>=h);cell.title=has?`A=${f.a_in[k]}，${k<h?'参与计算':'原样送入，但该行PE关闭计算'}`:'本拍补零';}
         });
-
-        skewCells.forEach((cell) => {
-          const cellTime = Number(cell.dataset.time);
-          const hasA = cell.dataset.hasA === "true";
-          cell.className = `skew-cell${hasA ? " has-a" : ""}`;
-
-          if (!isWeightPhase) {
-            if (cellTime < flowTime && hasA) cell.classList.add("past");
-            if (cellTime === flowTime) {
-              cell.classList.add("now-column");
-              if (hasA) cell.classList.add("current");
-            }
-          }
+        skewCells.forEach(cell=>{
+          const ct=Number(cell.dataset.time),has=cell.dataset.hasA==='true';
+          cell.className=`skew-cell${has?' has-a':''}`;
+          if(!weight){if(ct<t&&has)cell.classList.add('past');if(ct===t){cell.classList.add('now-column');if(has)cell.classList.add('current');}}
         });
-
-        if (isWeightPhase) {
-          arrayStatus.textContent = "权重预加载阶段：暂时还没有 A 和 partial sum 进入阵列。";
-        } else if (flowTime === 0) {
-          arrayStatus.textContent =
-            "T0 关键拍：A[0][0] 进入 PE00 并产生第一项 partial sum；PE10、PE20 … PE150 本拍不做 MAC，" +
-            "它们的纵向 dat_out 选择直通路径，因此该 partial sum 会一路到达第0列底部。";
-        } else if (flowTime < size - 1) {
-          arrayStatus.textContent =
-            `T${flowTime}：第0列已有 PE00…PE${flowTime}0 依次参与累加；` +
-            `PE${flowTime + 1}0…PE150 继续作为纵向导线，底部看到的是已累加 ${flowTime + 1}/16 项的 partial sum。`;
-        } else {
-          const completedRow = flowTime - (size - 1);
-          arrayStatus.textContent =
-            completedRow < size
-              ? `T${flowTime}：第0列最下方 PE150 已完成 C[${completedRow}][0] 的第16项累加，底部该拍得到最终结果。`
-              : `T${flowTime}：第0列的最终结果已经全部排空，其他列仍按各自错拍继续完成。`;
+        let mac=0;
+        peCells.forEach(pe=>{
+          const r=Number(pe.dataset.row),c=Number(pe.dataset.col),enabled=r<h&&c<w;
+          pe.dataset.enabled=String(enabled);pe.dataset.selected=String(r===selectedRow&&c===selectedCol);
+          if(!enabled){
+            const v=weight?0:f.psum[r*16+c];pe.dataset.state=!weight&&c<w&&t>=h-1+c&&t<=15+h-1+c?'disabled-pass':'disabled';
+            pe.textContent=pe.dataset.state==='disabled-pass'?'↓PS':'OFF';
+            pe.title=`PE[${r}][${c}] pe_en=0，A 不向右传；${c<w?`部分和组合直通=${v}`:'该列不计算，纵向结果为0'}`;return;
+          }
+          if(weight){pe.dataset.state=r===row?'weight':r<row?'loaded':'idle';pe.textContent=`B${r},${c}`;pe.title=`B[${r}][${c}]=${B(r,c)}`;return;}
+          const m=t-r-c;
+          if(m>=0&&m<16){mac++;pe.dataset.state='active';pe.textContent=`A${m},${r}`;pe.title=`A[${m}][${r}]×B[${r}][${c}]；psum=${f.psum[r*16+c]}`;}
+          else{pe.dataset.state=m<0?'loaded':'passed';pe.textContent=`B${r},${c}`;pe.title=`pe_en=1，${m<0?'等待 A / 补零':'本行有效 A 已通过 / 排空'}`;}
+        });
+        let finals=0;
+        bottomCells.forEach((cell,c)=>{
+          cell.className='bottom-lane';const value=cell.querySelector('b'),m=t-(h-1)-c;
+          if(weight){value.textContent='无数据';return;}
+          if(c>=w){cell.classList.add('disabled-col');value.textContent='0 · 关闭列';cell.title='关闭列没有乘加结果，raw valid=0';}
+          else if(m>=0&&m<16){finals++;cell.classList.add('final');value.textContent=`C[${m}][${c}]`;cell.title=`${C(m,c,h)}；完成${h}项累加；raw_vld=${f.raw_vld[c]}`;}
+          else{value.textContent=`${f.raw[c]} · ${f.raw_vld[c]?'补零拍':'无有效拍'}`;cell.title='共享 valid 与补零拍不代表一个新的矩阵 C 元素';}
+        });
+        bottomSummary.textContent=weight?'权重配置期间没有矩阵 C 输出。':`本拍${finals}个最终 C 元素；每个结果累加${h}项。C[0][0] 在 T${h-1} 出现，C[15][${w-1}] 在 T${15+h+w-2} 出现。`;
+        outputCells.forEach(cell=>{
+          const m=Number(cell.dataset.row),c=Number(cell.dataset.col),at=m+h-1+c;
+          cell.className='output-cell';cell.textContent=`C${m},${c}`;cell.dataset.producedAt=String(at);
+          if(c>=w){cell.classList.add('disabled-col');cell.textContent='—';cell.title='关闭列，不产生 C';return;}
+          cell.title=`C[${m}][${c}]=${C(m,c,h)}，在 T${at} 完成${h}项累加`;
+          if(!weight&&t>at)cell.classList.add('produced');else if(!weight&&t===at)cell.classList.add('current');
+        });
+        externalCells.forEach((cell,c)=>{
+          cell.className='bottom-lane';if(c>=w)cell.classList.add('disabled-col');
+          if(!weight&&f.out_vld)cell.classList.add('final');cell.querySelector('b').textContent=weight?'—':String(f.out[c]);
+        });
+        externalSummary.textContent=weight?'等待输入末拍。':`当前 RTL：dat_out_vld=${f.out_vld}，dat_out_last=${f.out_last}。完整 A 的 last 固定 T30，collector 只在 T30～T${30+w-1} 输出${w}拍；上面的 C 表记录 raw 观察结果，不代表这些 C 都已写入 FIFO_OUT。`;
+        arrayStatus.textContent=weight?`原样保留16个 B 配置拍；活动${h*w}个PE始终使能，不会因 A 尚未到达就关闭。`:`T${t}：${mac}个PE处理矩阵 A，${256-h*w}个PE持续关闭计算；上游完整16×16波前保持不变。结果为 A[:,0:${h}] × B[0:${h},0:${w}]，共16×${w}个 C。`;
+        updateDetail(weight,row,t);prev.disabled=step===0;next.disabled=step===finalStep;
+        if(!weight&&oldStep===step-1&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+          const incoming=skewCells.filter(cell=>Number(cell.dataset.time)===t);
+          incoming.forEach(cell=>cell.animate([{transform:'translateX(-7px)'},{transform:'translateX(0)'}],{duration:230}));
+          peCells.filter(pe=>pe.dataset.state==='active').forEach(pe=>pe.animate([{transform:'translateX(-6px)'},{transform:'translateX(0)'}],{duration:230}));
+          bottomCells.filter(cell=>cell.classList.contains('final')).forEach(cell=>cell.animate([{transform:'translateY(-7px)'},{transform:'translateY(0)'}],{duration:230}));
         }
-
-        peCells.forEach((pe) => {
-          const row = Number(pe.dataset.row);
-          const col = Number(pe.dataset.col);
-          pe.dataset.selected = String(row === selectedRow && col === selectedCol);
-
-          if (isWeightPhase) {
-            if (row === weightRow) {
-              pe.dataset.state = "loading";
-            } else if (row < weightRow) {
-              pe.dataset.state = "loaded";
-            } else {
-              pe.dataset.state = "idle";
-            }
-            pe.textContent = `B${row},${col}`;
-            pe.title =
-              row === weightRow
-                ? `本拍写入 B[${row}][${col}]`
-                : `PE[${row}][${col}] 的本地权重 B[${row}][${col}]`;
-            return;
-          }
-
-          const m = flowTime - row - col;
-          const activeMax = Math.min(size - 1, flowTime - col);
-          const bypassing =
-            flowTime >= col &&
-            flowTime - col < size - 1 &&
-            row > activeMax;
-          if (m >= 0 && m < size) {
-            pe.dataset.state = "active";
-            pe.textContent = `A${m},${row}`;
-            pe.title =
-              `T${flowTime}: A[${m}][${row}] × B[${row}][${col}]，累加到 C[${m}][${col}]`;
-          } else if (bypassing) {
-            pe.dataset.state = "bypass";
-            pe.textContent = "↓PS";
-            pe.title =
-              `T${flowTime}: PE[${row}][${col}] 本拍 pe_en=0，dat_in_add 零延迟直通到 dat_out`;
-          } else if (m >= size) {
-            pe.dataset.state = "passed";
-            pe.textContent = `B${row},${col}`;
-            pe.title = `A 已通过，B[${row}][${col}] 仍保存在本地`;
-          } else {
-            pe.dataset.state = "loaded";
-            pe.textContent = `B${row},${col}`;
-            pe.title = `等待 A 波前，B[${row}][${col}] 已预加载`;
-          }
-        });
-
-        let rawCount = 0;
-        let finalCount = 0;
-        bottomCells.forEach((cell, col) => {
-          const position = flowTime - col;
-          const value = cell.querySelector("b");
-          cell.className = "bottom-lane";
-
-          if (isWeightPhase || position < 0 || position > 2 * size - 2) {
-            value.textContent = "无数据";
-            return;
-          }
-
-          rawCount += 1;
-          if (position < size - 1) {
-            const depth = position + 1;
-            cell.classList.add("partial");
-            value.textContent = `PS C[0][${col}] ${depth}/16`;
-            cell.title =
-              `第${col}列底部当前是 C[0][${col}] 已累加 ${depth} 项的中间 partial sum，不是最终结果`;
-          } else {
-            const m = position - (size - 1);
-            finalCount += 1;
-            cell.classList.add("final");
-            value.textContent = `C[${m}][${col}]`;
-            cell.title = `第${col}列底部当前得到最终结果 C[${m}][${col}]`;
-          }
-        });
-
-        if (isWeightPhase) {
-          bottomSummary.textContent = "权重配置期间，阵列底部没有计算数据。";
-        } else if (rawCount === 0) {
-          bottomSummary.textContent = "当前拍没有新的 raw out 到达阵列底部。";
-        } else {
-          bottomSummary.textContent =
-            `当前拍共有 ${rawCount} 个底部列带数据，其中 ${finalCount} 个已经完成16项累加；` +
-            `其余 ${rawCount - finalCount} 个仍是经下方 PE 直通出来的中间 partial sum。`;
-        }
-
-        outputCells.forEach((cell) => {
-          const m = Number(cell.dataset.row);
-          const col = Number(cell.dataset.col);
-          const producedAt = m + col + size - 1;
-          const position = flowTime - col;
-          cell.className = "output-cell";
-          cell.textContent = `C${m},${col}`;
-          cell.title = `C[${m}][${col}] 尚未完成`;
-
-          if (
-            !isWeightPhase &&
-            m === 0 &&
-            position >= 0 &&
-            position < size - 1
-          ) {
-            const depth = position + 1;
-            cell.classList.add("partial");
-            cell.textContent = `${depth}/16`;
-            cell.title =
-              `C[0][${col}] 当前只完成 ${depth}/16 项累加；底部虽然有 dat_out，` +
-              "但它仍是经未使用 PE 直通出来的中间 partial sum";
-          } else if (!isWeightPhase && producedAt < flowTime) {
-            cell.classList.add("produced");
-            cell.title = `C[${m}][${col}] 已经完成16项累加`;
-          } else if (!isWeightPhase && producedAt === flowTime) {
-            cell.classList.add("current");
-            cell.title = `C[${m}][${col}] 在本拍完成第16项累加，成为最终结果`;
-          }
-        });
-
-        updateDetail(isWeightPhase, weightRow, flowTime);
-        prev.disabled = step === 0;
-        next.disabled = step === finalStep;
+        previousRenderedStep=step;
       }
+      function changeConfig(){stop();modelCache={};previousRenderedStep=-1;render(step);}
+      sizeSelect.addEventListener('change',changeConfig);
+      document.getElementById('full-size').addEventListener('click',()=>{sizeSelect.value='16';changeConfig();});
+      document.getElementById('four-size').addEventListener('click',()=>{sizeSelect.value='4';changeConfig();});
+      document.getElementById('start-a').addEventListener('click',()=>{stop();render(16);});
+      window.SA_GATING_DEMO={frameAt,getState:()=>({step,h:Number(sizeSelect.value),w:Number(sizeSelect.value)})};
 
       function stop() {
         if (timer !== null) {
