@@ -36,13 +36,12 @@ module sa_top_case_runner #(
     logic                              dat_out_vld;
     logic                              dat_out_last;
 
-    // One independent 32-bit A value for every SA input row.
-    logic [31:0]                       a_lane_value [0:ARRAY_H-1];
-
-    // Independent B weight for every PE and one expected result per column.
-    logic [31:0]                       b_pe_value     [0:ARRAY_H-1][0:ARRAY_W-1];
-    logic [31:0]                       expected_value [0:ARRAY_W-1];
-
+    logic vector_in_vld, vector_in_last, sa_pipeline_empty;
+    logic [31:0] b_pe_value [0:15][0:15];
+    logic [31:0] a_matrix [0:15][0:15];
+    int a_numeric [0:15][0:15];
+    logic [31:0] golden [0:15][0:15];
+    int checks=0, matrix_results=0, jobs=0, zero_results=0;
 `ifdef VERILATOR_TRACE
     initial begin
         $dumpfile(VCD_FILE);
@@ -84,7 +83,10 @@ module sa_top_case_runner #(
         .rpt_active_size,
         .dat_out,
         .dat_out_vld,
-        .dat_out_last
+        .dat_out_last,
+        .vector_in_vld,
+        .vector_in_last,
+        .sa_pipeline_empty
     );
 
     task automatic sample_cycle;
@@ -93,6 +95,7 @@ module sa_top_case_runner #(
     endtask
 
     task automatic check(input logic condition, input string message);
+        checks++;
         if (!condition) begin
             $error("%s: %s", CASE_NAME, message);
             $fatal(1);
@@ -202,215 +205,154 @@ module sa_top_case_runner #(
         end
     endfunction
 
-    // Generate the complete stationary-weight matrix before B preload starts.
-    task automatic prepare_b_matrix;
-        logic [31:0] random_state;
-        logic [31:0] first_b_value;
-        logic        b_has_variation;
 
-        random_state    = B_RANDOM_SEED;
-        first_b_value   = '0;
-        b_has_variation = 1'b0;
-
-        for (int row = 0; row < ARRAY_H; row++) begin
-            $write("%s: B row %0d =", CASE_NAME, row);
-
-            for (int col = 0; col < ARRAY_W; col++) begin
-                random_state         = next_random(random_state);
-                b_pe_value[row][col] = make_b_value(random_state);
-
-                if ((row == 0) && (col == 0)) begin
-                    first_b_value = b_pe_value[row][col];
-                end else if (b_pe_value[row][col] != first_b_value) begin
-                    b_has_variation = 1'b1;
-                end
-
-                $write(" %08h", b_pe_value[row][col]);
+    // Independent arithmetic oracle: original A vectors and stationary B only.
+    // FP operands/results are small exactly representable nonnegative integers.
+    // Test stimulus independently maps original vector k/lane r to edge pop[k]+r;
+    // it does not instantiate CTRL or read collector valid/countdown registers.
+    task automatic prepare_matrices(input int n, input int job_id);
+        logic [31:0] rng;
+        int sum;
+        rng = B_RANDOM_SEED ^ (32'h9e3779b9 * (job_id+1));
+        for (int r=0; r<16; r++) begin
+            for (int c=0; c<16; c++) begin
+                rng=next_random(rng);
+                b_pe_value[r][c]=make_b_value(rng);
             end
-
-            $display("");
         end
-
-        check(b_has_variation, "all 256 B weights unexpectedly have one value");
-    endtask
-
-    // Build one reproducible random A vector and the 16 column reference results.
-    task automatic prepare_a_vector(input int vector_index);
-        logic [31:0]        random_state;
-        logic signed [31:0] int_sum;
-        logic signed [63:0] int_product;
-        integer             fp_sum;
-
-        random_state = RANDOM_SEED ^ (32'h9e37_79b9 * (vector_index + 1));
-
-        for (int row = 0; row < ARRAY_H; row++) begin
-            random_state      = next_random(random_state);
-            a_lane_value[row] = make_a_value(random_state);
-        end
-
-        for (int col = 0; col < ARRAY_W; col++) begin
-            int_sum = '0;
-            fp_sum  = 0;
-
-            for (int row = 0; row < ARRAY_H; row++) begin
-                if ((MODE == 2'b00) || (MODE == 2'b01)) begin
-                    int_product = $signed(a_lane_value[row]) *
-                                  $signed(b_pe_value[row][col]);
-                    int_sum = int_sum + $signed(int_product[31:0]);
-                end else begin
-                    fp_sum = fp_sum +
-                             fp_value_to_uint(a_lane_value[row]) *
-                             fp_value_to_uint(b_pe_value[row][col]);
+        rng = RANDOM_SEED ^ (32'h85ebca6b * (job_id+1));
+        for (int k=0; k<16; k++) begin
+            for (int r=0; r<16; r++) begin
+                rng=next_random(rng);
+                // Include valid zero vectors, including the LAST vector.
+                if ((k%4)==0 || k==15) a_numeric[k][r]=0;
+                else if (MODE<2) a_numeric[k][r]=int'(rng%13)-6;
+                else a_numeric[k][r]=int'(rng%4)+1;
+                if (MODE<2) a_matrix[k][r]=32'(a_numeric[k][r]);
+                else if (a_numeric[k][r]==0) a_matrix[k][r]=0;
+                else if (MODE==3) a_matrix[k][r]=small_uint_to_fp32(a_numeric[k][r]);
+                else begin
+                    case (a_numeric[k][r])
+                        1:a_matrix[k][r]=32'h00003c00;
+                        2:a_matrix[k][r]=32'h00004000;
+                        3:a_matrix[k][r]=32'h00004200;
+                        default:a_matrix[k][r]=32'h00004400;
+                    endcase
                 end
             end
-
-            if ((MODE == 2'b00) || (MODE == 2'b01)) begin
-                expected_value[col] = int_sum;
-            end else begin
-                expected_value[col] = small_uint_to_fp32(fp_sum);
+            for (int c=0; c<n; c++) begin
+                sum=0;
+                for (int r=0; r<n; r++) begin
+                    if (MODE<2) sum += a_numeric[k][r] * int'($signed(b_pe_value[r][c]));
+                    else sum += a_numeric[k][r] * fp_value_to_uint(b_pe_value[r][c]);
+                end
+                golden[k][c]=(MODE<2)?32'(sum):small_uint_to_fp32(sum);
             end
         end
-
-        $write("%s: A vector %0d =", CASE_NAME, vector_index);
-        for (int row = 0; row < ARRAY_H; row++) begin
-            $write(" %08h", a_lane_value[row]);
-        end
-
-        $write("; expected columns =");
-        for (int col = 0; col < ARRAY_W; col++) begin
-            $write(" %08h", expected_value[col]);
-        end
-        $display("");
     endtask
 
-    // The CPU-side B interface is 100 MHz. Each high and low phase therefore
-    // lasts four 400 MHz sys_ckg cycles. One transaction loads one complete PE row.
-    task automatic load_b_row(input int row_index);
-        cpu_dat_in_b = '0;
-        for (int col = 0; col < ARRAY_W; col++) begin
-            cpu_dat_in_b[col*DATA_WIDTH +: DATA_WIDTH] =
-                b_pe_value[row_index][col];
-        end
-
-        cpu_dat_in_b_sel  = row_index[3:0];
-        cpu_dat_in_b_lock = 1'b1;
-        repeat (4) sample_cycle();
-        cpu_dat_in_b_lock = 1'b0;
-        repeat (4) sample_cycle();
+    // CPU B write is held for four SYS cycles per high/low phase as before.
+    task automatic load_b_row(input int r);
+        @(negedge sys_ckg);
+        cpu_dat_in_b='0;
+        for (int c=0; c<16; c++) cpu_dat_in_b[c*32+:32]=b_pe_value[r][c];
+        cpu_dat_in_b_sel=4'(r);
+        cpu_dat_in_b_lock=1;
+        repeat(4) sample_cycle();
+        @(negedge sys_ckg);
+        cpu_dat_in_b_lock=0;
+        repeat(4) sample_cycle();
     endtask
 
-    // The external A source supplies the row-skewed staircase expected by SA:
-    // beat 0 has lane 0 valid, beat 1 has lanes 0..1 valid, and beat 15 has
-    // all 16 lanes valid. Unused 32-bit lanes are explicitly driven to zero.
-    task automatic drive_a_vector(input int vector_index);
-        prepare_a_vector(vector_index);
-
-        for (int input_beat = 0; input_beat < ARRAY_H; input_beat++) begin
-            dat_in_a           = '0;
-            dat_in_vld         = 1'b1;
-            dat_in_last        = (input_beat == ARRAY_H-1);
-            cpu_tpu_start_sync = (input_beat == 0);
-
-            for (int row = 0; row <= input_beat; row++) begin
-                dat_in_a[row*DATA_WIDTH +: DATA_WIDTH] = a_lane_value[row];
+    task automatic run_stream(input int n, input int gap, input int repetition);
+        int spacing, last_pop, latency, end_cycle, t, source_t, k;
+        int job_results, last_pulses;
+        logic [511:0] expected_bus;
+        logic expected_valid, expected_last;
+        jobs++;
+        spacing=gap+1;
+        last_pop=15*spacing;
+        latency=(MODE==2)?7:((MODE==3)?4:1);
+        // Drain all physical16-lane padding, then test additional quiet edges.
+        end_cycle=last_pop+15+(n-1)+(latency-1)+6;
+        job_results=0; last_pulses=0;
+        @(negedge sys_ckg);
+        cpu_h_size=4'(n-1); cpu_w_size=4'(n-1);
+        cpu_tpu_en_sync=1;
+        repeat(3) sample_cycle();
+        check(rpt_active_size=={16'(n),16'(n)},"H=W active-size report");
+        prepare_matrices(n,jobs+repetition);
+        // Reload after N changes; disabled PEs clear their stationary weights.
+        for(int r=0;r<16;r++) load_b_row(r);
+        for(t=0;t<=end_cycle;t++) begin
+            @(negedge sys_ckg);
+            dat_in_a='0; dat_in_vld=0;
+            dat_in_last=(t==last_pop+15);
+            vector_in_vld=(t<=last_pop && (t%spacing)==0);
+            vector_in_last=vector_in_vld && t==last_pop;
+            cpu_tpu_start_sync=(t==0);
+            for(int r=0;r<16;r++) begin
+                source_t=t-r;
+                if(source_t>=0 && source_t<=last_pop && source_t%spacing==0) begin
+                    k=source_t/spacing;
+                    dat_in_a[r*32+:32]=a_matrix[k][r];
+                    dat_in_vld=1;
+                end
             end
-
             sample_cycle();
-        end
-
-        cpu_tpu_start_sync = 1'b0;
-        dat_in_a           = '0;
-        dat_in_vld         = 1'b0;
-        dat_in_last        = 1'b0;
-    endtask
-
-    // Collector beat k is aligned with the final result from bottom-row PE[15][k].
-    task automatic collect_and_check;
-        int output_beat;
-        int timeout_cycle;
-
-        output_beat  = 0;
-        timeout_cycle = 0;
-
-        while ((output_beat < ARRAY_W) && (timeout_cycle < 128)) begin
-            if (dat_out_vld) begin
-                check((^dat_out !== 1'bx),
-                      $sformatf("X/Z detected on output beat %0d", output_beat));
-
-                for (int col = 0; col < ARRAY_W; col++) begin
-                    if (col <= output_beat) begin
-                        check(dat_out[col*DATA_WIDTH +: DATA_WIDTH] ===
-                              expected_value[col],
-                              $sformatf("output beat %0d, completed column %0d expected %h, got %h",
-                                        output_beat,
-                                        col,
-                                        expected_value[col],
-                                        dat_out[col*DATA_WIDTH +: DATA_WIDTH]));
-                    end else begin
-                        check(dat_out[col*DATA_WIDTH +: DATA_WIDTH] === '0,
-                              $sformatf("output beat %0d, unfinished column %0d must be zero, got %h",
-                                        output_beat,
-                                        col,
-                                        dat_out[col*DATA_WIDTH +: DATA_WIDTH]));
-                    end
+            expected_bus='0; expected_valid=0; expected_last=0;
+            for(int c=0;c<n;c++) begin
+                source_t=t-(n-1)-c-(latency-1);
+                if(source_t>=0 && source_t<=last_pop && source_t%spacing==0) begin
+                    k=source_t/spacing;
+                    expected_bus[c*32+:32]=golden[k][c];
+                    expected_valid=1;
+                    expected_last |= k==15 && c==n-1;
+                    check(dut.raw_dat_out_vld[c]===1'b1,"final raw lane valid");
+                    check(dut.raw_dat_out[c*32+:32]===golden[k][c],
+                        $sformatf("raw mode=%0d N=%0d gap=%0d T=%0d k=%0d c=%0d",MODE,n,gap,t,k,c));
+                    job_results++;matrix_results++;
+                    if(golden[k][c]==0) zero_results++;
                 end
-
-                check(dat_out_last == (output_beat == ARRAY_W-1),
-                      $sformatf("dat_out_last is wrong on output beat %0d", output_beat));
-                output_beat++;
             end
-
-            if (output_beat < ARRAY_W) begin
-                sample_cycle();
-                timeout_cycle++;
-            end
+            check(dat_out===expected_bus,
+                $sformatf("full512-bit output mode=%0d N=%0d gap=%0d T=%0d expected=%h got=%h",MODE,n,gap,t,expected_bus,dat_out));
+            check(dat_out_vld===expected_valid,"exact output valid including bubbles");
+            check(dat_out_last===expected_last,"exact output LAST including zero result");
+            if(dat_out_last) last_pulses++;
+            if(t>last_pop+15+(n-1)+(latency-1))
+                check(sa_pipeline_empty===1'b1,"all padding PE results drained");
         end
-
-        check(output_beat == ARRAY_W, "timed out before receiving 16 output beats");
-        sample_cycle();
+        check(job_results==16*n,"all16xN complete matrix results checked");
+        check(last_pulses==1,"exactly one output LAST per task");
+        $display("%s: STREAM_PASS mode=%0d H=%0d W=%0d gap=%0d results=%0d",CASE_NAME,MODE,n,n,gap,job_results);
     endtask
 
     initial begin
-        sys_ckg            = 1'b0;
-        tpu_rst_n          = 1'b0;
-        cpu_tpu_start_sync = 1'b0;
-        cpu_tpu_en_sync    = 1'b0;
-        dat_in_a           = '0;
-        dat_in_vld         = 1'b0;
-        dat_in_last        = 1'b0;
-        cpu_dat_in_b_lock  = 1'b0;
-        cpu_dat_in_b       = '0;
-        cpu_dat_in_b_sel   = '0;
-        cpu_h_size         = 4'd15;
-        cpu_w_size         = 4'd15;
-        cpu_cpt_mode       = MODE;
-
-        repeat (2) sample_cycle();
-        tpu_rst_n = 1'b1;
-        sample_cycle();
-
-        // Enable all 256 PEs before the first B preload and keep them enabled.
-        cpu_tpu_en_sync = 1'b1;
-        sample_cycle();
-        check(rpt_active_size == {16'd16, 16'd16},
-              "rpt_active_size must report 16x16");
-        check(dut.u_sa_ctrl.pe_en == {ARRAY_H*ARRAY_W{1'b1}},
-              "all 256 PE enables must be high");
-
-        prepare_b_matrix();
-        for (int row = 0; row < ARRAY_H; row++) begin
-            load_b_row(row);
+        sys_ckg=0; tpu_rst_n=0;
+        cpu_tpu_start_sync=0; cpu_tpu_en_sync=0;
+        dat_in_a=0; dat_in_vld=0; dat_in_last=0;
+        vector_in_vld=0; vector_in_last=0;
+        cpu_dat_in_b_lock=0; cpu_dat_in_b=0; cpu_dat_in_b_sel=0;
+        cpu_h_size=15; cpu_w_size=15; cpu_cpt_mode=MODE;
+        repeat(2) sample_cycle();
+        @(negedge sys_ckg); tpu_rst_n=1;
+        // VECTOR_COUNT now counts repetitions of the complete9-bin stream suite.
+        // Same enable remains high across N1->N4->N16 and subsequent N1 tasks.
+        for(int rep=0;rep<VECTOR_COUNT;rep++) begin
+            for(int size_bin=0;size_bin<3;size_bin++) begin
+                for(int gap_bin=0;gap_bin<3;gap_bin++) begin
+                    run_stream((size_bin==0)?1:((size_bin==1)?4:16),
+                               (gap_bin==0)?0:((gap_bin==1)?3:20),rep);
+                end
+            end
         end
-
-        for (int vector_index = 0; vector_index < VECTOR_COUNT; vector_index++) begin
-            drive_a_vector(vector_index);
-            collect_and_check();
-        end
-
-        $display("%s: PASS", CASE_NAME);
+        $display("%s: PASS jobs=%0d results=%0d valid_zeros=%0d checks=%0d",CASE_NAME,jobs,matrix_results,zero_results,checks);
         $finish;
     end
-
+    initial begin
+        #1000000;
+        $fatal(1,"%s: global timeout",CASE_NAME);
+    end
 endmodule
-
 `default_nettype wire

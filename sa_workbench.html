@@ -1056,6 +1056,8 @@
             <tr><td><code>cpu_tpu_en_sync</code></td><td>Input</td><td>1</td><td>TPU 使能同步信号，高有效；应在 B 权重配置开始前拉高并覆盖整轮任务。</td></tr>
             <tr><td><code>dat_in_a</code></td><td>Input</td><td>32*16</td><td>输入 A 数据流，一拍包含 16 个 32-bit lane。</td></tr>
             <tr><td><code>dat_in_vld</code></td><td>Input</td><td>1</td><td>A 数据输入有效信号。</td></tr>
+            <tr><td><code>vector_in_vld</code></td><td>Input</td><td>1</td><td>与 lane0 同采样沿的原始 FIFO 向量 valid。</td></tr>
+            <tr><td><code>vector_in_last</code></td><td>Input</td><td>1</td><td>最后一个原始 FIFO 向量标记。</td></tr>
             <tr><td><code>dat_in_last</code></td><td>Input</td><td>1</td><td>A 数据输入最后一拍指示。</td></tr>
             <tr class="group-row"><td colspan="4">RegMap Interface</td></tr>
             <tr><td><code>cpu_dat_in_b_lock</code></td><td>Input</td><td>1</td><td>动态 B 权重锁存信号；经两级同步并取上升沿后形成 400MHz 域单拍脉冲 <code>cpu_dat_in_b_lock'</code>。</td></tr>
@@ -1068,6 +1070,7 @@
             <tr class="group-row"><td colspan="4">FIFO OUT Interface</td></tr>
             <tr><td><code>dat_out</code></td><td>Output</td><td>32*16</td><td>经 SA_CTRL 选择或对齐后的 16-lane SA 结果数据流。</td></tr>
             <tr><td><code>dat_out_vld</code></td><td>Output</td><td>1</td><td>最终结果输出有效信号；不能被阵列底部提前出现的 raw partial sum 直接触发。</td></tr>
+            <tr><td><code>sa_pipeline_empty</code></td><td>Output</td><td>1</td><td>底部原始 PE valid 全零；CTRL 结合结束标志使用。</td></tr>
             <tr><td><code>dat_out_last</code></td><td>Output</td><td>1</td><td>SA 输出最后一拍指示。</td></tr>
           </tbody>
         </table>
@@ -1081,7 +1084,7 @@
             <tr><td><code>sa_top</code></td><td>SA 顶层模块，连接全部外部接口，并完成 <code>sa_ctrl</code>、<code>pe_array_16x16</code> 和 <code>output_collector</code> 的实例化与互连。</td></tr>
             <tr><td><code>sa_ctrl</code></td><td>负责动态 RegMap 信号的 CDC、active size 锁存与上报、PE 使能生成、B 权重加载控制，以及输入和控制信号向 PE 阵列的组织与传递。</td></tr>
             <tr><td><code>pe_array_16x16</code></td><td>实例化并连接 256 个 PE，保存静态 B 权重，完成 A 数据横向传播、partial sum 纵向累加及阵列底部结果汇集。</td></tr>
-            <tr><td><code>output_collector</code></td><td>对应方案草图中的 <code>output_fifo</code>。接收阵列底部 16 列结果，按列完成、逐拍累积的形式组织 512-bit 输出总线，并产生 <code>dat_out_vld</code> 和 <code>dat_out_last</code>。</td></tr>
+            <tr><td><code>output_collector</code></td><td>对应方案草图中的 <code>output_fifo</code>。接收阵列底部 16 列结果，按每列最终完成时刻组织 512-bit 波前输出总线，并产生 <code>dat_out_vld</code> 和 <code>dat_out_last</code>。</td></tr>
           </tbody>
         </table>
 
@@ -1128,15 +1131,16 @@
 
         <h3>6.4 输出收集</h3>
         <p>
-          <code>output_collector</code> 采用 IDLE、WAIT、OUTPUT 三态控制，并按计算模式选择 PE 延迟：
-          INT4/INT8 为 1 拍、FP32 为 4 拍、FP16 为 7 拍。每完成一列，结果写入
-          <code>result_hold_q</code>；第 <code>k</code> 个有效输出拍中，lane 0～k 为已经完成的列，
-          其余 lane 清零。W=16 时第 15 个输出拍同时拉高 <code>dat_out_last</code>。
+          <code>output_collector</code> 按原始 FIFO 向量的 valid 历史判断各列最终结果。
+          第 col 列选择 <code>H−1+col+(L−1)</code> 位置的 valid，并与该列原始 PE valid 相与；
+          有效列直接输出 raw 数据，其余列补零。INT4/INT8、FP16、FP32 的 L 分别为 1、7、4。
+          LAST 使用 6 位倒计时，从最后一次原始向量输入加载最后一列延迟加一；
+          倒计时为 1 且末列有效时产生 <code>dat_out_last</code>。保留 37 位 valid 历史，元数据状态共 43 位。
         </p>
         <div class="note">
           <b>当前实现边界：</b><code>cpu_tpu_start_sync</code> 已保留在 <code>sa_top</code> 外部接口中，
-          但尚未接入 <code>sa_ctrl</code>；当前输出时序由
-          <code>cpu_tpu_en_sync &amp;&amp; dat_in_vld &amp;&amp; dat_in_last</code> 触发。
+          但尚未接入 <code>sa_ctrl</code>；当前输出时序由原始 <code>vector_in_vld</code> / <code>vector_in_last</code> 标记决定。
+          <code>sa_pipeline_empty</code> 表示底部原始 valid 全零，CTRL 结合输入/输出结束标志判断流水排空。
           另外，当前 INT4/INT8 路径按一个 32-bit 有符号数完成乘加，尚未实现一个 32-bit lane 内的打包子字并行运算。
         </div>
 
@@ -1150,6 +1154,7 @@
         </p>
 
         <h3>7.2 激励、参考模型与检查规则</h3>
+        <div class="note"><b>2026-10-11 当前交付：</b>公共 TB 已改为每任务连续输入 16 个原始向量，逐行 Skew，并独立检查全部 16×N 最终结果、每拍完整总线、valid 与 LAST。全部用例 H=W，覆盖 N=1/4/16、四种精度和 FIFO 气泡。以下单向量示例和波形为历史记录。</div>
         <p>
           TB 先按 16 次 100MHz 配置事务写入 256 个独立 B 权重，再用 16 个 400MHz 有效拍发送 A。
           A-T0 仅 lane0 有效，A-T1 使用 lane0～1，直至 A-T15 的 16 个 lane 全部有效并拉高
@@ -1163,7 +1168,7 @@
           任何任务超过 128 拍未完成都会触发超时错误。
         </p>
 
-        <h3>7.3 预期值与实际结果</h3>
+        <h3>7.3 历史单向量用例结果</h3>
         <table>
           <thead>
             <tr><th>用例</th><th>关键预期值</th><th>实际检查</th><th>结论</th></tr>
@@ -1199,7 +1204,7 @@
           </div>
           <a class="demo-open-link" href="./sa_code_design.html" target="_blank" rel="noopener">独立页面打开</a>
         </div>
-        <iframe class="artifact-frame" src="./sa_code_design.html" title="SA_TOP RTL 与 TB 代码设计" loading="lazy"></iframe>
+        <iframe class="artifact-frame" src="./sa_code_design.html?release=collector-stream-20261011" title="SA_TOP RTL 与 TB 代码设计" loading="lazy"></iframe>
       </div>
     </section>
 

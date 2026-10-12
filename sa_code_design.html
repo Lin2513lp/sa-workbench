@@ -206,13 +206,9 @@
   <header class="page-head">
     <div>
       <h1>SA_TOP RTL / TB 代码设计</h1>
-      <div class="subtitle">源代码快照来自 SA 工程的 Makefile、rtl/ 与 tb/，不包含编译数据库和波形产物。</div>
+      <div class="subtitle">当前 SA 与 TPU_CTRL 交付代码：Makefile、RTL、自检 TB；仿真波形保持历史版本。</div>
     </div>
-    <div class="stats">
-      <span>RTL：11个文件</span>
-      <span>TB：11个文件</span>
-      <span>构建：1个文件</span>
-    </div>
+    <div class="stats"><span>RTL：11个文件</span><span>TB：11个文件</span><span>构建：1个文件</span><span>TPU_CTRL：8个文件</span></div>
   </header>
 
   <div class="workspace">
@@ -241,30 +237,162 @@
   <script>
     (() => {
       const files = [
-        { group: "构建", path: "Makefile", desc: "本地与VM回归入口" },
-        { group: "RTL", path: "rtl/sa_top.sv", desc: "SA_TOP顶层互连" },
-        { group: "RTL", path: "rtl/sa_ctrl.sv", desc: "CDC、权重加载、使能与任务控制" },
-        { group: "RTL", path: "rtl/pe_array_16x16.sv", desc: "256个PE的二维互连" },
-        { group: "RTL", path: "rtl/output_collector.sv", desc: "模式延迟与累计输出总线" },
-        { group: "RTL", path: "rtl/pe_mp/PE_MP_v1.v", desc: "多精度PE计算单元" },
-        { group: "RTL", path: "rtl/pe_mp/fix2fp.v", desc: "定点到浮点转换" },
-        { group: "RTL", path: "rtl/pe_mp/fp2fix.v", desc: "浮点到定点转换" },
-        { group: "RTL", path: "rtl/pe_mp/fp32_adder.v", desc: "FP32加法器" },
-        { group: "RTL", path: "rtl/pe_mp/fp32_multi.v", desc: "FP32乘法器" },
-        { group: "RTL", path: "rtl/filelist.f", desc: "通用RTL编译清单" },
-        { group: "RTL", path: "rtl/vcs_filelist.f", desc: "VCS RTL编译清单" },
-        { group: "TB", path: "tb/sa_top_case_runner.sv", desc: "四模式共享激励、参考模型与scoreboard" },
-        { group: "TB", path: "tb/sa_top_tb_smoke.sv", desc: "1x1快速闭环测试" },
-        { group: "TB", path: "tb/sa_top_tb_int4.sv", desc: "INT4模式入口" },
-        { group: "TB", path: "tb/sa_top_tb_int8.sv", desc: "INT8模式入口" },
-        { group: "TB", path: "tb/sa_top_tb_fp16.sv", desc: "FP16模式入口" },
-        { group: "TB", path: "tb/sa_top_tb_fp32.sv", desc: "FP32模式入口" },
-        { group: "TB", path: "tb/sa_top_tb_multi.sv", desc: "一组B复用三组A的连续任务" },
-        { group: "TB", path: "tb/sa_ctrl_tb.sv", desc: "SA_CTRL单元测试" },
-        { group: "TB", path: "tb/pe_array_16x16_tb.sv", desc: "PE阵列互连测试" },
-        { group: "TB", path: "tb/output_collector_tb.sv", desc: "累计输出与模式延迟测试" },
-        { group: "TB", path: "tb/vcs_sa_top_tb_smoke.f", desc: "VCS smoke编译清单" }
-      ];
+        {
+                "group": "构建",
+                "path": "Makefile",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/filelist.f",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/output_collector.sv",
+                "desc": "最终结果逐列输出、valid历史与LAST倒计时"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/pe_array_16x16.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/pe_mp/fix2fp.v",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/pe_mp/fp2fix.v",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/pe_mp/fp32_adder.v",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/pe_mp/fp32_multi.v",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/pe_mp/PE_MP_v1.v",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/sa_ctrl.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/sa_top.sv",
+                "desc": "SA 顶层、新增原始向量标记与流水反馈"
+        },
+        {
+                "group": "RTL",
+                "path": "rtl/vcs_filelist.f",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/output_collector_tb.sv",
+                "desc": "逐列valid、补零与LAST单元测试"
+        },
+        {
+                "group": "TB",
+                "path": "tb/pe_array_16x16_tb.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_ctrl_tb.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_case_runner.sv",
+                "desc": "连续16向量、H=W、气泡及完整结果自检"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_tb_fp16.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_tb_fp32.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_tb_int4.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_tb_int8.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_tb_multi.sv",
+                "desc": "连续任务与无复位重复输入"
+        },
+        {
+                "group": "TB",
+                "path": "tb/sa_top_tb_smoke.sv",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TB",
+                "path": "tb/vcs_sa_top_tb_smoke.f",
+                "desc": "工程源文件"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/Makefile",
+                "desc": "CTRL make all / make verdi 入口"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/README.md",
+                "desc": "CTRL 独立工程运行说明"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/rtl/filelist.f",
+                "desc": "CTRL相对路径编译清单"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/rtl/tpu_ctrl.sv",
+                "desc": "任务、FIFO读取、计数与流水完成控制"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/rtl/tpu_ctrl_skew.sv",
+                "desc": "16路逐行延迟与空白补零"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/rtl/tpu_ctrl_sync.sv",
+                "desc": "EN/START两拍同步"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/scripts/check_license.sh",
+                "desc": "沿用既有工程的VCS许可检查"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
+                "desc": "CTRL独立自检、提前LAST与流水排空"
+        }
+];
 
       const tree = document.getElementById("file-tree");
       const filter = document.getElementById("file-filter");
@@ -279,7 +407,7 @@
       const renderTree = () => {
         const query = filter.value.trim().toLowerCase();
         tree.replaceChildren();
-        ["构建", "RTL", "TB"].forEach((group) => {
+        ["构建", "RTL", "TB", "TPU_CTRL"].forEach((group) => {
           const entries = files.filter((file) => file.group === group && file.path.toLowerCase().includes(query));
           if (!entries.length) return;
           const title = document.createElement("div");
@@ -322,7 +450,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}`);
+          const response = await fetch(`./code/${file.path}?release=collector-stream-20261011`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);

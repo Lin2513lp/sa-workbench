@@ -103,7 +103,7 @@ module sa_ctrl_tb;
         cpu_dat_in_b       = '0;
         cpu_dat_in_b_sel   = '0;
         cpu_h_size         = 4'd3; // actual H = 4
-        cpu_w_size         = 4'd1; // actual W = 2
+        cpu_w_size         = 4'd3; // actual W = 4; all tests use H=W.
         cpu_cpt_mode       = 2'b11;
 
         repeat (2) sample_cycle();
@@ -177,23 +177,23 @@ module sa_ctrl_tb;
         for (int index = 0; index < ARRAY_H*ARRAY_W; index++) begin
             enabled_count += pe_en[index];
         end
-        check(enabled_count == 8, "H=4, W=2 must enable exactly 8 PEs during preload");
+        check(enabled_count == 16, "H=W=4 must enable exactly 16 PEs during preload");
 
         cpu_dat_in_b_lock = 1'b0;
         sample_cycle();
 
-        check(rpt_active_size == {16'd4, 16'd2}, "rpt_active_size must report actual H/W");
-        check(active_w_size == 4'd1,
+        check(rpt_active_size == {16'd4, 16'd4}, "rpt_active_size must report actual H/W");
+        check(active_w_size == 4'd3,
               "active W size must directly reflect the static input");
         check(pe_cpt_mode == 2'b11, "compute mode must directly reflect the static input");
 
         cpu_cpt_mode = 2'b01;
         cpu_h_size   = 4'd1;
-        cpu_w_size   = 4'd0;
+        cpu_w_size   = 4'd1;
         #0.1;
-        check(pe_cpt_mode == 2'b01 && active_w_size == 4'd0,
+        check(pe_cpt_mode == 2'b01 && active_w_size == 4'd1,
               "static W/mode must not wait for a start lock");
-        check(rpt_active_size == {16'd2, 16'd1},
+        check(rpt_active_size == {16'd2, 16'd2},
               "active-size report must directly follow static H/W");
 
         // last without valid is ignored.

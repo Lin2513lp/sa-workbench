@@ -1,120 +1,224 @@
 {
   "source_directory": "tpu/tpu/sa",
+  "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
+  "release": "collector-stream-20261011",
   "files": [
     {
       "path": "Makefile",
-      "bytes": 6273,
-      "sha256": "5c89d4217f5a97f9a6a4c597f27a2a72a53c39fae1866f2ac164e0d3c0b34f79"
+      "bytes": 6930,
+      "sha256": "e13b30db13486f10dec36efde0a49dfbdd727049089cb8fd1c1382cce1c01c05",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "Makefile"
     },
     {
       "path": "rtl/filelist.f",
       "bytes": 180,
-      "sha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d"
+      "sha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/filelist.f"
     },
     {
       "path": "rtl/output_collector.sv",
-      "bytes": 5683,
-      "sha256": "03133a594eb583361c540606e3b85732f0c4fd935d8920b6d2cb2cf9ebf1e91e"
+      "bytes": 5749,
+      "sha256": "af5533d9cfde001ea51df1e2092ef95fe96471dae236a0554e091c4de670ec26",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/output_collector.sv"
     },
     {
       "path": "rtl/pe_array_16x16.sv",
       "bytes": 7893,
-      "sha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8"
+      "sha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/pe_array_16x16.sv"
     },
     {
       "path": "rtl/pe_mp/fix2fp.v",
       "bytes": 7193,
-      "sha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72"
+      "sha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/pe_mp/fix2fp.v"
     },
     {
       "path": "rtl/pe_mp/fp2fix.v",
       "bytes": 8170,
-      "sha256": "80573302d4a24a12ff757d4619a141bd359474285fd81ac326b17bf30045e0ee"
+      "sha256": "80573302d4a24a12ff757d4619a141bd359474285fd81ac326b17bf30045e0ee",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/pe_mp/fp2fix.v"
     },
     {
       "path": "rtl/pe_mp/fp32_adder.v",
       "bytes": 8062,
-      "sha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19"
+      "sha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/pe_mp/fp32_adder.v"
     },
     {
       "path": "rtl/pe_mp/fp32_multi.v",
       "bytes": 11114,
-      "sha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5"
+      "sha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/pe_mp/fp32_multi.v"
     },
     {
       "path": "rtl/pe_mp/PE_MP_v1.v",
       "bytes": 10610,
-      "sha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447"
+      "sha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/pe_mp/PE_MP_v1.v"
     },
     {
       "path": "rtl/sa_ctrl.sv",
       "bytes": 5983,
-      "sha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d"
+      "sha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/sa_ctrl.sv"
     },
     {
       "path": "rtl/sa_top.sv",
-      "bytes": 4294,
-      "sha256": "1ff701ca3aa3637be7bf3f2cb00b76443bdba9c164ecc97ff637bb8da05ec801"
+      "bytes": 5033,
+      "sha256": "4c01337a9f4e0e2ea8d2c5bc13e1268ee8284e5a71c89da6e46a96bdb95b7dba",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/sa_top.sv"
     },
     {
       "path": "rtl/vcs_filelist.f",
       "bytes": 190,
-      "sha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8"
+      "sha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "rtl/vcs_filelist.f"
     },
     {
       "path": "tb/output_collector_tb.sv",
-      "bytes": 5609,
-      "sha256": "512791e7d25e6c904bf541caed0344723c75f0a75a0135057b9fe143f95e12ca"
+      "bytes": 5365,
+      "sha256": "7d07aec875129b51f77b7b8a48d5a4a7ed84984fe8a17948d68e498ca0645042",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/output_collector_tb.sv"
     },
     {
       "path": "tb/pe_array_16x16_tb.sv",
-      "bytes": 4532,
-      "sha256": "5d53bcd8d4d59a36ab6bc77a136b0e408261479b95e2873ee04ea64bba2fd337"
+      "bytes": 4524,
+      "sha256": "ab5eee6343f0b3dab1fc8d9ea613d10bb395b86ff6b38bd42cd6e28210ea6d14",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/pe_array_16x16_tb.sv"
     },
     {
       "path": "tb/sa_ctrl_tb.sv",
-      "bytes": 7194,
-      "sha256": "50c122569048351a0121ef705f9776996fcb3d73a67943ee55f0e14a84d57dc3"
+      "bytes": 7213,
+      "sha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_ctrl_tb.sv"
     },
     {
       "path": "tb/sa_top_case_runner.sv",
-      "bytes": 14975,
-      "sha256": "02e47c2fb51e5c2dfd64e512722541f10278b1e78ecac2a6499fc6ee0d92911a"
+      "bytes": 14239,
+      "sha256": "37c1e07bc9aa8b74e422314196c97856889911026fd9a3406cbac43572699e87",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_case_runner.sv"
     },
     {
       "path": "tb/sa_top_tb_fp16.sv",
       "bytes": 504,
-      "sha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122"
+      "sha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_tb_fp16.sv"
     },
     {
       "path": "tb/sa_top_tb_fp32.sv",
       "bytes": 504,
-      "sha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046"
+      "sha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_tb_fp32.sv"
     },
     {
       "path": "tb/sa_top_tb_int4.sv",
       "bytes": 515,
-      "sha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8"
+      "sha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_tb_int4.sv"
     },
     {
       "path": "tb/sa_top_tb_int8.sv",
       "bytes": 515,
-      "sha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd"
+      "sha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_tb_int8.sv"
     },
     {
       "path": "tb/sa_top_tb_multi.sv",
       "bytes": 542,
-      "sha256": "af771cf00dff30dff2aff89949979b6ec9581b55b7e734c1de32005a1dd3e10d"
+      "sha256": "4fe7f05dc80e1c1cd8f1362007f47e7c4f35738b638ab82185c53e8a5528cd43",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_tb_multi.sv"
     },
     {
       "path": "tb/sa_top_tb_smoke.sv",
-      "bytes": 4221,
-      "sha256": "dbc0853533cdb2ed5c864254c819ff63433a38fa8cc74a7ed9b64e7b54b01304"
+      "bytes": 4339,
+      "sha256": "1aaadc248d77b3d2e604d54f20a7a21a28203800ed069cd57a1e38a6b16a14e6",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_top_tb_smoke.sv"
     },
     {
       "path": "tb/vcs_sa_top_tb_smoke.f",
       "bytes": 79,
-      "sha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758"
+      "sha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/vcs_sa_top_tb_smoke.f"
+    },
+    {
+      "path": "TPU_CTRL/Makefile",
+      "bytes": 8382,
+      "sha256": "535ac7276da33c04ebf6ac052647748415f30f4e0b79a5bbe7bbcab83ef8b399",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "Makefile"
+    },
+    {
+      "path": "TPU_CTRL/README.md",
+      "bytes": 3894,
+      "sha256": "011b3dc2fe7f1738083a06c2c409199b4ba0c52741705ada56503557785486e0",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "README.md"
+    },
+    {
+      "path": "TPU_CTRL/rtl/filelist.f",
+      "bytes": 58,
+      "sha256": "c3ca48059b7e111e039ec814d701903cf0fb68728ff8f45d0ee0974932825e34",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/filelist.f"
+    },
+    {
+      "path": "TPU_CTRL/rtl/tpu_ctrl.sv",
+      "bytes": 4959,
+      "sha256": "f24690bc7b8afa55f1c30bdd8c44b5cb0a6d6a7772ce2bcf1248145d18aa2785",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/tpu_ctrl.sv"
+    },
+    {
+      "path": "TPU_CTRL/rtl/tpu_ctrl_skew.sv",
+      "bytes": 2485,
+      "sha256": "493f16d10e176558aa8ac230afd8d7494d04d9452f6aa40868b36d74f72e0f0a",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/tpu_ctrl_skew.sv"
+    },
+    {
+      "path": "TPU_CTRL/rtl/tpu_ctrl_sync.sv",
+      "bytes": 1037,
+      "sha256": "62ff5530ea9241dd6c009b72ec42812c92904e5a18ab2364d9a3cded95ff525e",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/tpu_ctrl_sync.sv"
+    },
+    {
+      "path": "TPU_CTRL/scripts/check_license.sh",
+      "bytes": 1823,
+      "sha256": "67114732f7d73e88837214305d40a6ec04797ff1bf0f0f41a2b02d9791883ed4",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "scripts/check_license.sh"
+    },
+    {
+      "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
+      "bytes": 9739,
+      "sha256": "34533f37e8e3aedc23aa53b8aa286fe477219d5fc2852265b4df134791c282b8",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "tb/tb_tpu_ctrl.sv"
     }
   ]
 }
