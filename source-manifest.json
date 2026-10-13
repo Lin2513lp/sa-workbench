@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "collector-stream-20261011",
+  "release": "skew-readable-20261012",
   "files": [
     {
       "path": "Makefile",
@@ -194,8 +194,8 @@
     },
     {
       "path": "TPU_CTRL/rtl/tpu_ctrl_skew.sv",
-      "bytes": 2485,
-      "sha256": "493f16d10e176558aa8ac230afd8d7494d04d9452f6aa40868b36d74f72e0f0a",
+      "bytes": 3528,
+      "sha256": "c0433f8abd80d5b36ef1672efd203a073b36fcda805af431aa5856379f2d63d0",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/tpu_ctrl_skew.sv"
     },

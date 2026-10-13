@@ -375,7 +375,7 @@
         {
                 "group": "TPU_CTRL",
                 "path": "TPU_CTRL/rtl/tpu_ctrl_skew.sv",
-                "desc": "16路逐行延迟与空白补零"
+                "desc": "先统一补0，再按16路分别延迟"
         },
         {
                 "group": "TPU_CTRL",
@@ -450,7 +450,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=collector-stream-20261011`);
+          const response = await fetch(`./code/${file.path}?release=skew-readable-20261012`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);
