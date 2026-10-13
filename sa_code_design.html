@@ -390,7 +390,7 @@
         {
                 "group": "TPU_CTRL",
                 "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
-                "desc": "H=W=1、4、16三段独立送数与自检"
+                "desc": "三种H/W均送相同16包，补0对齐输出一致"
         }
 ];
 
@@ -450,7 +450,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=ctrl-hex-logs-20261013`);
+          const response = await fetch(`./code/${file.path}?release=ctrl-hw-independent-20261013`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);

@@ -51,30 +51,31 @@ tb/tb_tpu_ctrl.sv        # 独立逐拍 oracle 和 directed stimulus
 scripts/check_license.sh
 ```
 
-TB 每个时钟从实际 FIFO 读取记录中预测 16 路数据，不使用 DUT 内部移位寄存器来计算期望值。它同时检查输出 valid、物理第15路 LAST、读使能条件、两级同步、输入计数与 DONE 控制。
+TB 使用一个 initial，明确分开写 H=W=1、4、16 三段。三段都送相同的16包512bit数据，LAST都在第16包，不由H/W决定输入长度。mode固定为0。每段直接按第t拍、第r路来自第(t-r)包计算期望值，范围外补0，不读取DUT内部寄存器。
 
-## 覆盖的场景
+## 模块职责
 
-- 使能但未 START 的空闲阶段不读 FIFO。
-- 四种精度模式分别设置 H=W=1、4、16；CTRL 的物理 skew 不随 H/W/mode 改变。
-- 连续输入和输入气泡；气泡时移位链继续推进，空白路为零。
-- 最后向量读完后停止取 FIFO，即使下一任务的头部可见也不提前读取。
-- START 保持高不重复启动；任务中新的 START 上升沿不重置当前任务。
-- 输入未完成时的错误提前 SA LAST 被忽略。
-- 输入尾巴已结束、SA LAST 已到但流水未空，DONE 继续等待。
-- H=W=4 中 SA LAST/EMPTY 先于物理输入尾巴到达，CTRL 记住 LAST 并等待尾巴。
-- 每个正常任务只产生一次 DONE；输入计数正确，错误接口保持保留的零值。
-- 关闭 EN 中止在途任务并清空 skew；复位后重新执行任务。
+- CTRL的物理宽度固定16路，第r路固定延迟r拍；H/W和mode不改变数据内容、补0、VALID或输入LAST对齐。
+- rpt_dat_in_cnt只统计实际FIFO读取包数，START接受时清0。三段同为16包，因此三段计数均为16；不会用H乘W推算。
+- rpt_cpt_done等待输入尾部结束、SA最终输出LAST到达和SA流水排空。H/W可能通过SA反馈影响完成时刻；当前CTRL不直接根据H/W进行计时。
+- rpt_error及rpt_error_state暂时固定为0，等待错误处理需求。
 
-SA 的 `data_out_last` 和 `sa_pipeline_empty` 在此 TB 中由驱动模拟，因此这份单元测试不能验证矩阵数值或 SA 内部流水。真实 FIFO_IN+CTRL+SA 的 54 个 H=W 联调用例由独立的集成 TB 验证。本工程也不宣称 CDC 亚稳态概率、形式证明或综合时序已完成验证。
+## 当前TB覆盖
 
-## 接入 SA 时
+- 三种H/W均读取相同16包，检查31个采样列的全部16路数据及前后补0。
+- 检查FIFO读使能、VALID、物理第15路LAST、逐拍输入计数、预留错误上报。
+- 检查启动后的同步状态和计数清0，模拟SA LAST到达但流水未空时DONE继续等待。
+- 检查流水排空后单拍DONE，以及START保持高不重复启动。
+- 每拍打印十六进制INPUT、EXPECTED和ACTUAL；总线左侧为第15路，右侧为第0路。
 
-CTRL 新输入需要按已更新的集成顶层连接：
+当前测试固定mode=0、连续输入；前版四模式、气泡及中止恢复等测试已存档，不属于当前精简TB的覆盖范围。
+SA反馈由TB模拟，本单测不验证SA矩阵乘加。真实FIFO_IN+CTRL+SA的历史54个H=W联调用例报告保留在工作台。
+
+## 接入SA
 
 ```systemverilog
 .data_out_last(dat_out_vld && dat_out_last),
 .sa_pipeline_empty(sa_pipeline_empty)
 ```
 
-SA 的 `sa_pipeline_empty` 来自底部原始 PE valid 的归约取反。DONE 还必须同时满足输入尾巴结束和最终输出 LAST，因此启动阶段的空流水不会触发完成。
+sa_pipeline_empty来自SA底部原始PE valid归约取反。尺寸配置需在START前稳定并保持到DONE。

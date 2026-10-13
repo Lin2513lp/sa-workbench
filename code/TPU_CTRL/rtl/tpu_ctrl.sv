@@ -1,6 +1,9 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+// CTRL 固定处理 16 路 x 32 bit 输入，第 r 路延迟 r 拍；空白位置补 0。
+// H/W/mode 配置不改变 FIFO 读法、输出数据、VALID 或物理尾部 LAST。
+// 输入包数由实际 FIFO 数据及输入 LAST 决定，不由 H/W 决定。
 module tpu_ctrl (
     // Always-on control while a task/CDC handshake is in progress; SYS clock
     // gating and reset release remain the external CRG responsibility.
@@ -8,7 +11,8 @@ module tpu_ctrl (
     input  wire logic tpu_rst_n,
     input  wire logic cpu_tpu_en,
     input  wire logic cpu_tpu_start,
-    // Bundled static configuration: keep stable before START through DONE.
+    // 静态配置接口：START 前到 DONE 期间保持稳定；H/W 使用尺寸减 1 编码。
+    // 本 CTRL 不直接使用配置计算数据路径或计数，SA 使用配置完成计算。
     input  wire logic [1:0] cpu_cpt_mode,
     input  wire logic [3:0] cpu_h_size,
     input  wire logic [3:0] cpu_w_size,
@@ -27,7 +31,9 @@ module tpu_ctrl (
     output      logic [511:0] dat_in_a,
     output      logic dat_in_vld,
     output      logic dat_in_last,
+    // DONE 为一拍脉冲，等待固定输入尾巴、SA 最终输出及实际流水排空。
     output      logic rpt_cpt_done,
+    // 每次实际 FIFO 读取加 1，START 清零；相同输入三种 H/W 均应计数 16。
     output      logic [31:0] rpt_dat_in_cnt,
     output      logic rpt_error,
     output      logic [2:0] rpt_error_state
@@ -39,8 +45,9 @@ module tpu_ctrl (
     logic output_last_seen_q;
     logic start_accept;
     logic skew_clear;
-    // H/W affect SA PE masks, never the physical CTRL skew width or delay.
-    // Precision arithmetic is owned by SA; every mode uses the same skew.
+    // H/W/mode 仅保留配置接口，不裁剪 16 路数据，也不改变各路延迟。
+    // H/W 可通过 SA 的 LAST / EMPTY 反馈影响 DONE 时刻，而非直接设定计时。
+    // rpt_dat_in_cnt 统计实际读取，不应直接赋成 H/W 或 H*W。
     logic unused_static_config;
     assign unused_static_config = ^{cpu_cpt_mode, cpu_h_size, cpu_w_size};
 
@@ -93,11 +100,11 @@ module tpu_ctrl (
                     if (fifo_in_rd_dat_last) input_last_seen_q <= 1'b1;
                 end
                 if (dat_in_vld && dat_in_last) skew_last_seen_q <= 1'b1;
-                // Small H/W completes useful C before the physical 16-lane
-                // input tail. Remember SA completion without dropping that
-                // tail, and complete once both ends have been sampled.
-                // Ignore LAST on the FIFO LAST edge itself: even H=W=L=1
-                // returns its PE result to CTRL at the following edge.
+                // 小尺寸 SA 的有效结果可能早于固定 16 路输入尾巴结束。
+                // 先记住 SA LAST，仍然把所有路尾巴送完并等待 SA 流水为空。
+                // 不根据 H/W 提前截断 dat_in_a / VALID / LAST。
+                // 与 FIFO 最后一包同拍的 SA LAST 视为提前反馈；
+                // 最短 PE 路径也只能在之后的采样沿把结果返回 CTRL。
                 if (data_out_last && input_last_seen_q)
                     output_last_seen_q <= 1'b1;
                 if ((skew_last_seen_q || (dat_in_vld && dat_in_last)) &&
