@@ -18,6 +18,8 @@ module tb_tpu_ctrl;
     // 检查器只需循环下标、当前期望值和总检查次数，不保存历史数据。
     integer t, lane, expected_word;
     integer checks_count = 0;
+    // 仅用于日志：拼出本拍512bit期望值，不保存历史数据。
+    logic [511:0] expected_data;
 `ifdef FSDB_TRACE
     string wave_file;
 `elsif VCD_TRACE
@@ -100,12 +102,16 @@ module tb_tpu_ctrl;
             for (lane = 0; lane < 16; lane = lane + 1) begin
                 // 第lane路来自第(t-lane)包，范围外直接期望0。
                 expected_word = (t >= lane && t-lane < 1) ? (t-lane+1)*100+lane+1 : 0;
+                expected_data[lane*32 +: 32] = 32'(expected_word);
                 checks_count++;
                 if (dat_in_a[lane*32 +: 32] !== 32'(expected_word))
                     $fatal(1, "H=W=1: t=%0d lane=%0d actual=%0d expected=%0d",
                            t, lane, dat_in_a[lane*32 +: 32], expected_word);
             end
             checks_count += 3;
+            // 十六进制整总线：左侧为lane15，右侧为lane0；采样点同上述校验。
+            $display("CTRL_HEX H=W=1 t=%0d read=%b input=%0128h expected=%0128h actual=%0128h valid=%b last=%b",
+                     t, fifo_in_re, fifo_in_rdata, expected_data, dat_in_a, dat_in_vld, dat_in_last);
             if (fifo_in_re !== (t < 1)) $fatal(1, "H=W=1: FIFO read t=%0d", t);
             if (dat_in_vld !== 1'b1) $fatal(1, "H=W=1: VALID t=%0d", t);
             if (dat_in_last !== (t == 15)) $fatal(1, "H=W=1: LAST t=%0d", t);
@@ -163,12 +169,16 @@ module tb_tpu_ctrl;
             for (lane = 0; lane < 16; lane = lane + 1) begin
                 // 第lane路来自第(t-lane)包，范围外直接期望0。
                 expected_word = (t >= lane && t-lane < 4) ? (t-lane+1)*100+lane+1 : 0;
+                expected_data[lane*32 +: 32] = 32'(expected_word);
                 checks_count++;
                 if (dat_in_a[lane*32 +: 32] !== 32'(expected_word))
                     $fatal(1, "H=W=4: t=%0d lane=%0d actual=%0d expected=%0d",
                            t, lane, dat_in_a[lane*32 +: 32], expected_word);
             end
             checks_count += 3;
+            // 十六进制整总线：左侧为lane15，右侧为lane0；采样点同上述校验。
+            $display("CTRL_HEX H=W=4 t=%0d read=%b input=%0128h expected=%0128h actual=%0128h valid=%b last=%b",
+                     t, fifo_in_re, fifo_in_rdata, expected_data, dat_in_a, dat_in_vld, dat_in_last);
             if (fifo_in_re !== (t < 4)) $fatal(1, "H=W=4: FIFO read t=%0d", t);
             if (dat_in_vld !== 1'b1) $fatal(1, "H=W=4: VALID t=%0d", t);
             if (dat_in_last !== (t == 18)) $fatal(1, "H=W=4: LAST t=%0d", t);
@@ -226,12 +236,16 @@ module tb_tpu_ctrl;
             for (lane = 0; lane < 16; lane = lane + 1) begin
                 // 第lane路来自第(t-lane)包，范围外直接期望0。
                 expected_word = (t >= lane && t-lane < 16) ? (t-lane+1)*100+lane+1 : 0;
+                expected_data[lane*32 +: 32] = 32'(expected_word);
                 checks_count++;
                 if (dat_in_a[lane*32 +: 32] !== 32'(expected_word))
                     $fatal(1, "H=W=16: t=%0d lane=%0d actual=%0d expected=%0d",
                            t, lane, dat_in_a[lane*32 +: 32], expected_word);
             end
             checks_count += 3;
+            // 十六进制整总线：左侧为lane15，右侧为lane0；采样点同上述校验。
+            $display("CTRL_HEX H=W=16 t=%0d read=%b input=%0128h expected=%0128h actual=%0128h valid=%b last=%b",
+                     t, fifo_in_re, fifo_in_rdata, expected_data, dat_in_a, dat_in_vld, dat_in_last);
             if (fifo_in_re !== (t < 16)) $fatal(1, "H=W=16: FIFO read t=%0d", t);
             if (dat_in_vld !== 1'b1) $fatal(1, "H=W=16: VALID t=%0d", t);
             if (dat_in_last !== (t == 30)) $fatal(1, "H=W=16: LAST t=%0d", t);

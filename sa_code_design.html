@@ -450,7 +450,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=ctrl-three-case-tb-20261013`);
+          const response = await fetch(`./code/${file.path}?release=ctrl-hex-logs-20261013`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);
