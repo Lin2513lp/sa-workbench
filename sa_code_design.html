@@ -390,7 +390,7 @@
         {
                 "group": "TPU_CTRL",
                 "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
-                "desc": "CTRL独立自检、提前LAST与流水排空"
+                "desc": "顺序initial送数与逐拍自检，无task"
         }
 ];
 
@@ -450,7 +450,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=skew-concat-20261012`);
+          const response = await fetch(`./code/${file.path}?release=ctrl-simple-tb-20261012`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);

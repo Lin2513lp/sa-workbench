@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "skew-concat-20261012",
+  "release": "ctrl-simple-tb-20261012",
   "files": [
     {
       "path": "Makefile",
@@ -215,8 +215,8 @@
     },
     {
       "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
-      "bytes": 9739,
-      "sha256": "34533f37e8e3aedc23aa53b8aa286fe477219d5fc2852265b4df134791c282b8",
+      "bytes": 13503,
+      "sha256": "8eb392af5ec40bbea96f6fdec1091116f044b1b84a4fa833886fa58231ddc11f",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tb_tpu_ctrl.sv"
     }
