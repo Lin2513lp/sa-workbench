@@ -24,8 +24,9 @@ module tpu_ctrl_skew #(
     logic [LANES*DATA_WIDTH-1:0] padded_input;
     assign padded_input = input_valid ? input_data : '0;
 
-    // 2. 再错开：第 0 路直通，第 r 路经过 r 级数据寄存器。
-    assign output_data[0 +: DATA_WIDTH] = clear ? '0 : padded_input[0 +: DATA_WIDTH];
+    // 2. 再错开：lane_data[r] 保存第 r 路延迟 r 拍后的数据。
+    logic [DATA_WIDTH-1:0] lane_data [0:LANES-1];
+    assign lane_data[0] = padded_input[0 +: DATA_WIDTH];
 
     for (genvar row = 1; row < LANES; row++) begin : gen_lane
         // row=1：输入 -> data_q[0] -> 输出
@@ -45,9 +46,7 @@ module tpu_ctrl_skew #(
                     data_q[stage] <= data_q[stage-1];
             end
         end
-        // 开头的空位来自复位清零，末尾的空位来自输入补零。
-        // clear 立即屏蔽输出，下一上升沿同时清空内部寄存器。
-        assign output_data[row*DATA_WIDTH +: DATA_WIDTH] = clear ? '0 : data_q[row-1];
+        assign lane_data[row] = data_q[row-1];
     end
 
     // 3. 标记跟随数据：共用一条历史链，第 r 位表示延迟 r 拍。
@@ -70,6 +69,42 @@ module tpu_ctrl_skew #(
             end
         end
     end
+    // 4. 明确拼出输出列：有效位置放数据，其他位置放一整个字的 0。
+    logic [LANES-1:0] lane_valid;
+    assign lane_valid = valid_history & {LANES{!clear}};
+
+    if (LANES == 16 && DATA_WIDTH == 32) begin : gen_output_16
+        // 大括号左边是高位第 15 路，右边是低位第 0 路。
+        // T0: {15 个零字, P0[0]}
+        // T1: {14 个零字, P0[1], P1[0]}
+        // T2: {13 个零字, P0[2], P1[1], P2[0]}
+        assign output_data = {
+            lane_valid[15] ? lane_data[15] : 32'b0,
+            lane_valid[14] ? lane_data[14] : 32'b0,
+            lane_valid[13] ? lane_data[13] : 32'b0,
+            lane_valid[12] ? lane_data[12] : 32'b0,
+            lane_valid[11] ? lane_data[11] : 32'b0,
+            lane_valid[10] ? lane_data[10] : 32'b0,
+            lane_valid[ 9] ? lane_data[ 9] : 32'b0,
+            lane_valid[ 8] ? lane_data[ 8] : 32'b0,
+            lane_valid[ 7] ? lane_data[ 7] : 32'b0,
+            lane_valid[ 6] ? lane_data[ 6] : 32'b0,
+            lane_valid[ 5] ? lane_data[ 5] : 32'b0,
+            lane_valid[ 4] ? lane_data[ 4] : 32'b0,
+            lane_valid[ 3] ? lane_data[ 3] : 32'b0,
+            lane_valid[ 2] ? lane_data[ 2] : 32'b0,
+            lane_valid[ 1] ? lane_data[ 1] : 32'b0,
+            lane_valid[ 0] ? lane_data[ 0] : 32'b0
+        };
+    end else begin : gen_output_other_lanes
+        // 保留其他路数或字宽配置；每路仍按相同规则补 0。
+        for (genvar row = 0; row < LANES; row++) begin : gen_word
+            assign output_data[row*DATA_WIDTH +: DATA_WIDTH] =
+                lane_valid[row] ? lane_data[row] : {DATA_WIDTH{1'b0}};
+        end
+    end
+
+    // clear 立即把所有路补成 0，下一上升沿同时清空内部寄存器。
     // 任意一路有效，整列 valid 就为 1；LAST 跟随物理最后一路。
     assign output_valid = !clear && (|valid_history);
     assign output_last = !clear && last_history[LANES-1];

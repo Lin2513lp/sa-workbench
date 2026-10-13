@@ -375,7 +375,7 @@
         {
                 "group": "TPU_CTRL",
                 "path": "TPU_CTRL/rtl/tpu_ctrl_skew.sv",
-                "desc": "先统一补0，再按16路分别延迟"
+                "desc": "16路大括号拼接：有效数据或补0"
         },
         {
                 "group": "TPU_CTRL",
@@ -450,7 +450,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=skew-readable-20261012`);
+          const response = await fetch(`./code/${file.path}?release=skew-concat-20261012`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);
