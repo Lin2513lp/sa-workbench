@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "ctrl-simple-tb-20261012",
+  "release": "ctrl-three-case-tb-20261013",
   "files": [
     {
       "path": "Makefile",
@@ -215,8 +215,8 @@
     },
     {
       "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
-      "bytes": 13503,
-      "sha256": "8eb392af5ec40bbea96f6fdec1091116f044b1b84a4fa833886fa58231ddc11f",
+      "bytes": 13031,
+      "sha256": "b39a527d47ad078f4c0ecb59e2fb059029909d337ebec14c829f03390b6ae679",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tb_tpu_ctrl.sv"
     }
