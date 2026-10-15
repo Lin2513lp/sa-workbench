@@ -8,7 +8,7 @@ module tb_tpu_ctrl;
     logic [3:0] cpu_h_size, cpu_w_size;
     logic fifo_empty, fifo_in_rd_dat_last;
     logic [511:0] fifo_in_rdata;
-    logic data_out_last, sa_pipeline_empty;
+    logic data_out_last;
     logic fifo_in_re, cpu_tpu_en_sync, cpu_tpu_start_sync;
     logic [511:0] dat_in_a;
     logic dat_in_vld, dat_in_last, rpt_cpt_done, rpt_error;
@@ -39,7 +39,6 @@ module tb_tpu_ctrl;
         .fifo_in_rdata(fifo_in_rdata),
         .fifo_in_rd_dat_last(fifo_in_rd_dat_last),
         .data_out_last(data_out_last),
-        .sa_pipeline_empty(sa_pipeline_empty),
         .fifo_in_re(fifo_in_re),
         .cpu_tpu_en_sync(cpu_tpu_en_sync),
         .cpu_tpu_start_sync(cpu_tpu_start_sync),
@@ -71,7 +70,7 @@ module tb_tpu_ctrl;
         cpu_tpu_en = 0; cpu_tpu_start = 0;
         cpu_cpt_mode = 0; cpu_h_size = 0; cpu_w_size = 0;
         fifo_empty = 1; fifo_in_rdata = 0; fifo_in_rd_dat_last = 0;
-        data_out_last = 0; sa_pipeline_empty = 1;
+        data_out_last = 0;
         repeat (3) @(negedge sys_ckg);
         tpu_rst_n = 1;
         repeat (3) @(negedge sys_ckg);
@@ -130,16 +129,13 @@ module tb_tpu_ctrl;
         if (dat_in_a !== 0 || dat_in_vld !== 0 || dat_in_last !== 0)
             $fatal(1, "H=W=1: skew tail did not clear");
 
-        // 模拟SA结束：LAST来了但流水未空，DONE仍必须为0。
-        data_out_last = 1; sa_pipeline_empty = 0;
-        @(negedge sys_ckg);
-        checks_count++;
-        if (rpt_cpt_done !== 0) $fatal(1, "H=W=1: DONE before SA drains");
-        data_out_last = 0; sa_pipeline_empty = 1;
+        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿产生一拍DONE。
+        data_out_last = 1;
         @(negedge sys_ckg);
         checks_count++;
         if (rpt_cpt_done !== 1 || rpt_dat_in_cnt !== 32'd16)
             $fatal(1, "H=W=1: DONE/final input count incorrect");
+        data_out_last = 0;
         @(negedge sys_ckg);
         checks_count++;
         if (rpt_cpt_done !== 0 || fifo_in_re !== 0)
@@ -197,16 +193,13 @@ module tb_tpu_ctrl;
         if (dat_in_a !== 0 || dat_in_vld !== 0 || dat_in_last !== 0)
             $fatal(1, "H=W=4: skew tail did not clear");
 
-        // 模拟SA结束：LAST来了但流水未空，DONE仍必须为0。
-        data_out_last = 1; sa_pipeline_empty = 0;
-        @(negedge sys_ckg);
-        checks_count++;
-        if (rpt_cpt_done !== 0) $fatal(1, "H=W=4: DONE before SA drains");
-        data_out_last = 0; sa_pipeline_empty = 1;
+        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿产生一拍DONE。
+        data_out_last = 1;
         @(negedge sys_ckg);
         checks_count++;
         if (rpt_cpt_done !== 1 || rpt_dat_in_cnt !== 32'd16)
             $fatal(1, "H=W=4: DONE/final input count incorrect");
+        data_out_last = 0;
         @(negedge sys_ckg);
         checks_count++;
         if (rpt_cpt_done !== 0 || fifo_in_re !== 0)
@@ -264,16 +257,13 @@ module tb_tpu_ctrl;
         if (dat_in_a !== 0 || dat_in_vld !== 0 || dat_in_last !== 0)
             $fatal(1, "H=W=16: skew tail did not clear");
 
-        // 模拟SA结束：LAST来了但流水未空，DONE仍必须为0。
-        data_out_last = 1; sa_pipeline_empty = 0;
-        @(negedge sys_ckg);
-        checks_count++;
-        if (rpt_cpt_done !== 0) $fatal(1, "H=W=16: DONE before SA drains");
-        data_out_last = 0; sa_pipeline_empty = 1;
+        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿产生一拍DONE。
+        data_out_last = 1;
         @(negedge sys_ckg);
         checks_count++;
         if (rpt_cpt_done !== 1 || rpt_dat_in_cnt !== 32'd16)
             $fatal(1, "H=W=16: DONE/final input count incorrect");
+        data_out_last = 0;
         @(negedge sys_ckg);
         checks_count++;
         if (rpt_cpt_done !== 0 || fifo_in_re !== 0)

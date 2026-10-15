@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "ctrl-hw-independent-20261013",
+  "release": "ctrl-interface-restored-20261014",
   "files": [
     {
       "path": "Makefile",
@@ -173,8 +173,8 @@
     },
     {
       "path": "TPU_CTRL/README.md",
-      "bytes": 3940,
-      "sha256": "e5d819ec39eee71a15979c4fcf1b4597cd18c710fbff5c569399715d2d72842c",
+      "bytes": 3994,
+      "sha256": "7058f97d4172bef0ed80282f3f4f35bd5742646b7036b63207531cd960931925",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "README.md"
     },
@@ -187,8 +187,8 @@
     },
     {
       "path": "TPU_CTRL/rtl/tpu_ctrl.sv",
-      "bytes": 5711,
-      "sha256": "5bc4cd1bf8b9def557e8c3bc8171f0ff46a182cccfb181def12cdf56f1c5b19b",
+      "bytes": 5576,
+      "sha256": "8d0041a464038c029ea9959e10134a0e23dc625605bfde7d0c1c559bd884ea5f",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/tpu_ctrl.sv"
     },
@@ -215,8 +215,8 @@
     },
     {
       "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
-      "bytes": 14405,
-      "sha256": "3e2d94116bf695d9834743395d48b571daf3f0d450b2b8ded60da8e6054483d0",
+      "bytes": 13828,
+      "sha256": "46a4439b4110ec4cd27fb381fb2f6f8dd831cb04b616946ef5510c168f3892f4",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tb_tpu_ctrl.sv"
     }

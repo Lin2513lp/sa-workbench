@@ -57,15 +57,15 @@ TB 使用一个 initial，明确分开写 H=W=1、4、16 三段。三段都送�
 
 - CTRL的物理宽度固定16路，第r路固定延迟r拍；H/W和mode不改变数据内容、补0、VALID或输入LAST对齐。
 - rpt_dat_in_cnt只统计实际FIFO读取包数，START接受时清0。三段同为16包，因此三段计数均为16；不会用H乘W推算。
-- rpt_cpt_done等待输入尾部结束、SA最终输出LAST到达和SA流水排空。H/W可能通过SA反馈影响完成时刻；当前CTRL不直接根据H/W进行计时。
+- rpt_cpt_done等待CTRL输入尾部送完及SA最终输出LAST到达，先到的条件用内部标志记住。H/W可能通过SA的LAST时刻影响完成；CTRL不直接按H/W计时，也不增加SA流水空闲端口。
 - rpt_error及rpt_error_state暂时固定为0，等待错误处理需求。
 
 ## 当前TB覆盖
 
 - 三种H/W均读取相同16包，检查31个采样列的全部16路数据及前后补0。
 - 检查FIFO读使能、VALID、物理第15路LAST、逐拍输入计数、预留错误上报。
-- 检查启动后的同步状态和计数清0，模拟SA LAST到达但流水未空时DONE继续等待。
-- 检查流水排空后单拍DONE，以及START保持高不重复启动。
+- 检查启动后的同步状态和计数清0；输入尾部送完后，未收到SA LAST时不能报告DONE。
+- 检查SA LAST到达后产生单拍DONE，以及START保持高不重复启动。
 - 每拍打印十六进制INPUT、EXPECTED和ACTUAL；总线左侧为第15路，右侧为第0路。
 
 当前测试固定mode=0、连续输入；前版四模式、气泡及中止恢复等测试已存档，不属于当前精简TB的覆盖范围。
@@ -74,8 +74,7 @@ SA反馈由TB模拟，本单测不验证SA矩阵乘加。真实FIFO_IN+CTRL+SA�
 ## 接入SA
 
 ```systemverilog
-.data_out_last(dat_out_vld && dat_out_last),
-.sa_pipeline_empty(sa_pipeline_empty)
+.data_out_last(dat_out_vld && dat_out_last)
 ```
 
-sa_pipeline_empty来自SA底部原始PE valid归约取反。尺寸配置需在START前稳定并保持到DONE。
+顶层接口保持原设计，仅使用data_out_last反馈，不含sa_pipeline_empty输入。尺寸配置需在START前稳定并保持到DONE。

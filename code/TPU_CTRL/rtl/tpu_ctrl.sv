@@ -22,16 +22,13 @@ module tpu_ctrl (
     // Wire SA dat_out_vld && dat_out_last here. This is SA completion, not
     // acknowledgment by the AXI output consumer.
     input  wire logic data_out_last,
-    // Actual bottom-row PE-valid reduction from SA. Useful output LAST can
-    // precede valid padding; keep the task alive until that pipeline drains.
-    input  wire logic sa_pipeline_empty,
     output      logic fifo_in_re,
     output      logic cpu_tpu_en_sync,
     output      logic cpu_tpu_start_sync,
     output      logic [511:0] dat_in_a,
     output      logic dat_in_vld,
     output      logic dat_in_last,
-    // DONE 为一拍脉冲，等待固定输入尾巴、SA 最终输出及实际流水排空。
+    // DONE 为一拍脉冲，等待固定输入尾巴及已收到的 SA 最终输出 LAST。
     output      logic rpt_cpt_done,
     // 每次实际 FIFO 读取加 1，START 清零；相同输入三种 H/W 均应计数 16。
     output      logic [31:0] rpt_dat_in_cnt,
@@ -46,7 +43,7 @@ module tpu_ctrl (
     logic start_accept;
     logic skew_clear;
     // H/W/mode 仅保留配置接口，不裁剪 16 路数据，也不改变各路延迟。
-    // H/W 可通过 SA 的 LAST / EMPTY 反馈影响 DONE 时刻，而非直接设定计时。
+    // H/W 可通过 SA 的 LAST 反馈影响 DONE 时刻，而非直接设定计时。
     // rpt_dat_in_cnt 统计实际读取，不应直接赋成 H/W 或 H*W。
     logic unused_static_config;
     assign unused_static_config = ^{cpu_cpt_mode, cpu_h_size, cpu_w_size};
@@ -101,15 +98,14 @@ module tpu_ctrl (
                 end
                 if (dat_in_vld && dat_in_last) skew_last_seen_q <= 1'b1;
                 // 小尺寸 SA 的有效结果可能早于固定 16 路输入尾巴结束。
-                // 先记住 SA LAST，仍然把所有路尾巴送完并等待 SA 流水为空。
+                // 先记住 SA LAST，仍然把所有路尾巴送完后再报告 DONE。
                 // 不根据 H/W 提前截断 dat_in_a / VALID / LAST。
                 // 与 FIFO 最后一包同拍的 SA LAST 视为提前反馈；
                 // 最短 PE 路径也只能在之后的采样沿把结果返回 CTRL。
                 if (data_out_last && input_last_seen_q)
                     output_last_seen_q <= 1'b1;
                 if ((skew_last_seen_q || (dat_in_vld && dat_in_last)) &&
-                    (output_last_seen_q || (data_out_last && input_last_seen_q)) &&
-                    sa_pipeline_empty) begin
+                    (output_last_seen_q || (data_out_last && input_last_seen_q))) begin
                     rpt_cpt_done <= 1'b1;
                     task_active_q <= 1'b0;
                 end
