@@ -58,12 +58,12 @@ TB 使用一个 initial，明确分开写 H=W=1、4、16 三段。三段都送�
 - CTRL的物理宽度固定16路，第r路固定延迟r拍；H/W和mode不改变数据内容、补0、VALID或输入LAST对齐。
 - rpt_dat_in_cnt只统计实际FIFO读取包数，START接受时清0。三段同为16包，因此三段计数均为16；不会用H乘W推算。
 - rpt_cpt_done等待CTRL输入尾部送完及SA最终输出LAST到达，先到的条件用内部标志记住。H/W可能通过SA的LAST时刻影响完成；CTRL不直接按H/W计时，也不增加SA流水空闲端口。
-- rpt_error为一位错误标志，rpt_error_state[2:0]为错误次数；判定和计数逻辑先预留，当前两者都为0。rpt_cpt_error为寄存器名，通过rpt_error_state接口读回，字索引0x103、CPU字节偏移0x40C，低3位有效，高29位读0。
+- rpt_error为累计错误标志，等于错误次数非0；rpt_error_state[2:0]为错误次数。任务中FIFO输入LAST尚未读入就收到SA完成LAST，判为协议错误；连续同一次LAST只计一次，次数到7饱和。复位或有效新START清零，DONE或关闭EN后保留。正常FIFO等待和气泡不报错，不因错误改变数据/完成逻辑。rpt_cpt_error为寄存器名，通过rpt_error_state接口读回，字索引0x103、CPU字节偏移0x40C，低3位有效，高29位读0。
 
 ## 当前TB覆盖
 
 - 三种H/W均读取相同16包，检查31个采样列的全部16路数据及前后补0。
-- 检查FIFO读使能、VALID、物理第15路LAST、逐拍输入计数、预留错误上报。
+- 检查FIFO读使能、VALID、物理第15路LAST、逐拍输入计数、正常任务零错误上报。
 - 检查启动后的同步状态和计数清0；输入尾部送完后，未收到SA LAST时不能报告DONE。
 - 检查SA LAST到达后产生单拍DONE，以及START保持高不重复启动。
 - 每拍打印十六进制INPUT、EXPECTED和ACTUAL；总线左侧为第15路，右侧为第0路。
@@ -81,3 +81,7 @@ SA反馈由TB模拟，本单测不验证SA矩阵乘加。真实FIFO_IN+CTRL+SA�
 ## 错误上报与寄存器源码
 
 rtl/reg_list.sv 与 rtl/ahb_slave_regmap.sv 同步了3bit错误次数接口。tb/tb_reg_list.sv 和 tb/tb_ahb_slave_regmap.sv 覆盖0～7全部计数值、只读保护及高29位补0。AHB封装依赖既有AHB_SLAVE模块；默认Makefile仍只运行CTRL独立TB。reg_list仅实时读回次数，不自行增加计数或清零；状态接入AHB域前需完成CDC。
+
+## 实际错误检测范围
+
+目前只检测提前SA完成LAST协议错误，包括与FIFO最后一包同拍的提前反馈。错误仅上报，不中止任务。尚未定义FIFO缺数、超时或算术数值错误检测；不能把合法FIFO空拍直接计错。错误次数大于7保持7，不回绕。错误次数由CTRL产生，reg_list只读回，不自己计数。

@@ -32,9 +32,9 @@ module tpu_ctrl (
     output      logic rpt_cpt_done,
     // 每次实际 FIFO 读取加 1，START 清零；相同输入三种 H/W 均应计数 16。
     output      logic [31:0] rpt_dat_in_cnt,
-    // 错误判定标志暂时预留；目前未定义错误事件，固定为 0。
+    // 本次任务检测到提前 SA LAST 后保持为 1；复位或新 START 清零。
     output      logic rpt_error,
-    // 3-bit error-count report; register-map field name is rpt_cpt_error.
+    // 提前 SA LAST 的错误次数，最大为 7；regmap 字段为 rpt_cpt_error。
     output      logic [2:0] rpt_error_state
 );
     logic start_prev_q;
@@ -44,6 +44,8 @@ module tpu_ctrl (
     logic output_last_seen_q;
     logic start_accept;
     logic skew_clear;
+    logic bad_last;
+    logic bad_last_prev_q;
     // H/W/mode 仅保留配置接口，不裁剪 16 路数据，也不改变各路延迟。
     // H/W 可通过 SA 的 LAST 反馈影响 DONE 时刻，而非直接设定计时。
     // rpt_dat_in_cnt 统计实际读取，不应直接赋成 H/W 或 H*W。
@@ -115,9 +117,29 @@ module tpu_ctrl (
         end
     end
 
-    // 错误次数上报接口；regmap 只读字段 rpt_cpt_error 对应此 3-bit 数值。
-    // 错误判定与计数逻辑暂时预留，当前无已定义错误事件，固定上报 0。
-    assign rpt_error = 1'b0;
-    assign rpt_error_state = 3'b000;
+    // FIFO 最后一包尚未在此前时钟沿读入，SA 就上报 LAST，是提前反馈。
+    // 与 FIFO LAST 同拍的反馈也无效，判据与上面的 DONE 接收条件一致。
+    // FIFO 空闲等待和输入气泡本身不属于错误，不改变读取/补 0/完成逻辑。
+    assign bad_last = cpu_tpu_en_sync && task_active_q &&
+                      data_out_last && !input_last_seen_q;
+
+    // 连续拉高的同一次提前 LAST 只计一次；拉低后再出现才是新错误。
+    // 计数在 7 饱和，任务结束或关闭 EN 后保留，供 CPU 读取。
+    always_ff @(posedge sys_ckg or negedge tpu_rst_n) begin
+        if (!tpu_rst_n) begin
+            bad_last_prev_q <= 1'b0;
+            rpt_error_state <= 3'd0;
+        end else if (start_accept) begin
+            bad_last_prev_q <= 1'b0;
+            rpt_error_state <= 3'd0;
+        end else begin
+            bad_last_prev_q <= bad_last;
+            if (bad_last && !bad_last_prev_q && rpt_error_state != 3'd7)
+                rpt_error_state <= rpt_error_state + 3'd1;
+        end
+    end
+
+    // 有累计错误即保持错误标志；无需再保存一份相同含义的寄存器。
+    assign rpt_error = |rpt_error_state;
 endmodule
 `default_nettype wire

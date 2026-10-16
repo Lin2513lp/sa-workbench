@@ -470,7 +470,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=error-count-interface-20261016`);
+          const response = await fetch(`./code/${file.path}?release=ctrl-error-logic-20261016`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);

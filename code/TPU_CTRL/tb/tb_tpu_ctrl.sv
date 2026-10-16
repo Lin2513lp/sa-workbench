@@ -122,7 +122,7 @@ module tb_tpu_ctrl;
                 $fatal(1, "H=W=1: reported input count t=%0d", t);
             if (rpt_cpt_done !== 0) $fatal(1, "H=W=1: premature DONE");
             if (rpt_error !== 0 || rpt_error_state !== 0)
-                $fatal(1, "H=W=1: reserved error registers incorrect");
+                $fatal(1, "H=W=1: unexpected protocol error");
         end
         fifo_empty = 1; fifo_in_rdata = 0; fifo_in_rd_dat_last = 0;
         checks_count++;
@@ -186,7 +186,7 @@ module tb_tpu_ctrl;
                 $fatal(1, "H=W=4: reported input count t=%0d", t);
             if (rpt_cpt_done !== 0) $fatal(1, "H=W=4: premature DONE");
             if (rpt_error !== 0 || rpt_error_state !== 0)
-                $fatal(1, "H=W=4: reserved error registers incorrect");
+                $fatal(1, "H=W=4: unexpected protocol error");
         end
         fifo_empty = 1; fifo_in_rdata = 0; fifo_in_rd_dat_last = 0;
         checks_count++;
@@ -250,7 +250,7 @@ module tb_tpu_ctrl;
                 $fatal(1, "H=W=16: reported input count t=%0d", t);
             if (rpt_cpt_done !== 0) $fatal(1, "H=W=16: premature DONE");
             if (rpt_error !== 0 || rpt_error_state !== 0)
-                $fatal(1, "H=W=16: reserved error registers incorrect");
+                $fatal(1, "H=W=16: unexpected protocol error");
         end
         fifo_empty = 1; fifo_in_rdata = 0; fifo_in_rd_dat_last = 0;
         checks_count++;
