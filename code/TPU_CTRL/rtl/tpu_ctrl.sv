@@ -32,7 +32,9 @@ module tpu_ctrl (
     output      logic rpt_cpt_done,
     // 每次实际 FIFO 读取加 1，START 清零；相同输入三种 H/W 均应计数 16。
     output      logic [31:0] rpt_dat_in_cnt,
+    // 错误判定标志暂时预留；目前未定义错误事件，固定为 0。
     output      logic rpt_error,
+    // 3-bit error-count report; register-map field name is rpt_cpt_error.
     output      logic [2:0] rpt_error_state
 );
     logic start_prev_q;
@@ -113,7 +115,8 @@ module tpu_ctrl (
         end
     end
 
-    // Reserved until the user specifies missing-data/error classification.
+    // 错误次数上报接口；regmap 只读字段 rpt_cpt_error 对应此 3-bit 数值。
+    // 错误判定与计数逻辑暂时预留，当前无已定义错误事件，固定上报 0。
     assign rpt_error = 1'b0;
     assign rpt_error_state = 3'b000;
 endmodule

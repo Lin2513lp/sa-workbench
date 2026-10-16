@@ -391,6 +391,26 @@
                 "group": "TPU_CTRL",
                 "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
                 "desc": "三种H/W均送相同16包，补0对齐输出一致"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/rtl/reg_list.sv",
+                "desc": "rpt_cpt_error低3位读回错误次数"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/rtl/ahb_slave_regmap.sv",
+                "desc": "AHB与3bit错误次数接口连接"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/tb/tb_reg_list.sv",
+                "desc": "全部8种错误次数与只读检查"
+        },
+        {
+                "group": "TPU_CTRL",
+                "path": "TPU_CTRL/tb/tb_ahb_slave_regmap.sv",
+                "desc": "AHB字节0x40C与3bit次数读回检查"
         }
 ];
 
@@ -450,7 +470,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=ctrl-interface-restored-20261014`);
+          const response = await fetch(`./code/${file.path}?release=error-count-interface-20261016`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);
