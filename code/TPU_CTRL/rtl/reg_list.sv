@@ -30,16 +30,12 @@ module reg_list (
     input  wire logic [31:0] rpt_active_size,
     input  wire logic [31:0] rpt_cpt_cyc,
     input  wire logic [31:0] rpt_dat_in_cnt,
-    /* Independent error flag input; its CPU-visible behavior is reserved. */
+    /* Independent error flag, read at word0x106 (byte offset0x418). */
     input  wire logic        rpt_error,
     /* rpt_cpt_error: read-only 3-bit error count, provided by CTRL. */
     input  wire logic [2:0]  rpt_error_state,
     input  wire logic        rpt_cpt_done
 );
-
-    /* Reserved flag endpoint; keep separate from the error-count register. */
-    logic unused_rpt_error;
-    assign unused_rpt_error = rpt_error;
 
     localparam logic [9:0] ADDR_TPU_EN          = 10'h000;
     localparam logic [9:0] ADDR_TPU_SW_RST      = 10'h001;
@@ -72,6 +68,7 @@ module reg_list (
     localparam logic [9:0] ADDR_RPT_CPT_ERROR   = 10'h103;
     localparam logic [9:0] ADDR_RPT_DONE        = 10'h104;
     localparam logic [9:0] ADDR_TPU_CRG_EN      = 10'h105;
+    localparam logic [9:0] ADDR_RPT_ERROR       = 10'h106;
 
     always_ff @(posedge hclk or negedge hrstn) begin
         if (!hrstn) begin
@@ -328,6 +325,7 @@ module reg_list (
                 ADDR_RPT_CPT_ERROR:   ahb_rd_data = {29'b0, rpt_error_state};
                 ADDR_RPT_DONE:        ahb_rd_data = {31'b0, rpt_cpt_done};
                 ADDR_TPU_CRG_EN:      ahb_rd_data = {31'b0, cpu_tpu_crg_en};
+                ADDR_RPT_ERROR:       ahb_rd_data = {31'b0, rpt_error};
                 default:             ahb_rd_data = 32'h0000_0000;
             endcase
         end

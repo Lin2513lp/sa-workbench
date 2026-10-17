@@ -60,6 +60,7 @@ module tb_ahb_slave_regmap;
             10'h102: expected_read = rpt_dat_in_cnt;
             10'h103: expected_read = {29'd0, rpt_error_state};
             10'h104: expected_read = {31'd0, rpt_cpt_done};
+            10'h106: expected_read = {31'd0, rpt_error};
             default: expected_read = expected[word_addr];
         endcase
     endfunction
@@ -142,6 +143,9 @@ module tb_ahb_slave_regmap;
         for (integer i = 0; i <= 8; i = i + 1) word_read(10'(i));
         word_read(10'h105);
 
+        // The new flag address must be a legal AHB read even when flag is1.
+        bus_transfer(1'b0, 32'h0000_0418, 32'd0, 1'b0);
+
         word_write(10'h000, 32'd0);
         // Explicit byte 0x414 must reach internal word0x105, not byteindex0x105.
         bus_transfer(1'b1, 32'h0000_0414, 32'hffff_ffff, 1'b0);
@@ -180,8 +184,8 @@ module tb_ahb_slave_regmap;
         rpt_cpt_done = 1'b0;
         for (integer i = 'h100; i <= 'h104; i = i + 1) word_read(10'(i));
 
-        // Byte0x40C remains count-only; rpt_error is a separate interface input.
-        // Both flag values must preserve zero extension and RO count readback.
+        // Byte0x40C is the count, byte0x418 is the independent flag.
+        // Both RO words zero-extend their inputs and ignore all0/all1 writes.
         for (integer flag = 0; flag < 2; flag = flag + 1) begin
             for (integer count = 0; count < 8; count = count + 1) begin
                 rpt_error = 1'(flag);
@@ -191,12 +195,23 @@ module tb_ahb_slave_regmap;
                 bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
                 bus_transfer(1'b1, 32'h0000_040c, 32'h0000_0000, 1'b0);
                 bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
+                bus_transfer(1'b0, 32'h0000_0418, 32'd0, 1'b0);
+                bus_transfer(1'b1, 32'h0000_0418, 32'hffff_ffff, 1'b0);
+                bus_transfer(1'b0, 32'h0000_0418, 32'd0, 1'b0);
+                bus_transfer(1'b1, 32'h0000_0418, 32'h0000_0000, 1'b0);
+                bus_transfer(1'b0, 32'h0000_0418, 32'd0, 1'b0);
             end
         end
 
-        // New upper valid boundary105;106/019/hole0ff and misalignment reject.
-        bus_transfer(1'b1, 32'h0000_0418, 32'hffff_ffff, 1'b1);
-        bus_transfer(1'b0, 32'h0000_0418, 32'd0, 1'b1);
+        // Neighbor0x105 remains RW and cannot alias either error report.
+        word_write(10'h105, 32'hffff_ffff);
+        word_read(10'h105); word_read(10'h106); word_read(10'h103);
+        word_write(10'h105, 32'h0000_0000);
+        word_read(10'h105); word_read(10'h106); word_read(10'h103);
+
+        // New upper valid boundary106;107/019/hole0ff and misalignment reject.
+        bus_transfer(1'b1, 32'h0000_041c, 32'hffff_ffff, 1'b1);
+        bus_transfer(1'b0, 32'h0000_041c, 32'd0, 1'b1);
         bus_transfer(1'b1, 32'h0000_0064, 32'hffff_ffff, 1'b1);
         bus_transfer(1'b1, 32'h0000_03fc, 32'hffff_ffff, 1'b1);
         bus_transfer(1'b1, 32'h0000_0415, 32'hffff_ffff, 1'b1);

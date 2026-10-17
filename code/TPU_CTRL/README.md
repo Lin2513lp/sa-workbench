@@ -80,10 +80,10 @@ SA反馈由TB模拟，本单测不验证SA矩阵乘加。真实FIFO_IN+CTRL+SA�
 顶层接口保持原设计，仅使用data_out_last反馈，不含sa_pipeline_empty输入。尺寸配置需在START前稳定并保持到DONE。
 ## 错误上报与寄存器源码
 
-rtl/reg_list.sv 与 rtl/ahb_slave_regmap.sv 同步了3bit错误次数接口。tb/tb_reg_list.sv 和 tb/tb_ahb_slave_regmap.sv 覆盖0～7全部计数值、只读保护及高29位补0。AHB封装依赖既有AHB_SLAVE模块；默认Makefile仍只运行CTRL独立TB。reg_list仅实时读回次数，不自行增加计数或清零；状态接入AHB域前需完成CDC。
+rtl/reg_list.sv 与 rtl/ahb_slave_regmap.sv 同步了3bit错误次数接口。tb/tb_reg_list.sv 和 tb/tb_ahb_slave_regmap.sv 覆盖0～7全部计数值、只读保护及高29位补0。AHB封装依赖共享AHB_SLAVE模块（合法字地址上限0x106）；默认Makefile仍只运行CTRL独立TB。reg_list仅实时读回次数，不自行增加计数或清零；状态接入AHB域前需完成CDC。
 
 ## 实际错误检测范围
 
 目前只检测提前SA完成LAST协议错误，包括与FIFO最后一包同拍的提前反馈。错误仅上报，不中止任务。尚未定义FIFO缺数、超时或算术数值错误检测；不能把合法FIFO空拍直接计错。错误次数大于7保持7，不回绕。错误次数由CTRL产生，reg_list只读回，不自己计数。
 
-独立错误标志接口：`reg_list`与`ahb_slave_regmap`各增加1bit输入`rpt_error`，封装逐级传入。该输入的寄存器侧用途暂预留，不增加地址，也不拼入bit3；`rpt_cpt_error`仍返回`{29'b0, rpt_error_state}`。错误次数仍由CTRL生成。
+独立错误标志接口：`reg_list`与`ahb_slave_regmap`各增加1bit输入`rpt_error`，封装逐级传入。错误标志独立分配RO字地址0x106、CPU字节偏移0x418，返回{31'b0, rpt_error}，写入忽略；`rpt_cpt_error`仍返回`{29'b0, rpt_error_state}`。错误次数仍由CTRL生成。

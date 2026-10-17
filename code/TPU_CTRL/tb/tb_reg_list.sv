@@ -64,6 +64,7 @@ module tb_reg_list;
             10'h102: expected_read = rpt_dat_in_cnt;
             10'h103: expected_read = {29'd0, rpt_error_state};
             10'h104: expected_read = {31'd0, rpt_cpt_done};
+            10'h106: expected_read = {31'd0, rpt_error};
             default: expected_read = 32'd0;
         endcase
     endfunction
@@ -132,7 +133,7 @@ module tb_reg_list;
         @(negedge hclk);
         hrstn = 1'b1;
         for (integer i = 0; i <= 24; i = i + 1) read_check(10'(i));
-        for (integer i = 'h100; i <= 'h105; i = i + 1) read_check(10'(i));
+        for (integer i = 'h100; i <= 'h106; i = i + 1) read_check(10'(i));
 
         // All narrow field values; unused high bits must never be stored/read back.
         write_check(10'h000, 32'hffff_fffe);
@@ -189,8 +190,8 @@ module tb_reg_list;
         rpt_cpt_done = 1'b0;
         for (integer i = 'h100; i <= 'h104; i = i + 1) read_check(10'(i));
 
-        // The error flag is a separate input, not packed into the count word.
-        // All16 independent pairs must preserve count-only RO readback.
+        // Separate live RO words: count0x103, flag0x106; no packed bit3.
+        // All16 independent pairs, zero extension and both RO write patterns.
         for (integer flag = 0; flag < 2; flag = flag + 1) begin
             for (integer count = 0; count < 8; count = count + 1) begin
                 rpt_error = 1'(flag);
@@ -200,12 +201,23 @@ module tb_reg_list;
                 read_check(10'h103);
                 write_check(10'h103, 32'h0000_0000);
                 read_check(10'h103);
+                read_check(10'h106);
+                write_check(10'h106, 32'hffff_ffff);
+                read_check(10'h106);
+                write_check(10'h106, 32'h0000_0000);
+                read_check(10'h106);
             end
         end
 
+        // Neighbor0x105 remains RW; toggling it cannot change either report.
+        write_check(10'h105, 32'hffff_ffff);
+        read_check(10'h105); read_check(10'h106); read_check(10'h103);
+        write_check(10'h105, 32'h0000_0000);
+        read_check(10'h105); read_check(10'h106); read_check(10'h103);
+
         write_check(10'h019, 32'hffff_ffff); read_check(10'h019);
         write_check(10'h0ff, 32'hffff_ffff); read_check(10'h0ff);
-        write_check(10'h106, 32'hffff_ffff); read_check(10'h106);
+        write_check(10'h107, 32'hffff_ffff); read_check(10'h107);
         write_check(10'h3ff, 32'hffff_ffff); read_check(10'h3ff);
         apply_reset();
         $display("PASS tb_reg_list: %0d checks", checks);
