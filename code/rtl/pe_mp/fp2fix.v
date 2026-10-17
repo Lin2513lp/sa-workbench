@@ -205,6 +205,8 @@ module FP2FIX
 // ==================== get f_round ==================== //
 
     always @(*) begin
+        // Assign every combinational path; never retain a previous result.
+        f_round = 16'h0000;
         if (s_bits_2d == 1'b1) begin
             if (f_shift[0] == 1'b1 && shift_bits_reg[5] == 1'b1) begin
                 f_round = {1'b1,~(f_shift[15:1] + 1'b1) + 1'b1};

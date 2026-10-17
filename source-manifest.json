@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "fp2fix-zero-round-20261017",
+  "release": "fp2fix-latch-fix-20261017",
   "files": [
     {
       "path": "Makefile",
@@ -40,8 +40,8 @@
     },
     {
       "path": "rtl/pe_mp/fp2fix.v",
-      "bytes": 8437,
-      "sha256": "f96d5c847376747ffd81f18714d3ae645c6e16c3dd1bd655d20ac803783ec8f1",
+      "bytes": 8541,
+      "sha256": "0ebd6e23b9e22b2ee633f023bf707aeaf88af0eab3c9be36c27f62cf24078293",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/pe_mp/fp2fix.v"
     },
