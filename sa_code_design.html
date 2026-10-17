@@ -470,7 +470,7 @@
         rawLink.href = `./code/${file.path}`;
         renderTree();
         try {
-          const response = await fetch(`./code/${file.path}?release=regmap-error-address-20261016`);
+          const response = await fetch(`./code/${file.path}?release=regmap-error-state-name-20261016`);
           if (!response.ok) throw new Error(String(response.status));
           activeText = await response.text();
           renderCode(activeText);

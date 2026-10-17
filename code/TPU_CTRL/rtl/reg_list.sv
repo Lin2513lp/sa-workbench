@@ -65,7 +65,7 @@ module reg_list (
     localparam logic [9:0] ADDR_RPT_ACTIVE_SIZE = 10'h100;
     localparam logic [9:0] ADDR_RPT_CPT_CYC     = 10'h101;
     localparam logic [9:0] ADDR_RPT_DAT_IN_CNT  = 10'h102;
-    localparam logic [9:0] ADDR_RPT_CPT_ERROR   = 10'h103;
+    localparam logic [9:0] ADDR_RPT_ERROR_STATE   = 10'h103;
     localparam logic [9:0] ADDR_RPT_DONE        = 10'h104;
     localparam logic [9:0] ADDR_TPU_CRG_EN      = 10'h105;
     localparam logic [9:0] ADDR_RPT_ERROR       = 10'h106;
@@ -322,7 +322,7 @@ module reg_list (
                 ADDR_RPT_ACTIVE_SIZE: ahb_rd_data = rpt_active_size;
                 ADDR_RPT_CPT_CYC:     ahb_rd_data = rpt_cpt_cyc;
                 ADDR_RPT_DAT_IN_CNT:  ahb_rd_data = rpt_dat_in_cnt;
-                ADDR_RPT_CPT_ERROR:   ahb_rd_data = {29'b0, rpt_error_state};
+                ADDR_RPT_ERROR_STATE:   ahb_rd_data = {29'b0, rpt_error_state};
                 ADDR_RPT_DONE:        ahb_rd_data = {31'b0, rpt_cpt_done};
                 ADDR_TPU_CRG_EN:      ahb_rd_data = {31'b0, cpu_tpu_crg_en};
                 ADDR_RPT_ERROR:       ahb_rd_data = {31'b0, rpt_error};

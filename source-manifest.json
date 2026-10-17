@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "regmap-error-address-20261016",
+  "release": "regmap-error-state-name-20261016",
   "files": [
     {
       "path": "Makefile",
@@ -224,8 +224,8 @@
       "path": "TPU_CTRL/rtl/reg_list.sv",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/reg_list.sv",
-      "bytes": 13404,
-      "sha256": "6ed5739174a8f8927b43633f75c6f756e5f31dfbff2872eecd71b445ae411a56"
+      "bytes": 13408,
+      "sha256": "58b81bc16e002c7797c2052a7e8124728f6c44a46d2f6b108ce79f4b01b1cd64"
     },
     {
       "path": "TPU_CTRL/rtl/ahb_slave_regmap.sv",
