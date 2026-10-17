@@ -9,6 +9,7 @@ module tb_tpu_ctrl;
     logic fifo_empty, fifo_in_rd_dat_last;
     logic [511:0] fifo_in_rdata;
     logic data_out_last;
+    logic done_clear_ack;
     logic fifo_in_re, cpu_tpu_en_sync, cpu_tpu_start_sync;
     logic [511:0] dat_in_a;
     logic dat_in_vld, dat_in_last, rpt_cpt_done, rpt_error;
@@ -32,6 +33,8 @@ module tb_tpu_ctrl;
         .tpu_rst_n(tpu_rst_n),
         .cpu_tpu_en(cpu_tpu_en),
         .cpu_tpu_start(cpu_tpu_start),
+        .cpu_done_clear_req(1'b0),
+        .done_clear_ack(done_clear_ack),
         .cpu_cpt_mode(cpu_cpt_mode),
         .cpu_h_size(cpu_h_size),
         .cpu_w_size(cpu_w_size),
@@ -129,7 +132,7 @@ module tb_tpu_ctrl;
         if (dat_in_a !== 0 || dat_in_vld !== 0 || dat_in_last !== 0)
             $fatal(1, "H=W=1: skew tail did not clear");
 
-        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿产生一拍DONE。
+        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿置位并保持DONE。
         data_out_last = 1;
         @(negedge sys_ckg);
         checks_count++;
@@ -138,8 +141,8 @@ module tb_tpu_ctrl;
         data_out_last = 0;
         @(negedge sys_ckg);
         checks_count++;
-        if (rpt_cpt_done !== 0 || fifo_in_re !== 0)
-            $fatal(1, "H=W=1: DONE must pulse once; held START must not restart");
+        if (rpt_cpt_done !== 1 || fifo_in_re !== 0)
+            $fatal(1, "H=W=1: DONE must remain set; held START must not restart");
         $display("CTRL_CASE_PASS H=W=1 packets=16 skew_columns=31");
 
         // ==================== 情况：H=W=4 ====================
@@ -193,7 +196,7 @@ module tb_tpu_ctrl;
         if (dat_in_a !== 0 || dat_in_vld !== 0 || dat_in_last !== 0)
             $fatal(1, "H=W=4: skew tail did not clear");
 
-        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿产生一拍DONE。
+        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿置位并保持DONE。
         data_out_last = 1;
         @(negedge sys_ckg);
         checks_count++;
@@ -202,8 +205,8 @@ module tb_tpu_ctrl;
         data_out_last = 0;
         @(negedge sys_ckg);
         checks_count++;
-        if (rpt_cpt_done !== 0 || fifo_in_re !== 0)
-            $fatal(1, "H=W=4: DONE must pulse once; held START must not restart");
+        if (rpt_cpt_done !== 1 || fifo_in_re !== 0)
+            $fatal(1, "H=W=4: DONE must remain set; held START must not restart");
         $display("CTRL_CASE_PASS H=W=4 packets=16 skew_columns=31");
 
         // ==================== 情况：H=W=16 ====================
@@ -257,7 +260,7 @@ module tb_tpu_ctrl;
         if (dat_in_a !== 0 || dat_in_vld !== 0 || dat_in_last !== 0)
             $fatal(1, "H=W=16: skew tail did not clear");
 
-        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿产生一拍DONE。
+        // 输入尾巴已结束，模拟SA最终LAST；下一采样沿置位并保持DONE。
         data_out_last = 1;
         @(negedge sys_ckg);
         checks_count++;
@@ -266,8 +269,8 @@ module tb_tpu_ctrl;
         data_out_last = 0;
         @(negedge sys_ckg);
         checks_count++;
-        if (rpt_cpt_done !== 0 || fifo_in_re !== 0)
-            $fatal(1, "H=W=16: DONE must pulse once; held START must not restart");
+        if (rpt_cpt_done !== 1 || fifo_in_re !== 0)
+            $fatal(1, "H=W=16: DONE must remain set; held START must not restart");
         $display("CTRL_CASE_PASS H=W=16 packets=16 skew_columns=31");
 
         $display("CTRL_UNIT_PASS checks=%0d cases=3 packets=48", checks_count);

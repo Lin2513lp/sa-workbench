@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "regmap-error-state-name-20261016",
+  "release": "done-w1c-error106-20261017",
   "files": [
     {
       "path": "Makefile",
@@ -179,6 +179,13 @@
       "source_path": "README.md"
     },
     {
+      "path": "TPU_CTRL/rtl/ahb_slave_regmap.sv",
+      "bytes": 4221,
+      "sha256": "6d4172a524739f3bd0cf31f1a087b710d21f731359ff97cd7671cbd6cc811386",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/ahb_slave_regmap.sv"
+    },
+    {
       "path": "TPU_CTRL/rtl/filelist.f",
       "bytes": 58,
       "sha256": "c3ca48059b7e111e039ec814d701903cf0fb68728ff8f45d0ee0974932825e34",
@@ -186,9 +193,23 @@
       "source_path": "rtl/filelist.f"
     },
     {
+      "path": "TPU_CTRL/rtl/reg_list.sv",
+      "bytes": 14872,
+      "sha256": "b02a7f12b775db51bba790b69aaee33b26b09ee4b55774e2cbe973d287fa6f0b",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/reg_list.sv"
+    },
+    {
+      "path": "TPU_CTRL/rtl/tpu_compute_path.sv",
+      "bytes": 2655,
+      "sha256": "468f009bdef552b1f17b41a6fbf5b22774350fe1aa35e36ffd82556784174711",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "rtl/tpu_compute_path.sv"
+    },
+    {
       "path": "TPU_CTRL/rtl/tpu_ctrl.sv",
-      "bytes": 6757,
-      "sha256": "d3d28d021c49cbab40e19253839941adc2af00e7e4b48018e2a73f1ea3dc4f35",
+      "bytes": 7871,
+      "sha256": "7ce759b67c37c3ae85ef51af9f37e20e93b5c3268a034de54f0d0fdda8f02f95",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/tpu_ctrl.sv"
     },
@@ -214,39 +235,46 @@
       "source_path": "scripts/check_license.sh"
     },
     {
+      "path": "TPU_CTRL/tb/reg_list_assertions.sv",
+      "bytes": 2150,
+      "sha256": "d79f42bf96c1b474fb8e43f1527ba709336b62ea086946a5d78da202d9e55473",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "tb/reg_list_assertions.sv"
+    },
+    {
+      "path": "TPU_CTRL/tb/tb_ahb_slave_regmap.sv",
+      "bytes": 10179,
+      "sha256": "c4251781ca66a823350258c55acbfe92902f5ced4ee87dcdb8fdad41e00c23de",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "tb/tb_ahb_slave_regmap.sv"
+    },
+    {
+      "path": "TPU_CTRL/tb/tb_reg_list.sv",
+      "bytes": 9448,
+      "sha256": "3edd5fe3331f79b66413b9b13c7fbcad8a4c62c4efc130088c4e578213d70584",
+      "source_directory": "tpu/tpu/TPU_CTRL",
+      "source_path": "tb/tb_reg_list.sv"
+    },
+    {
       "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
-      "bytes": 13801,
-      "sha256": "8cf419451ff6478368e968b5e330544f22ee2ff43570975dcb4d4a9cdef00642",
+      "bytes": 13915,
+      "sha256": "98cafe54452fa0156e8aa36fabcf6053f1853fb9585f2a755adf1b252f98efc1",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tb_tpu_ctrl.sv"
     },
     {
-      "path": "TPU_CTRL/rtl/reg_list.sv",
+      "path": "TPU_CTRL/tb/tb_tpu_done_clear.sv",
+      "bytes": 6749,
+      "sha256": "e9dec7e31656683316da24f7a1319153f19354fe65197b78eef8e572fbab1826",
       "source_directory": "tpu/tpu/TPU_CTRL",
-      "source_path": "rtl/reg_list.sv",
-      "bytes": 13408,
-      "sha256": "58b81bc16e002c7797c2052a7e8124728f6c44a46d2f6b108ce79f4b01b1cd64"
+      "source_path": "tb/tb_tpu_done_clear.sv"
     },
     {
-      "path": "TPU_CTRL/rtl/ahb_slave_regmap.sv",
+      "path": "TPU_CTRL/tb/tpu_ctrl_assertions.sv",
+      "bytes": 1822,
+      "sha256": "438b3b0e379f22dd5fc86e478f5ca983f680fca0f7af611081efefe493b30069",
       "source_directory": "tpu/tpu/TPU_CTRL",
-      "source_path": "rtl/ahb_slave_regmap.sv",
-      "bytes": 3508,
-      "sha256": "8626f76a5ea5eca5c2dcfc326962a45a13c85387629439ff1ca5016e6c70b2f5"
-    },
-    {
-      "path": "TPU_CTRL/tb/tb_reg_list.sv",
-      "source_directory": "tpu/tpu/TPU_CTRL",
-      "source_path": "tb/tb_reg_list.sv",
-      "bytes": 9374,
-      "sha256": "d577073d51aa749d877d4252f0ccefd002558285bbcda688ae4ec0005ba026fa"
-    },
-    {
-      "path": "TPU_CTRL/tb/tb_ahb_slave_regmap.sv",
-      "source_directory": "tpu/tpu/TPU_CTRL",
-      "source_path": "tb/tb_ahb_slave_regmap.sv",
-      "bytes": 10114,
-      "sha256": "918c86908ce5f3ffd62a2bd0eec2a0a96664e5f04b746c36a7d8b8379d25f9c8"
+      "source_path": "tb/tpu_ctrl_assertions.sv"
     }
   ]
 }

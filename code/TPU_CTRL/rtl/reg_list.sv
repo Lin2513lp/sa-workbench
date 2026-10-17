@@ -24,6 +24,9 @@ module reg_list (
     output logic [3:0]  cpu_dat_in_b_sel,
     output logic        cpu_dat_in_b_lock,
     output logic        cpu_tpu_crg_en,
+    /* W1C request toggle: held until CTRL acknowledges, safe with SYS gated. */
+    output logic        cpu_done_clear_req,
+    input  wire logic   done_clear_ack,
     output logic [511:0] cpu_dat_in_b,
 
     /* Read-only status must already be coherent in hclk domain. */
@@ -32,7 +35,7 @@ module reg_list (
     input  wire logic [31:0] rpt_dat_in_cnt,
     /* Independent error flag, read at word0x106 (byte offset0x418). */
     input  wire logic        rpt_error,
-    /* rpt_cpt_error: read-only 3-bit error count, provided by CTRL. */
+    /* rpt_error_state: read-only 3-bit error count, provided by CTRL. */
     input  wire logic [2:0]  rpt_error_state,
     input  wire logic        rpt_cpt_done
 );
@@ -65,10 +68,30 @@ module reg_list (
     localparam logic [9:0] ADDR_RPT_ACTIVE_SIZE = 10'h100;
     localparam logic [9:0] ADDR_RPT_CPT_CYC     = 10'h101;
     localparam logic [9:0] ADDR_RPT_DAT_IN_CNT  = 10'h102;
-    localparam logic [9:0] ADDR_RPT_ERROR_STATE   = 10'h103;
+    localparam logic [9:0] ADDR_RPT_ERROR_STATE = 10'h103;
     localparam logic [9:0] ADDR_RPT_DONE        = 10'h104;
     localparam logic [9:0] ADDR_TPU_CRG_EN      = 10'h105;
     localparam logic [9:0] ADDR_RPT_ERROR       = 10'h106;
+
+    (* async_reg = "true" *) logic done_clear_ack_meta_q, done_clear_ack_sync_q;
+    logic done_clear_write;
+    assign done_clear_write = ahb_wr_en && (ahb_addr == ADDR_RPT_DONE) && ahb_wr_data[0];
+
+    // Toggle handshake: a request cannot disappear while sys_ckg is stopped.
+    // Repeated W1C writes while outstanding coalesce into the same clear.
+    // The SYS side acknowledges processing; DONE readback has separate CDC latency.
+    always_ff @(posedge hclk or negedge hrstn) begin
+        if (!hrstn) begin
+            done_clear_ack_meta_q <= 1'b0;
+            done_clear_ack_sync_q <= 1'b0;
+            cpu_done_clear_req <= 1'b0;
+        end else begin
+            done_clear_ack_meta_q <= done_clear_ack;
+            done_clear_ack_sync_q <= done_clear_ack_meta_q;
+            if (done_clear_write && (cpu_done_clear_req == done_clear_ack_sync_q))
+                cpu_done_clear_req <= !cpu_done_clear_req;
+        end
+    end
 
     always_ff @(posedge hclk or negedge hrstn) begin
         if (!hrstn) begin
@@ -322,7 +345,7 @@ module reg_list (
                 ADDR_RPT_ACTIVE_SIZE: ahb_rd_data = rpt_active_size;
                 ADDR_RPT_CPT_CYC:     ahb_rd_data = rpt_cpt_cyc;
                 ADDR_RPT_DAT_IN_CNT:  ahb_rd_data = rpt_dat_in_cnt;
-                ADDR_RPT_ERROR_STATE:   ahb_rd_data = {29'b0, rpt_error_state};
+                ADDR_RPT_ERROR_STATE: ahb_rd_data = {29'b0, rpt_error_state};
                 ADDR_RPT_DONE:        ahb_rd_data = {31'b0, rpt_cpt_done};
                 ADDR_TPU_CRG_EN:      ahb_rd_data = {31'b0, cpu_tpu_crg_en};
                 ADDR_RPT_ERROR:       ahb_rd_data = {31'b0, rpt_error};

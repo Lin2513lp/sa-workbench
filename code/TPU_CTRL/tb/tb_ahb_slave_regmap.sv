@@ -18,6 +18,8 @@ module tb_ahb_slave_regmap;
     logic [31:0] hrdata;
     logic cpu_tpu_en, cpu_sw_rst, cpu_tpu_start, cpu_tpu_crg_bypass;
     logic cpu_dat_in_b_lock, cpu_tpu_crg_en;
+    logic cpu_done_clear_req;
+    logic done_clear_ack = 1'b0;
     logic [3:0] cpu_h_size, cpu_w_size, cpu_dat_in_b_sel;
     logic [1:0] cpu_cpt_mode;
     logic [511:0] cpu_dat_in_b;
