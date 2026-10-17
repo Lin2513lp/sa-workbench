@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "ctrl-error-logic-20261016",
+  "release": "regmap-error-input-20261016",
   "files": [
     {
       "path": "Makefile",
@@ -173,8 +173,8 @@
     },
     {
       "path": "TPU_CTRL/README.md",
-      "bytes": 5295,
-      "sha256": "45b8b321e1ca8e56b80b46e716094bc372c3b5610a70a2f4cc7a7dfd9d24dfa1",
+      "bytes": 5574,
+      "sha256": "adb463e132e583eb2b156538ce01f1ed65c4df0a28f1c9f131bbd791474a1d7b",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "README.md"
     },
@@ -224,29 +224,29 @@
       "path": "TPU_CTRL/rtl/reg_list.sv",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/reg_list.sv",
-      "bytes": 13161,
-      "sha256": "d82859a5a8a8bc1e3da7e4271d20684876fd63e86ed1580bfab7beee794f716e"
+      "bytes": 13428,
+      "sha256": "7f6e743c9128685094e5e1955e2f8b3d1cd242e83ac1b97be12d306351861ae9"
     },
     {
       "path": "TPU_CTRL/rtl/ahb_slave_regmap.sv",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/ahb_slave_regmap.sv",
-      "bytes": 3446,
-      "sha256": "ec1eaf2cc1167db1e1dcdcd7dbe81aff01d2e5e287145055545642452a32b9e1"
+      "bytes": 3508,
+      "sha256": "8626f76a5ea5eca5c2dcfc326962a45a13c85387629439ff1ca5016e6c70b2f5"
     },
     {
       "path": "TPU_CTRL/tb/tb_reg_list.sv",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tb_reg_list.sv",
-      "bytes": 8613,
-      "sha256": "c71fe31ea4302939ceb628e9c6ce826c906c29e63a33d1370709eb9e20d20d0e"
+      "bytes": 8776,
+      "sha256": "a9108b3f03da1e7ed44e2f4ee24b580c9c217a9f7906589c74eddd0f685f3a56"
     },
     {
       "path": "TPU_CTRL/tb/tb_ahb_slave_regmap.sv",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tb_ahb_slave_regmap.sv",
-      "bytes": 9080,
-      "sha256": "70be088192a75d5ab79bff28d81ef511a5cc43342f00def75ef32e4e6cdbbefd"
+      "bytes": 9286,
+      "sha256": "fb435b7527ded0ffa07fadce075ee8c365246b0367769ae79fda1a2b104a386e"
     }
   ]
 }

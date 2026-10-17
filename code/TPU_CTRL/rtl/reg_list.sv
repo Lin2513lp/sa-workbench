@@ -30,10 +30,16 @@ module reg_list (
     input  wire logic [31:0] rpt_active_size,
     input  wire logic [31:0] rpt_cpt_cyc,
     input  wire logic [31:0] rpt_dat_in_cnt,
+    /* Independent error flag input; its CPU-visible behavior is reserved. */
+    input  wire logic        rpt_error,
     /* rpt_cpt_error: read-only 3-bit error count, provided by CTRL. */
     input  wire logic [2:0]  rpt_error_state,
     input  wire logic        rpt_cpt_done
 );
+
+    /* Reserved flag endpoint; keep separate from the error-count register. */
+    logic unused_rpt_error;
+    assign unused_rpt_error = rpt_error;
 
     localparam logic [9:0] ADDR_TPU_EN          = 10'h000;
     localparam logic [9:0] ADDR_TPU_SW_RST      = 10'h001;

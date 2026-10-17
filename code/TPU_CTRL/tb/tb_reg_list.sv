@@ -19,6 +19,7 @@ module tb_reg_list;
     logic [31:0] rpt_cpt_cyc = 32'd0;
     logic [31:0] rpt_dat_in_cnt = 32'd0;
     logic [2:0] rpt_error_state = 3'd0;
+    logic rpt_error = 1'b0;
     logic rpt_cpt_done = 1'b0;
     logic [31:0] expected [0:1023];
     integer checks = 0;
@@ -188,15 +189,18 @@ module tb_reg_list;
         rpt_cpt_done = 1'b0;
         for (integer i = 'h100; i <= 'h104; i = i + 1) read_check(10'(i));
 
-        // rpt_cpt_error is a live RO register: low3 bits report the error count.
-        // The CTRL detector is reserved; inject all possible interface values here.
-        for (integer count = 0; count < 8; count = count + 1) begin
-            rpt_error_state = 3'(count);
-            read_check(10'h103);
-            write_check(10'h103, 32'hffff_ffff);
-            read_check(10'h103);
-            write_check(10'h103, 32'h0000_0000);
-            read_check(10'h103);
+        // The error flag is a separate input, not packed into the count word.
+        // All16 independent pairs must preserve count-only RO readback.
+        for (integer flag = 0; flag < 2; flag = flag + 1) begin
+            for (integer count = 0; count < 8; count = count + 1) begin
+                rpt_error = 1'(flag);
+                rpt_error_state = 3'(count);
+                read_check(10'h103);
+                write_check(10'h103, 32'hffff_ffff);
+                read_check(10'h103);
+                write_check(10'h103, 32'h0000_0000);
+                read_check(10'h103);
+            end
         end
 
         write_check(10'h019, 32'hffff_ffff); read_check(10'h019);

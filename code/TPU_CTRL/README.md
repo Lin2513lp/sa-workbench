@@ -85,3 +85,5 @@ rtl/reg_list.sv 与 rtl/ahb_slave_regmap.sv 同步了3bit错误次数接口。tb
 ## 实际错误检测范围
 
 目前只检测提前SA完成LAST协议错误，包括与FIFO最后一包同拍的提前反馈。错误仅上报，不中止任务。尚未定义FIFO缺数、超时或算术数值错误检测；不能把合法FIFO空拍直接计错。错误次数大于7保持7，不回绕。错误次数由CTRL产生，reg_list只读回，不自己计数。
+
+独立错误标志接口：`reg_list`与`ahb_slave_regmap`各增加1bit输入`rpt_error`，封装逐级传入。该输入的寄存器侧用途暂预留，不增加地址，也不拼入bit3；`rpt_cpt_error`仍返回`{29'b0, rpt_error_state}`。错误次数仍由CTRL生成。

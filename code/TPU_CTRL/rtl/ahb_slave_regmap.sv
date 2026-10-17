@@ -37,7 +37,8 @@ module ahb_slave_regmap (
     input  wire logic [31:0] rpt_active_size,
     input  wire logic [31:0] rpt_cpt_cyc,
     input  wire logic [31:0] rpt_dat_in_cnt,
-    /* rpt_cpt_error register field is fed by this 3-bit error-count input. */
+    /* Independent error flag and 3-bit count from CTRL. */
+    input  wire logic        rpt_error,
     input  wire logic [2:0]  rpt_error_state,
     input  wire logic        rpt_cpt_done
 );
@@ -92,6 +93,7 @@ module ahb_slave_regmap (
         .rpt_active_size    (rpt_active_size),
         .rpt_cpt_cyc        (rpt_cpt_cyc),
         .rpt_dat_in_cnt     (rpt_dat_in_cnt),
+        .rpt_error          (rpt_error),
         .rpt_error_state    (rpt_error_state),
         .rpt_cpt_done       (rpt_cpt_done)
     );

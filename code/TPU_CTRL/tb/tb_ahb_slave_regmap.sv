@@ -25,6 +25,7 @@ module tb_ahb_slave_regmap;
     logic [31:0] rpt_cpt_cyc = 32'hfedc_ba98;
     logic [31:0] rpt_dat_in_cnt = 32'h7654_3210;
     logic [2:0] rpt_error_state = 3'd1;
+    logic rpt_error = 1'b1;
     logic rpt_cpt_done = 1'b1;
     logic [31:0] expected [0:1023];
     integer checks = 0;
@@ -175,18 +176,22 @@ module tb_ahb_slave_regmap;
         rpt_cpt_cyc = 32'd99;
         rpt_dat_in_cnt = 32'd77;
         rpt_error_state = 3'd0;
+        rpt_error = 1'b0;
         rpt_cpt_done = 1'b0;
         for (integer i = 'h100; i <= 'h104; i = i + 1) word_read(10'(i));
 
-        // Byte0x40C selects rpt_cpt_error (word0x103): error count in bits[2:0].
-        // Check all eight values, zero extension, and both RO write attempts.
-        for (integer count = 0; count < 8; count = count + 1) begin
-            rpt_error_state = 3'(count);
-            bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
-            bus_transfer(1'b1, 32'h0000_040c, 32'hffff_ffff, 1'b0);
-            bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
-            bus_transfer(1'b1, 32'h0000_040c, 32'h0000_0000, 1'b0);
-            bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
+        // Byte0x40C remains count-only; rpt_error is a separate interface input.
+        // Both flag values must preserve zero extension and RO count readback.
+        for (integer flag = 0; flag < 2; flag = flag + 1) begin
+            for (integer count = 0; count < 8; count = count + 1) begin
+                rpt_error = 1'(flag);
+                rpt_error_state = 3'(count);
+                bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
+                bus_transfer(1'b1, 32'h0000_040c, 32'hffff_ffff, 1'b0);
+                bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
+                bus_transfer(1'b1, 32'h0000_040c, 32'h0000_0000, 1'b0);
+                bus_transfer(1'b0, 32'h0000_040c, 32'd0, 1'b0);
+            end
         end
 
         // New upper valid boundary105;106/019/hole0ff and misalignment reject.
