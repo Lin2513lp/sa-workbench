@@ -1,7 +1,7 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "done-w1c-error106-20261017",
+  "release": "fp2fix-zero-round-20261017",
   "files": [
     {
       "path": "Makefile",
@@ -40,8 +40,8 @@
     },
     {
       "path": "rtl/pe_mp/fp2fix.v",
-      "bytes": 8170,
-      "sha256": "80573302d4a24a12ff757d4619a141bd359474285fd81ac326b17bf30045e0ee",
+      "bytes": 8437,
+      "sha256": "f96d5c847376747ffd81f18714d3ae645c6e16c3dd1bd655d20ac803783ec8f1",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/pe_mp/fp2fix.v"
     },
@@ -275,6 +275,13 @@
       "sha256": "438b3b0e379f22dd5fc86e478f5ca983f680fca0f7af611081efefe493b30069",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "tb/tpu_ctrl_assertions.sv"
+    },
+    {
+      "path": "tb/tb_fp2fix_zero_round.sv",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/tb_fp2fix_zero_round.sv",
+      "bytes": 2040,
+      "sha256": "05f955bccbd44e3d0cfa0516f85c7f94fa64aa133cdece0a083dbf725759b8f0"
     }
   ]
 }

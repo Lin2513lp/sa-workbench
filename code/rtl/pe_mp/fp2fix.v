@@ -210,7 +210,12 @@ module FP2FIX
                 f_round = {1'b1,~(f_shift[15:1] + 1'b1) + 1'b1};
             end
             else if (f_shift[0] == 1'b0 && shift_bits_reg[5] == 1'b1) begin
-                f_round = {1'b1,~(f_shift[15:1]) + 1'b1};
+                // INT16 has no negative zero; do not force its sign bit when
+                // the rounded magnitude is zero. Otherwise 0 becomes 16'h8000.
+                if (f_shift[15:1] == 15'd0)
+                    f_round = 16'h0000;
+                else
+                    f_round = {1'b1,~(f_shift[15:1]) + 1'b1};
             end
             else if (shift_bits_reg[5] == 1'b0) begin
                 f_round = {1'b1,~f_shift[14:0] + 1'b1};
