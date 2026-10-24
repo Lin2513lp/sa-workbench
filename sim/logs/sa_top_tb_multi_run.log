@@ -1,74 +1,39 @@
-Command: /home/yian/sa_runs/original_interface_20261024_v2/build/vcs/sa_top_tb_multi/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_multi.fsdb -l /home/yian/sa_runs/original_interface_20261024_v2/logs/sa_top_tb_multi_run.log
+Command: /home/yian/sa_runs/august18_baseline_20261024/build/vcs/sa_top_tb_multi/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_multi.fsdb -l /home/yian/sa_runs/august18_baseline_20261024/logs/sa_top_tb_multi_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 21:42 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:09 2026
 *Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
 *Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
 *Verdi* Loading libsscore_vcs202312.so
 FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
 (C) 1996 - 2024 by Synopsys, Inc.
-*Verdi* : Create FSDB file '/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_multi.fsdb'
+*Verdi* : Create FSDB file '/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_multi.fsdb'
 *Verdi* : Begin traversing the scope (sa_top_tb_multi.u_case.dut), layer (0).
 *Verdi* : Enable +all dumping.
 *Verdi* : End of traversing.
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=1 results=1
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=2 results=2
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=4 results=4
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=16 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=31 results=31
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=64 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=1 results=4
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=2 results=8
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=4 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=16 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=31 results=124
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=64 results=256
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=1 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=2 results=32
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=4 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=16 results=256
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=31 results=496
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=64 results=1024
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=1 results=1
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=2 results=2
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=4 results=4
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=16 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=31 results=31
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=64 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=1 results=4
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=2 results=8
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=4 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=16 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=31 results=124
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=64 results=256
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=1 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=2 results=32
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=4 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=16 results=256
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=31 results=496
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=64 results=1024
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=1 results=1
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=2 results=2
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=4 results=4
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=16 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=31 results=31
-sa_top_tb_multi: STREAM_PASS mode=0 H=1 W=1 length=64 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=1 results=4
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=2 results=8
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=4 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=16 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=31 results=124
-sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 length=64 results=256
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=1 results=16
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=2 results=32
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=4 results=64
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=16 results=256
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=31 results=496
-sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 length=64 results=1024
-sa_top_tb_multi: PASS jobs=54 results=7434 valid_zeros=2101 checks=9018
-$finish called from file "tb/sa_top_case_runner.sv", line 344.
-$finish at simulation time             24801350
+sa_top_tb_multi: B row 0 = 00000003 00000003 00000002 00000004 00000004 00000001 00000001 00000001 00000002 00000004 00000002 00000004 00000001 00000003 00000002 00000003
+sa_top_tb_multi: B row 1 = 00000002 00000002 00000003 00000004 00000001 00000002 00000003 00000003 00000002 00000004 00000004 00000001 00000004 00000003 00000001 00000004
+sa_top_tb_multi: B row 2 = 00000004 00000003 00000002 00000004 00000003 00000001 00000001 00000003 00000001 00000003 00000004 00000004 00000001 00000004 00000003 00000002
+sa_top_tb_multi: B row 3 = 00000002 00000001 00000002 00000001 00000004 00000004 00000001 00000002 00000001 00000003 00000003 00000001 00000004 00000002 00000003 00000002
+sa_top_tb_multi: B row 4 = 00000004 00000003 00000003 00000002 00000004 00000004 00000001 00000001 00000002 00000002 00000002 00000003 00000004 00000001 00000002 00000001
+sa_top_tb_multi: B row 5 = 00000002 00000003 00000002 00000001 00000001 00000003 00000002 00000001 00000002 00000002 00000001 00000003 00000004 00000003 00000001 00000001
+sa_top_tb_multi: B row 6 = 00000003 00000001 00000002 00000003 00000001 00000002 00000004 00000004 00000002 00000003 00000004 00000003 00000003 00000004 00000002 00000001
+sa_top_tb_multi: B row 7 = 00000004 00000002 00000004 00000004 00000004 00000003 00000003 00000003 00000004 00000004 00000002 00000001 00000003 00000004 00000001 00000004
+sa_top_tb_multi: B row 8 = 00000003 00000001 00000003 00000003 00000003 00000004 00000004 00000001 00000003 00000001 00000002 00000003 00000001 00000004 00000001 00000003
+sa_top_tb_multi: B row 9 = 00000001 00000002 00000003 00000001 00000004 00000003 00000004 00000003 00000001 00000001 00000001 00000003 00000001 00000002 00000001 00000002
+sa_top_tb_multi: B row 10 = 00000002 00000004 00000004 00000002 00000002 00000004 00000001 00000001 00000002 00000002 00000004 00000002 00000001 00000003 00000002 00000001
+sa_top_tb_multi: B row 11 = 00000002 00000004 00000002 00000004 00000004 00000004 00000003 00000004 00000003 00000003 00000003 00000001 00000004 00000004 00000004 00000004
+sa_top_tb_multi: B row 12 = 00000001 00000002 00000004 00000002 00000001 00000001 00000002 00000004 00000003 00000001 00000002 00000002 00000003 00000003 00000002 00000003
+sa_top_tb_multi: B row 13 = 00000003 00000003 00000002 00000001 00000001 00000001 00000004 00000002 00000003 00000003 00000004 00000002 00000002 00000003 00000004 00000004
+sa_top_tb_multi: B row 14 = 00000002 00000002 00000003 00000001 00000001 00000002 00000003 00000004 00000001 00000003 00000002 00000001 00000004 00000004 00000003 00000004
+sa_top_tb_multi: B row 15 = 00000002 00000004 00000003 00000001 00000002 00000001 00000001 00000002 00000003 00000004 00000002 00000004 00000004 00000003 00000004 00000003
+sa_top_tb_multi: A vector 0 = 2e243f42 90495f24 ce1ddcb2 c4ff6897 145e1041 1c9d362a f15d4bc6 5c915d54 90473fe9 80fea2b4 c1a914e0 8599ca3a 27045ef5 378fbb98 df67a726 5bed2e07; expected columns = 433d22b8 ea564d3d 018cd2cb 0f5f080b dd4987d6 2b060aaa 58d93365 0b7aa2e8 1bce8786 5c66d941 c4c51365 52ee7b9f b9f45902 eb4e9937 0fc1882c f6004140
+sa_top_tb_multi: A vector 1 = dd30f569 b02b2047 5056e096 04c8b034 4b091333 4487b704 fe8aa8d7 d993beff 67cd32f9 f3dc3430 de1bdd3d 1239d383 217d5347 e9ab2f6d 049fe08e e945c5e9; expected columns = 203211f5 0d4a6427 158d5356 030baf4a ece76265 5e5b0d0d 020c08db a77ab7ca f2715ac5 95e3cb15 8ab63875 906f01b2 3a06fd46 c60d717d 189538cd 1681aa05
+sa_top_tb_multi: A vector 2 = 884baab1 5ea373df 2bc9fdd3 9a016aaa 5dda5100 e8b1055d cb42eb50 533ca8c4 02ad3116 357bc971 c6ec243b 0f07c4ce 04519f21 c1013b9b 28373ce2 3ac87dd7; expected columns = 279b5e54 05935632 25052765 6c25d58a ee8ec281 ee9bf713 54bd2ffd 18c67ad0 25350635 c72656cc d681af60 34fcd4f3 627fa9cf d1a2ae1b c1555a5e d6031bb9
+sa_top_tb_multi: PASS
+$finish called from file "tb/sa_top_case_runner.sv", line 411.
+$finish at simulation time               568850
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 24801350 ps
-CPU Time:      3.640 seconds;       Data structure size:   4.8Mb
-Fri Oct 23 21:42:33 2026
+Time: 568850 ps
+CPU Time:      0.740 seconds;       Data structure size:   4.8Mb
+Fri Oct 23 22:09:07 2026

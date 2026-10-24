@@ -1,0 +1,199 @@
+{
+  "baseline_commit": "9b92a5308eb2c51ac270a35792394294bd551687",
+  "ports": [
+    "sys_ckg",
+    "pe_ckg",
+    "tpu_rst_n",
+    "cpu_tpu_start_sync",
+    "cpu_tpu_en_sync",
+    "dat_in_a",
+    "dat_in_vld",
+    "dat_in_last",
+    "cpu_dat_in_b_lock",
+    "cpu_dat_in_b",
+    "cpu_dat_in_b_sel",
+    "cpu_h_size",
+    "cpu_w_size",
+    "cpu_cpt_mode",
+    "rpt_active_size",
+    "dat_out",
+    "dat_out_vld",
+    "dat_out_last"
+  ],
+  "results": [
+    {
+      "top": "sa_top_tb_smoke",
+      "result": "PASS",
+      "finish_ns": 26.35,
+      "log_sha256": "ebc5ff42db2f69bbdefb3a5131a360b03a9fea88e4e4aad6cc1f4d2a5bc23a5c"
+    },
+    {
+      "top": "sa_top_tb_int4",
+      "result": "PASS",
+      "finish_ns": 408.85,
+      "log_sha256": "f824f6d612eef7ac745d191dc7ec7cc8a9e25925a5b67f5e9424771dc2aaf009"
+    },
+    {
+      "top": "sa_top_tb_int8",
+      "result": "PASS",
+      "finish_ns": 408.85,
+      "log_sha256": "86eaa57f77055c36bedd687f3935f3c8c6bb24986a5644a8bfec643160988aa5"
+    },
+    {
+      "top": "sa_top_tb_fp16",
+      "result": "PASS",
+      "finish_ns": 423.85,
+      "log_sha256": "41dd6e4e1d69f8722da77be2be988f8ed9b0aa34edf5f3a353cc50b7b7f150c2"
+    },
+    {
+      "top": "sa_top_tb_fp32",
+      "result": "PASS",
+      "finish_ns": 416.35,
+      "log_sha256": "f8e2ac52511f5df3a44618636a19b9fdedcc809e6fe7470ee0dd3411ffceef9c"
+    },
+    {
+      "top": "sa_top_tb_multi",
+      "result": "PASS",
+      "finish_ns": 568.85,
+      "log_sha256": "08fe213619e43e43fd0fbf6ec9541b8aac209efbc28a1703ee9ef6285ab736d5"
+    },
+    {
+      "top": "output_collector_tb",
+      "result": "PASS",
+      "finish_ns": 48.85,
+      "log_sha256": "10ea620ea7b60db56f239de935f4c822c746b9660f63c84b51943f2da15bb457"
+    },
+    {
+      "top": "sa_ctrl_tb",
+      "result": "PASS",
+      "finish_ns": 68.85,
+      "log_sha256": "1dfa0d195283bd0304fe7ced39808de1e4126a53386798e90512f1268fa3f2e5"
+    },
+    {
+      "top": "pe_array_16x16_tb",
+      "result": "PASS",
+      "finish_ns": 28.85,
+      "log_sha256": "0985ef01032bf73c0211219c6e07961b889edc6da53d6a704c5241b400186565"
+    }
+  ],
+  "sources": [
+    {
+      "path": "Makefile",
+      "sha256": "39e03d72b0ae3c1caba3cb72b92537e5cd644cff31b2faf6d807b13f1293613b",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/filelist.f",
+      "sha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/output_collector.sv",
+      "sha256": "03133a594eb583361c540606e3b85732f0c4fd935d8920b6d2cb2cf9ebf1e91e",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/pe_array_16x16.sv",
+      "sha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/pe_mp/PE_MP_v1.v",
+      "sha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/pe_mp/fix2fp.v",
+      "sha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/pe_mp/fp2fix.v",
+      "sha256": "0ebd6e23b9e22b2ee633f023bf707aeaf88af0eab3c9be36c27f62cf24078293",
+      "matches_august": false
+    },
+    {
+      "path": "rtl/pe_mp/fp32_adder.v",
+      "sha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/pe_mp/fp32_multi.v",
+      "sha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/sa_ctrl.sv",
+      "sha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/sa_top.sv",
+      "sha256": "1ff701ca3aa3637be7bf3f2cb00b76443bdba9c164ecc97ff637bb8da05ec801",
+      "matches_august": true
+    },
+    {
+      "path": "rtl/vcs_filelist.f",
+      "sha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8",
+      "matches_august": true
+    },
+    {
+      "path": "tb/output_collector_tb.sv",
+      "sha256": "512791e7d25e6c904bf541caed0344723c75f0a75a0135057b9fe143f95e12ca",
+      "matches_august": true
+    },
+    {
+      "path": "tb/pe_array_16x16_tb.sv",
+      "sha256": "5d53bcd8d4d59a36ab6bc77a136b0e408261479b95e2873ee04ea64bba2fd337",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_ctrl_tb.sv",
+      "sha256": "50c122569048351a0121ef705f9776996fcb3d73a67943ee55f0e14a84d57dc3",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_case_runner.sv",
+      "sha256": "02e47c2fb51e5c2dfd64e512722541f10278b1e78ecac2a6499fc6ee0d92911a",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_tb_fp16.sv",
+      "sha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_tb_fp32.sv",
+      "sha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_tb_int4.sv",
+      "sha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_tb_int8.sv",
+      "sha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_tb_multi.sv",
+      "sha256": "af771cf00dff30dff2aff89949979b6ec9581b55b7e734c1de32005a1dd3e10d",
+      "matches_august": true
+    },
+    {
+      "path": "tb/sa_top_tb_smoke.sv",
+      "sha256": "dbc0853533cdb2ed5c864254c819ff63433a38fa8cc74a7ed9b64e7b54b01304",
+      "matches_august": true
+    },
+    {
+      "path": "tb/vcs_sa_top_tb_smoke.f",
+      "sha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758",
+      "matches_august": true
+    }
+  ],
+  "only_authorized_deviation": "rtl/pe_mp/fp2fix.v combinational default and negative-zero correction",
+  "strict_TOP_status": "different current7beat independent-vector oracle preserved; diagnostic run by parent; no PASS claim",
+  "signoff_achieved": false
+}

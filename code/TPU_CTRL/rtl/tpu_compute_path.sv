@@ -55,7 +55,7 @@ module tpu_compute_path #(
         .dat_in_vld, .dat_in_last,
         .cpu_dat_in_b_lock, .cpu_dat_in_b, .cpu_dat_in_b_sel,
         .cpu_h_size, .cpu_w_size, .cpu_cpt_mode, .rpt_active_size,
-        .dat_out, .dat_out_vld, .dat_out_last, .sa_pipeline_empty()
+        .dat_out, .dat_out_vld, .dat_out_last
     );
 endmodule
 `default_nettype wire

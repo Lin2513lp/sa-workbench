@@ -1,38 +1,37 @@
-Command: /home/yian/sa_runs/original_interface_20261024_v2/build/vcs/sa_top_tb_int8/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_int8.fsdb -l /home/yian/sa_runs/original_interface_20261024_v2/logs/sa_top_tb_int8_run.log
+Command: /home/yian/sa_runs/august18_baseline_20261024/build/vcs/sa_top_tb_int8/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_int8.fsdb -l /home/yian/sa_runs/august18_baseline_20261024/logs/sa_top_tb_int8_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 21:42 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:08 2026
 *Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
 *Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
 *Verdi* Loading libsscore_vcs202312.so
 FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
 (C) 1996 - 2024 by Synopsys, Inc.
-*Verdi* : Create FSDB file '/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_int8.fsdb'
+*Verdi* : Create FSDB file '/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_int8.fsdb'
 *Verdi* : Begin traversing the scope (sa_top_tb_int8.u_case.dut), layer (0).
 *Verdi* : Enable +all dumping.
 *Verdi* : End of traversing.
-sa_top_tb_int8: STREAM_PASS mode=1 H=1 W=1 length=1 results=1
-sa_top_tb_int8: STREAM_PASS mode=1 H=1 W=1 length=2 results=2
-sa_top_tb_int8: STREAM_PASS mode=1 H=1 W=1 length=4 results=4
-sa_top_tb_int8: STREAM_PASS mode=1 H=1 W=1 length=16 results=16
-sa_top_tb_int8: STREAM_PASS mode=1 H=1 W=1 length=31 results=31
-sa_top_tb_int8: STREAM_PASS mode=1 H=1 W=1 length=64 results=64
-sa_top_tb_int8: STREAM_PASS mode=1 H=4 W=4 length=1 results=4
-sa_top_tb_int8: STREAM_PASS mode=1 H=4 W=4 length=2 results=8
-sa_top_tb_int8: STREAM_PASS mode=1 H=4 W=4 length=4 results=16
-sa_top_tb_int8: STREAM_PASS mode=1 H=4 W=4 length=16 results=64
-sa_top_tb_int8: STREAM_PASS mode=1 H=4 W=4 length=31 results=124
-sa_top_tb_int8: STREAM_PASS mode=1 H=4 W=4 length=64 results=256
-sa_top_tb_int8: STREAM_PASS mode=1 H=16 W=16 length=1 results=16
-sa_top_tb_int8: STREAM_PASS mode=1 H=16 W=16 length=2 results=32
-sa_top_tb_int8: STREAM_PASS mode=1 H=16 W=16 length=4 results=64
-sa_top_tb_int8: STREAM_PASS mode=1 H=16 W=16 length=16 results=256
-sa_top_tb_int8: STREAM_PASS mode=1 H=16 W=16 length=31 results=496
-sa_top_tb_int8: STREAM_PASS mode=1 H=16 W=16 length=64 results=1024
-sa_top_tb_int8: PASS jobs=18 results=2478 valid_zeros=692 checks=3006
-$finish called from file "tb/sa_top_case_runner.sv", line 344.
-$finish at simulation time              8271350
+sa_top_tb_int8: B row 0 = 00000002 00000001 00000001 00000003 00000001 00000001 00000001 00000001 00000002 00000004 00000002 00000001 00000002 00000002 00000003 00000002
+sa_top_tb_int8: B row 1 = 00000001 00000003 00000002 00000001 00000002 00000002 00000004 00000003 00000002 00000003 00000004 00000003 00000001 00000002 00000004 00000002
+sa_top_tb_int8: B row 2 = 00000003 00000003 00000003 00000004 00000003 00000003 00000001 00000002 00000003 00000004 00000004 00000004 00000004 00000001 00000001 00000001
+sa_top_tb_int8: B row 3 = 00000001 00000002 00000001 00000002 00000001 00000003 00000003 00000002 00000002 00000002 00000004 00000002 00000002 00000004 00000004 00000002
+sa_top_tb_int8: B row 4 = 00000004 00000002 00000003 00000003 00000002 00000001 00000003 00000003 00000002 00000001 00000004 00000004 00000001 00000002 00000001 00000001
+sa_top_tb_int8: B row 5 = 00000002 00000003 00000002 00000003 00000002 00000002 00000001 00000003 00000003 00000001 00000002 00000003 00000002 00000003 00000002 00000001
+sa_top_tb_int8: B row 6 = 00000001 00000003 00000004 00000002 00000002 00000002 00000002 00000004 00000002 00000001 00000003 00000004 00000003 00000001 00000001 00000002
+sa_top_tb_int8: B row 7 = 00000001 00000003 00000001 00000002 00000003 00000004 00000003 00000003 00000001 00000003 00000002 00000001 00000002 00000001 00000004 00000002
+sa_top_tb_int8: B row 8 = 00000003 00000001 00000004 00000001 00000004 00000003 00000003 00000001 00000002 00000001 00000003 00000002 00000001 00000002 00000002 00000004
+sa_top_tb_int8: B row 9 = 00000001 00000003 00000002 00000004 00000002 00000003 00000002 00000003 00000004 00000003 00000001 00000003 00000003 00000003 00000003 00000004
+sa_top_tb_int8: B row 10 = 00000002 00000002 00000003 00000001 00000003 00000003 00000004 00000004 00000002 00000004 00000004 00000001 00000003 00000001 00000004 00000003
+sa_top_tb_int8: B row 11 = 00000002 00000004 00000001 00000002 00000002 00000002 00000003 00000004 00000003 00000004 00000001 00000004 00000003 00000001 00000001 00000002
+sa_top_tb_int8: B row 12 = 00000003 00000002 00000002 00000002 00000002 00000002 00000003 00000002 00000003 00000002 00000003 00000001 00000003 00000002 00000002 00000004
+sa_top_tb_int8: B row 13 = 00000001 00000002 00000001 00000002 00000001 00000001 00000002 00000002 00000001 00000001 00000002 00000002 00000003 00000003 00000001 00000003
+sa_top_tb_int8: B row 14 = 00000004 00000002 00000004 00000004 00000004 00000001 00000003 00000004 00000003 00000004 00000001 00000002 00000001 00000002 00000001 00000001
+sa_top_tb_int8: B row 15 = 00000002 00000002 00000003 00000002 00000004 00000002 00000002 00000003 00000004 00000001 00000001 00000001 00000002 00000001 00000003 00000002
+sa_top_tb_int8: A vector 0 = 51896678 d58d43bb c2b9b586 7528ffc2 30c1dfea 6cafd4f4 5012e26c 87b3ec23 bcc9d638 47dc32df f171f19c 2700d19d 9b5e8f84 1f6b70b3 5ed829ad 26592f3b; expected columns = 12dd8980 c6d446db b069f6ea a09a4499 3c442b46 9f5fb82d 7b37b73f 4bdcb978 e8788d54 2eb277c3 76009084 355cec38 313a30eb 4789122f c13037df f46f1022
+sa_top_tb_int8: PASS
+$finish called from file "tb/sa_top_case_runner.sv", line 411.
+$finish at simulation time               408850
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 8271350 ps
-CPU Time:      1.680 seconds;       Data structure size:   4.8Mb
-Fri Oct 23 21:42:12 2026
+Time: 408850 ps
+CPU Time:      0.690 seconds;       Data structure size:   4.8Mb
+Fri Oct 23 22:08:51 2026

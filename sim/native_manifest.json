@@ -1,24 +1,27 @@
 {
+  "baseline_commit": "9b92a5308eb2c51ac270a35792394294bd551687",
+  "external_ports": 18,
+  "output_contract": "August cumulative column snapshots",
   "capture_manifest": {
-    "kind": "actual VCS FSDB and Verdi-native wvCapture screenshots",
-    "source_manifest_sha256": "f0f63de95ad5288748d62fa4dd408ad023e6082e9190d74c336c5cc8058ec022",
+    "kind": "August7 baseline original18ports; actual VCS FSDB and native nWave screenshots",
+    "source_manifest_sha256": "d9ee3ed9bffc11e234af69a029a1e08240978b05c40ea8b35fbdfeb9f5fdb2f1",
     "display": ":0",
-    "guest_runroot": "/home/yian/sa_runs/original_interface_20261024_v2",
+    "guest_runroot": "/home/yian/sa_runs/august18_baseline_20261024",
     "captures": [
       {
         "top": "sa_top_tb_smoke",
-        "fsdb": "/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_smoke.fsdb",
-        "fsdb_sha256": "22a8478ebd11bae29fb1f11cc7a8e1e8b5fe5082a844d9163cbd4096da563f14",
+        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_smoke.fsdb",
+        "fsdb_sha256": "1b95c3bcd7caa96f13017033973bced0a61c7ec2e5150e5554071795395cae9d",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_smoke/full_run.png",
-            "sha256": "e484d547d88835421bff99ae69779c903d059e9caeb03931827642a289ab71d9",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_smoke/full_run.png",
+            "sha256": "d9ffbbd41abad01f4b3b7a60c0309906a6ad517805fabda4328c172b01237aed",
             "width": 2500,
             "height": 1614
           },
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_smoke/compute_detail.png",
-            "sha256": "7639a7d2ed8ca47653b62d0524c8e0f951658b3fecc3334c04ed24a5ab01cd78",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_smoke/compute_detail.png",
+            "sha256": "5d59e7e329bf1648ad63bc246d047513c942ad2c5fecf646f0458dc0d55f21c5",
             "width": 2500,
             "height": 1614
           }
@@ -26,18 +29,18 @@
       },
       {
         "top": "sa_top_tb_int4",
-        "fsdb": "/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_int4.fsdb",
-        "fsdb_sha256": "5fb9b69c7d8756201511995c99000f8336b6b127131cba5ca99f72cb7447fdb3",
+        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_int4.fsdb",
+        "fsdb_sha256": "c6ad6951660b77ff28bbd899552afadff3923329b5e8345cb8404dfbd62c9c52",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_int4/full_run.png",
-            "sha256": "4651724925789a3b36bb4333732065fe554e1100504b62ddf439c6c8193a4ee2",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int4/full_run.png",
+            "sha256": "02304ca97b2d1f07ee9d94a1a94df9572ae0856aa5c14bc994c70a8d8cf66833",
             "width": 2500,
             "height": 1614
           },
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_int4/compute_detail.png",
-            "sha256": "b735159889621cf5117b57d6a375842d777b66273c9cb0dfe4472e427f2d6dba",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int4/compute_detail.png",
+            "sha256": "7e2e8be4aac2c99bc384bc65b3e651785b526a82bbac6afd810dd96249d8e5ad",
             "width": 2500,
             "height": 1614
           }
@@ -45,18 +48,18 @@
       },
       {
         "top": "sa_top_tb_int8",
-        "fsdb": "/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_int8.fsdb",
-        "fsdb_sha256": "b2e9657d834a45192f20acb72fd80e79a5f4e5f55606db5eb7db7282b8a4f332",
+        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_int8.fsdb",
+        "fsdb_sha256": "1016e975bd97021cd8d7aafe927d32fb5f0a2dd3491947797560a2428140ae5a",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_int8/full_run.png",
-            "sha256": "97f8a8305e960ca76ba5b26b3f9898fcc86a4eb7a9f88a345082616fddd9d7df",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int8/full_run.png",
+            "sha256": "b55903c21ec9699a1d98f4551924f2fcf1de9bfdd1cffb3f9c5a425c4c6416d6",
             "width": 2500,
             "height": 1614
           },
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_int8/compute_detail.png",
-            "sha256": "8f00cb42b21faa03465d3b71414590578491f6470568ea4664f0545cf6218936",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int8/compute_detail.png",
+            "sha256": "fe157fe2870c781364951ca7eb5bf33d00b4f18ffdc8ec96e9b843211a459c7d",
             "width": 2500,
             "height": 1614
           }
@@ -64,18 +67,18 @@
       },
       {
         "top": "sa_top_tb_fp16",
-        "fsdb": "/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_fp16.fsdb",
-        "fsdb_sha256": "963a30274ee2a137286d83cc54aef04c66cf306542170e5d87128729c47b877f",
+        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp16.fsdb",
+        "fsdb_sha256": "c1af61049d3aff73a76d8c030eba07f3f38d77a03305b3918ee8fec0a9da6e95",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_fp16/full_run.png",
-            "sha256": "7c3a208f60f1dc72a5004b5ab96254b53583b4314c3eb516f2edcb2e00eea700",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp16/full_run.png",
+            "sha256": "fa2b34c93964da9e89f14fb488a5cdef65beebd3640cb09febc96714c1721325",
             "width": 2500,
             "height": 1614
           },
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_fp16/compute_detail.png",
-            "sha256": "90aa9abd3f3540b93d0bcef3cb08dbc9af03f705028521d942047b29efdcdbc0",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp16/compute_detail.png",
+            "sha256": "bd13455ec14e40fef969e43e7df19dbd291af30d38b9686103a81b25688dfdb4",
             "width": 2500,
             "height": 1614
           }
@@ -83,18 +86,18 @@
       },
       {
         "top": "sa_top_tb_fp32",
-        "fsdb": "/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_fp32.fsdb",
-        "fsdb_sha256": "fa6eb8ac1c3d1f2d2eb4274af496a3e5b738c950ead742608a448bda705a31ac",
+        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp32.fsdb",
+        "fsdb_sha256": "13d0189fdb60107467638ebf7afbb033608be8a9287d3b2d230e1278a9b7e09d",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_fp32/full_run.png",
-            "sha256": "eff05710561b69ae3f4413fe839d3bf68fbf79ee516d31abab64ee63c8372260",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp32/full_run.png",
+            "sha256": "723a93a51f3f33665ee44c9733f78de1de47c98880eca86fb3fd9caa75339bd1",
             "width": 2500,
             "height": 1614
           },
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_fp32/compute_detail.png",
-            "sha256": "436bda0fa59470de2b6437bac7e92a92009a407285381f7ad3f416d809c05b6f",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp32/compute_detail.png",
+            "sha256": "4d26102d1b81f4c530df8d2a6652c874f9cdc3e6e22f57ee820a2530af382f39",
             "width": 2500,
             "height": 1614
           }
@@ -102,18 +105,18 @@
       },
       {
         "top": "sa_top_tb_multi",
-        "fsdb": "/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_multi.fsdb",
-        "fsdb_sha256": "92d4d79701e011955940864170a7da01ebf82b25c5bd5254056cc77ec14876e5",
+        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_multi.fsdb",
+        "fsdb_sha256": "526a68c833712dde982664e26439e61b59a2a4c92b29f278aa2d7f8bbcc9ee78",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_multi/full_run.png",
-            "sha256": "68a10c3d8d681b2f15204cfec8f9ec2de0cd7f7435733e2a1ca11aaef76057c2",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_multi/full_run.png",
+            "sha256": "fe44d78b56fe5cd9061052e8cc20b06cb74b33d2af393f62d8fc038455a5158f",
             "width": 2500,
             "height": 1614
           },
           {
-            "path": "/home/yian/sa_runs/original_interface_20261024_v2/captures/sa_top_tb_multi/compute_detail.png",
-            "sha256": "9634788d258041b71947fbdedf4a1a9944613bad47418dd3d034ebc59bca7502",
+            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_multi/compute_detail.png",
+            "sha256": "cd5a91b5fc71586263aa7d38e4af3302959c8f737a4f0c2907d0110eb60119c8",
             "width": 2500,
             "height": 1614
           }
@@ -124,87 +127,88 @@
   "validated_pngs": [
     {
       "top": "sa_top_tb_fp16",
-      "name": "compute_detail.png",
+      "name": "full_run.png",
+      "sha256": "fa2b34c93964da9e89f14fb488a5cdef65beebd3640cb09febc96714c1721325",
       "width": 2500,
-      "height": 1614,
-      "sha256": "90aa9abd3f3540b93d0bcef3cb08dbc9af03f705028521d942047b29efdcdbc0"
+      "height": 1614
     },
     {
       "top": "sa_top_tb_fp16",
-      "name": "full_run.png",
-      "width": 2500,
-      "height": 1614,
-      "sha256": "7c3a208f60f1dc72a5004b5ab96254b53583b4314c3eb516f2edcb2e00eea700"
-    },
-    {
-      "top": "sa_top_tb_int8",
       "name": "compute_detail.png",
+      "sha256": "bd13455ec14e40fef969e43e7df19dbd291af30d38b9686103a81b25688dfdb4",
       "width": 2500,
-      "height": 1614,
-      "sha256": "8f00cb42b21faa03465d3b71414590578491f6470568ea4664f0545cf6218936"
+      "height": 1614
     },
     {
       "top": "sa_top_tb_int8",
       "name": "full_run.png",
+      "sha256": "b55903c21ec9699a1d98f4551924f2fcf1de9bfdd1cffb3f9c5a425c4c6416d6",
       "width": 2500,
-      "height": 1614,
-      "sha256": "97f8a8305e960ca76ba5b26b3f9898fcc86a4eb7a9f88a345082616fddd9d7df"
+      "height": 1614
+    },
+    {
+      "top": "sa_top_tb_int8",
+      "name": "compute_detail.png",
+      "sha256": "fe157fe2870c781364951ca7eb5bf33d00b4f18ffdc8ec96e9b843211a459c7d",
+      "width": 2500,
+      "height": 1614
+    },
+    {
+      "top": "sa_top_tb_multi",
+      "name": "full_run.png",
+      "sha256": "fe44d78b56fe5cd9061052e8cc20b06cb74b33d2af393f62d8fc038455a5158f",
+      "width": 2500,
+      "height": 1614
     },
     {
       "top": "sa_top_tb_multi",
       "name": "compute_detail.png",
+      "sha256": "cd5a91b5fc71586263aa7d38e4af3302959c8f737a4f0c2907d0110eb60119c8",
       "width": 2500,
-      "height": 1614,
-      "sha256": "9634788d258041b71947fbdedf4a1a9944613bad47418dd3d034ebc59bca7502"
-    },
-    {
-      "top": "sa_top_tb_multi",
-      "name": "full_run.png",
-      "width": 2500,
-      "height": 1614,
-      "sha256": "68a10c3d8d681b2f15204cfec8f9ec2de0cd7f7435733e2a1ca11aaef76057c2"
-    },
-    {
-      "top": "sa_top_tb_fp32",
-      "name": "compute_detail.png",
-      "width": 2500,
-      "height": 1614,
-      "sha256": "436bda0fa59470de2b6437bac7e92a92009a407285381f7ad3f416d809c05b6f"
+      "height": 1614
     },
     {
       "top": "sa_top_tb_fp32",
       "name": "full_run.png",
+      "sha256": "723a93a51f3f33665ee44c9733f78de1de47c98880eca86fb3fd9caa75339bd1",
       "width": 2500,
-      "height": 1614,
-      "sha256": "eff05710561b69ae3f4413fe839d3bf68fbf79ee516d31abab64ee63c8372260"
+      "height": 1614
     },
     {
-      "top": "sa_top_tb_int4",
+      "top": "sa_top_tb_fp32",
       "name": "compute_detail.png",
+      "sha256": "4d26102d1b81f4c530df8d2a6652c874f9cdc3e6e22f57ee820a2530af382f39",
       "width": 2500,
-      "height": 1614,
-      "sha256": "b735159889621cf5117b57d6a375842d777b66273c9cb0dfe4472e427f2d6dba"
+      "height": 1614
     },
     {
       "top": "sa_top_tb_int4",
       "name": "full_run.png",
+      "sha256": "02304ca97b2d1f07ee9d94a1a94df9572ae0856aa5c14bc994c70a8d8cf66833",
       "width": 2500,
-      "height": 1614,
-      "sha256": "4651724925789a3b36bb4333732065fe554e1100504b62ddf439c6c8193a4ee2"
+      "height": 1614
     },
     {
-      "top": "sa_top_tb_smoke",
+      "top": "sa_top_tb_int4",
       "name": "compute_detail.png",
+      "sha256": "7e2e8be4aac2c99bc384bc65b3e651785b526a82bbac6afd810dd96249d8e5ad",
       "width": 2500,
-      "height": 1614,
-      "sha256": "7639a7d2ed8ca47653b62d0524c8e0f951658b3fecc3334c04ed24a5ab01cd78"
+      "height": 1614
     },
     {
       "top": "sa_top_tb_smoke",
       "name": "full_run.png",
+      "sha256": "d9ffbbd41abad01f4b3b7a60c0309906a6ad517805fabda4328c172b01237aed",
       "width": 2500,
-      "height": 1614,
-      "sha256": "e484d547d88835421bff99ae69779c903d059e9caeb03931827642a289ab71d9"
+      "height": 1614
+    },
+    {
+      "top": "sa_top_tb_smoke",
+      "name": "compute_detail.png",
+      "sha256": "5d59e7e329bf1648ad63bc246d047513c942ad2c5fecf646f0458dc0d55f21c5",
+      "width": 2500,
+      "height": 1614
     }
-  ]
+  ],
+  "strict_TOP": "FAIL preserved independent-vector oracle; 0 vs30 at2573.750ns"
 }

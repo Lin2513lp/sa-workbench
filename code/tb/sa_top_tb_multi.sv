@@ -3,7 +3,7 @@
 
 module sa_top_tb_multi;
 
-    // Three repetitions of all nine H=W/gap bins without reset or disable.
+    // Reuse one random INT4-mode B matrix for three independent A vectors.
     sa_top_case_runner #(
         .MODE            (2'b00),
         .VECTOR_COUNT    (3),

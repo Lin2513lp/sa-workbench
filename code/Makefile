@@ -5,12 +5,12 @@ VCS       ?= vcs
 VERDI     ?= verdi
 
 # Select one case by leaving one TOP line uncommented. Makefile comments use '#'.
-# TOP     ?= sa_top_tb_smoke
+TOP       ?= sa_top_tb_smoke
 # TOP     ?= sa_top_tb_int4
 # TOP     ?= sa_top_tb_int8
 # TOP     ?= sa_top_tb_fp16
 # TOP     ?= sa_top_tb_fp32
-TOP       ?= sa_top_tb_multi
+# TOP     ?= sa_top_tb_multi
 DUMP      ?= fsdb
 
 # VCS creates symbolic links while building its shared objects. VMware hgfs
@@ -21,16 +21,6 @@ RUN_ROOT  ?= $(HOME)/sa_runs/sa
 RTL_FILELIST := rtl/filelist.f
 TB_FILE      := tb/$(TOP).sv
 TB_COMMON    := tb/sa_top_case_runner.sv
-# Optional real FIFO/CTRL integration test. Override these paths for a local
-# checkout whose sibling directories differ from the delivered hierarchy.
-CTRL_ROOT   ?= $(if $(wildcard TPU_CTRL/rtl/tpu_ctrl.sv),TPU_CTRL,../TPU_CTRL)
-FIFO_IN_RTL ?= $(if $(wildcard AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv),AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv,../AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv)
-ifeq ($(TOP),sa_ctrl_integration_tb)
-  INTEGRATION_SOURCES := $(FIFO_IN_RTL) $(CTRL_ROOT)/rtl/tpu_ctrl_sync.sv \
-                         $(CTRL_ROOT)/rtl/tpu_ctrl_skew.sv \
-                         $(CTRL_ROOT)/rtl/tpu_ctrl.sv \
-                         $(CTRL_ROOT)/rtl/tpu_compute_path.sv
-endif
 
 BUILD_ROOT := $(RUN_ROOT)/build/vcs
 BUILD_DIR  := $(BUILD_ROOT)/$(TOP)
@@ -47,8 +37,6 @@ TESTS := sa_top_tb_smoke \
          sa_top_tb_fp16  \
          sa_top_tb_fp32  \
          sa_top_tb_multi
-
-UNIT_TESTS := output_collector_tb sa_ctrl_tb pe_array_16x16_tb
 
 VERDI_ROOT := $(or $(VERDI_HOME),$(NOVAS_HOME))
 FSDB_TAB   := $(VERDI_ROOT)/share/PLI/VCS/LINUX64/novas.tab
@@ -72,7 +60,7 @@ else
 endif
 
 .PHONY: all help env dirs check-vcs check-verdi check-fsdb check-top \
-        rtl compile run wave verdi regress unit-regress integration-regress summary clean clean-all
+        rtl compile run wave verdi regress summary clean clean-all
 
 # Daily entry point: compile the default test, run it, and generate its FSDB.
 all: run
@@ -85,8 +73,7 @@ help:
 	@echo "  make compile TOP=sa_top_tb_int4  Compile one testbench"
 	@echo "  make run TOP=sa_top_tb_int4      Compile and run one testbench"
 	@echo "  make wave TOP=sa_top_tb_int4     Open its FSDB in Verdi"
-	@echo "  make regress                     Run six updated SA stream tests (H=W only)"
-	@echo "  make unit-regress DUMP=none       Run collector/control/array module tests"
+	@echo "  make regress                     Run all six SA top cases"
 	@echo "  make summary                     Summarize VCS run logs"
 	@echo "  make run TOP=sa_top_tb_int4 DUMP=none  Run without waveform dumping"
 	@echo "  make clean TOP=sa_top_tb_int4    Remove one test's generated files"
@@ -136,7 +123,7 @@ compile: check-vcs check-top $(DUMP_CHECK) dirs
 	@echo "[VCS] Compiling $(TOP), DUMP=$(DUMP)"
 	@mkdir -p $(BUILD_DIR)
 	$(VCS) $(VCS_COMMON) $(VCS_DEBUG) $(DUMP_DEFINE) $(DUMP_PLI) \
-	  -f $(RTL_FILELIST) $(TB_COMMON) $(INTEGRATION_SOURCES) $(TB_FILE) -top $(TOP) \
+	  -f $(RTL_FILELIST) $(TB_COMMON) $(TB_FILE) -top $(TOP) \
 	  -Mdir=$(BUILD_DIR)/csrc \
 	  -o $(SIMV) -l $(COMPILE_LOG)
 
@@ -144,10 +131,6 @@ run: compile
 	@echo "[SIM] Running $(TOP)"
 	cd "$(RUN_ROOT)" && \
 	  "$(SIMV)" +vcs+lic+wait $(DUMP_RUN) -l "$(RUN_LOG)"
-	@grep -q "$(TOP): PASS" "$(RUN_LOG)" || \
-	  { echo "ERROR: missing $(TOP): PASS in $(RUN_LOG)"; exit 1; }
-	@! grep -Eq "(^|[[:space:]])(Error|Fatal|UVM_ERROR|UVM_FATAL)(:|-|[[:space:]])" "$(RUN_LOG)" || \
-	  { echo "ERROR: simulator reported an error in $(RUN_LOG)"; exit 1; }
 	@echo "[SIM] Log:  $(RUN_LOG)"
 	@if [ "$(DUMP)" = "fsdb" ]; then \
 	  test -f "$(FSDB_FILE)" || \
@@ -170,17 +153,6 @@ regress:
 	done
 	@echo "[REGRESS] All directed tests passed."
 	@$(MAKE) --no-print-directory summary
-
-unit-regress:
-	@set -e; \
-	for test in $(UNIT_TESTS); do \
-	  echo "[UNIT] $$test"; \
-	  $(MAKE) --no-print-directory TOP=$$test DUMP=$(DUMP) run; \
-	done
-	@echo "[UNIT] All module tests passed."
-
-integration-regress:
-	@$(MAKE) --no-print-directory TOP=sa_ctrl_integration_tb DUMP=none run
 
 summary: dirs
 	@summary_file="$(LOG_DIR)/regression_summary.log"; \

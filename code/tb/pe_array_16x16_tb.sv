@@ -121,8 +121,8 @@ module pe_array_16x16_tb;
         drive_cycle(32'd0, 32'd0, 1'b0);   // Drain the final horizontal A hop.
         check_lane(1, 32'd184, 1'b1, "C[1][1] must reach bottom column 1");
 
-        // Dynamic H=W=1: inactive lower row carries column0 to the bottom;
-        // inactive column1 must remain zero/invalid.
+        // Dynamic H=1: the disabled second PE row must carry the first-row
+        // result combinationally to the physical bottom boundary.
         tpu_rst_n  = 1'b0;
         pe_en      = '0;
         dat_in_a   = '0;
@@ -130,7 +130,7 @@ module pe_array_16x16_tb;
         @(posedge clk);
         #0.1;
         tpu_rst_n = 1'b1;
-        pe_en     = 4'b0001;
+        pe_en     = 4'b0011;
 
         dat_in_b   = {32'd3, 32'd2};
         b_lock_row = 2'b01;
@@ -141,7 +141,7 @@ module pe_array_16x16_tb;
         drive_cycle(32'd4, 32'd0, 1'b1);
         check_lane(0, 32'd8, 1'b1, "inactive lower row must pass column 0");
         drive_cycle(32'd0, 32'd0, 1'b0);
-        check_lane(1, 32'd0, 1'b0, "inactive column1 must stay zero and invalid");
+        check_lane(1, 32'd12, 1'b1, "inactive lower row must pass column 1");
 
         $display("pe_array_16x16_tb: PASS");
         $finish;

@@ -71,8 +71,7 @@ module sa_top_tb_smoke;
         .rpt_active_size,
         .dat_out,
         .dat_out_vld,
-        .dat_out_last,
-        .sa_pipeline_empty()
+        .dat_out_last
     );
 
     task automatic sample_cycle;

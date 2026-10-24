@@ -14,7 +14,7 @@ A 16 x 16 systolic-array design workbench with multi-precision processing elemen
 
 [`code/`](code/) contains the current shared `sa` snapshot and the standalone [`TPU_CTRL`](code/TPU_CTRL/) project. Relative paths and file contents are preserved, including RTL, testbenches, Makefiles, file lists, and available helper scripts. The workbench's code viewer displays this same snapshot.
 
-There are **42 project files** in this snapshot. [`source-manifest.json`](source-manifest.json) records the shared-directory mapping and SHA-256 checksums. Generated simulator databases, waveform dumps, editor temporary files, and license logs are excluded.
+There are **41 project files** in this snapshot. [`source-manifest.json`](source-manifest.json) records the shared-directory mapping and SHA-256 checksums. Generated simulator databases, waveform dumps, editor temporary files, and license logs are excluded.
 
 ## Repository layout
 
@@ -36,11 +36,12 @@ Open the workbench through the link above to browse the report, code, and wavefo
 - [AHB_SLAVE](https://github.com/Lin2513lp/AHB_SLAVE_WORKBENCH)
 - [PE_MP](https://github.com/Lin2513lp/pe-mp-workbench)
 
-## CTRL standalone workflow
+## Current August baseline (2026-10-24)
 
-Enter `code/TPU_CTRL/` and run `make all`, then `make verdi` in the configured VM. The self-checking unit TB covers all 16 skew lanes, FIFO bubbles, two-stage EN/START synchronization, early output LAST, input-tail completion and PE pipeline-empty feedback. SA uses its original skewed data/VALID/LAST inputs. Packets contain consecutive vectors; internal result staging adds 15 cycles before the output wavefront. sa_pipeline_empty also includes pending collector results. The waveform gallery now shows native Verdi nWave screenshots of the current VCS FSDBs, with all 19 original SA ports; six top-level regressions passed.
+SA has exactly the original 18 ports and cumulative column output from the August 7 commit `9b92a530`. Of 23 source/build/TB files, 22 match that commit exactly; only the two previously verified FP2FIX fixes remain.
 
+Questa and VM VCS each passed the six original SA top tests and three units. INT4/INT8/FP16/FP32 test one 16-column task each; Multi runs three sequential tasks (48 columns); physical 1x1 Smoke checks 7*3=21. These are the original staircase stimuli and cumulative snapshots, not a variable-length streaming regression.
 
-## Current native simulation evidence (2026-10-24)
+The gallery contains 12 actual native Verdi screenshots, with exactly 18 external SA signals. `sim/native_manifest.json` binds source, FSDB and PNG hashes; `sim/logs/` contains all nine VCS run logs. `sim/august-validation.md` and `sim/august-restored-manifest.json` document the baseline comparison.
 
-The six SA testbenches were compiled and run by VCS in the VM. The gallery contains actual native Verdi nWave captures with 19 current SA ports, plus raw PE/collector context. Each mode checks 18 variable-length jobs and 2,478 results; Multi checks 54 jobs and 7,434 results. Physical 1x1 Smoke produces 21. Default physical16x16 output staging adds15SYS cycles; packets are contiguous. PNG/FSDB/source hashes are bound by `sim/native_manifest.json`, and `sim/logs/` supplies the actual VCS run logs.
+The current TOP independent-vector streaming test **fails** in Questa and VCS: first AXI beat zero versus expected lane0=30 at 2573.750 ns. Its strict oracle is preserved. Later DONE/W1C checks are not reached. The original August SA tests passing does not imply TOP integration passing.

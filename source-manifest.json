@@ -1,12 +1,12 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "sa-original-interface-20261024",
+  "release": "sa-august-baseline-18ports-20261024",
   "files": [
     {
       "path": "Makefile",
-      "bytes": 7938,
-      "sha256": "4b97a76bbd37afb188f883f5962d81674d015608ede615367e3c3b7d3733afdb",
+      "bytes": 6273,
+      "sha256": "39e03d72b0ae3c1caba3cb72b92537e5cd644cff31b2faf6d807b13f1293613b",
       "source_directory": "tpu/tpu/sa",
       "source_path": "Makefile"
     },
@@ -19,8 +19,8 @@
     },
     {
       "path": "rtl/output_collector.sv",
-      "bytes": 5774,
-      "sha256": "42afa7133bdadd35e12c6ad3bc8108ab9adc0d04eaff41b2efc56646831fc9e2",
+      "bytes": 5683,
+      "sha256": "03133a594eb583361c540606e3b85732f0c4fd935d8920b6d2cb2cf9ebf1e91e",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/output_collector.sv"
     },
@@ -75,8 +75,8 @@
     },
     {
       "path": "rtl/sa_top.sv",
-      "bytes": 4895,
-      "sha256": "e8db4d5e66fab606aea74fe824b80061e29afe66dca282085d6b9445b88ef37a",
+      "bytes": 4294,
+      "sha256": "1ff701ca3aa3637be7bf3f2cb00b76443bdba9c164ecc97ff637bb8da05ec801",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/sa_top.sv"
     },
@@ -89,36 +89,29 @@
     },
     {
       "path": "tb/output_collector_tb.sv",
-      "bytes": 4716,
-      "sha256": "95afb20640d10939f06eab3d8bdefa900ee58ac2aefe3e9657077061a0e5bb85",
+      "bytes": 5609,
+      "sha256": "512791e7d25e6c904bf541caed0344723c75f0a75a0135057b9fe143f95e12ca",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/output_collector_tb.sv"
     },
     {
       "path": "tb/pe_array_16x16_tb.sv",
-      "bytes": 4524,
-      "sha256": "ab5eee6343f0b3dab1fc8d9ea613d10bb395b86ff6b38bd42cd6e28210ea6d14",
+      "bytes": 4532,
+      "sha256": "5d53bcd8d4d59a36ab6bc77a136b0e408261479b95e2873ee04ea64bba2fd337",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/pe_array_16x16_tb.sv"
     },
     {
-      "path": "tb/sa_ctrl_integration_tb.sv",
-      "bytes": 10932,
-      "sha256": "e687f211dacf77fa69c608030638115dbfe8ec6ad29d1c969501d3b6fd16ff8c",
-      "source_directory": "tpu/tpu/sa",
-      "source_path": "tb/sa_ctrl_integration_tb.sv"
-    },
-    {
       "path": "tb/sa_ctrl_tb.sv",
-      "bytes": 7213,
-      "sha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a",
+      "bytes": 7194,
+      "sha256": "50c122569048351a0121ef705f9776996fcb3d73a67943ee55f0e14a84d57dc3",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_ctrl_tb.sv"
     },
     {
       "path": "tb/sa_top_case_runner.sv",
-      "bytes": 14241,
-      "sha256": "b4e6bec48292c7b1ef57994d40ae57614a638857b627d70d1977f9cea23c815e",
+      "bytes": 14975,
+      "sha256": "02e47c2fb51e5c2dfd64e512722541f10278b1e78ecac2a6499fc6ee0d92911a",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_case_runner.sv"
     },
@@ -153,14 +146,14 @@
     {
       "path": "tb/sa_top_tb_multi.sv",
       "bytes": 542,
-      "sha256": "4fe7f05dc80e1c1cd8f1362007f47e7c4f35738b638ab82185c53e8a5528cd43",
+      "sha256": "af771cf00dff30dff2aff89949979b6ec9581b55b7e734c1de32005a1dd3e10d",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_tb_multi.sv"
     },
     {
       "path": "tb/sa_top_tb_smoke.sv",
-      "bytes": 4407,
-      "sha256": "8d6fba190f4104a9d49218b97f46341aae00fe8b71e0326d5f78c3dfd012aab4",
+      "bytes": 4221,
+      "sha256": "dbc0853533cdb2ed5c864254c819ff63433a38fa8cc74a7ed9b64e7b54b01304",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_tb_smoke.sv"
     },
@@ -215,8 +208,8 @@
     },
     {
       "path": "TPU_CTRL/rtl/tpu_compute_path.sv",
-      "bytes": 2557,
-      "sha256": "ca3d1c79edcb0ad9d9f97db66b313ec6bcde8d9ab5e99187624b782f346d6eaa",
+      "bytes": 2535,
+      "sha256": "1b379b2b0c0a41fece1777f14c433339cd0bc6a613e2f510fa60414977926ab5",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/tpu_compute_path.sv"
     },
