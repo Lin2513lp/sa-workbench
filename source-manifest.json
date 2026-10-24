@@ -1,12 +1,12 @@
 {
   "source_directory": "tpu/tpu/sa",
   "ctrl_source_directory": "tpu/tpu/TPU_CTRL",
-  "release": "fp2fix-latch-fix-20261017",
+  "release": "sa-original-interface-20261024",
   "files": [
     {
       "path": "Makefile",
-      "bytes": 6930,
-      "sha256": "e13b30db13486f10dec36efde0a49dfbdd727049089cb8fd1c1382cce1c01c05",
+      "bytes": 7938,
+      "sha256": "4b97a76bbd37afb188f883f5962d81674d015608ede615367e3c3b7d3733afdb",
       "source_directory": "tpu/tpu/sa",
       "source_path": "Makefile"
     },
@@ -19,8 +19,8 @@
     },
     {
       "path": "rtl/output_collector.sv",
-      "bytes": 5749,
-      "sha256": "af5533d9cfde001ea51df1e2092ef95fe96471dae236a0554e091c4de670ec26",
+      "bytes": 5774,
+      "sha256": "42afa7133bdadd35e12c6ad3bc8108ab9adc0d04eaff41b2efc56646831fc9e2",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/output_collector.sv"
     },
@@ -75,8 +75,8 @@
     },
     {
       "path": "rtl/sa_top.sv",
-      "bytes": 5033,
-      "sha256": "4c01337a9f4e0e2ea8d2c5bc13e1268ee8284e5a71c89da6e46a96bdb95b7dba",
+      "bytes": 4895,
+      "sha256": "e8db4d5e66fab606aea74fe824b80061e29afe66dca282085d6b9445b88ef37a",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/sa_top.sv"
     },
@@ -89,8 +89,8 @@
     },
     {
       "path": "tb/output_collector_tb.sv",
-      "bytes": 5365,
-      "sha256": "7d07aec875129b51f77b7b8a48d5a4a7ed84984fe8a17948d68e498ca0645042",
+      "bytes": 4716,
+      "sha256": "95afb20640d10939f06eab3d8bdefa900ee58ac2aefe3e9657077061a0e5bb85",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/output_collector_tb.sv"
     },
@@ -102,6 +102,13 @@
       "source_path": "tb/pe_array_16x16_tb.sv"
     },
     {
+      "path": "tb/sa_ctrl_integration_tb.sv",
+      "bytes": 10932,
+      "sha256": "e687f211dacf77fa69c608030638115dbfe8ec6ad29d1c969501d3b6fd16ff8c",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/sa_ctrl_integration_tb.sv"
+    },
+    {
       "path": "tb/sa_ctrl_tb.sv",
       "bytes": 7213,
       "sha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a",
@@ -110,8 +117,8 @@
     },
     {
       "path": "tb/sa_top_case_runner.sv",
-      "bytes": 14239,
-      "sha256": "37c1e07bc9aa8b74e422314196c97856889911026fd9a3406cbac43572699e87",
+      "bytes": 14241,
+      "sha256": "b4e6bec48292c7b1ef57994d40ae57614a638857b627d70d1977f9cea23c815e",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_case_runner.sv"
     },
@@ -152,10 +159,17 @@
     },
     {
       "path": "tb/sa_top_tb_smoke.sv",
-      "bytes": 4339,
-      "sha256": "1aaadc248d77b3d2e604d54f20a7a21a28203800ed069cd57a1e38a6b16a14e6",
+      "bytes": 4407,
+      "sha256": "8d6fba190f4104a9d49218b97f46341aae00fe8b71e0326d5f78c3dfd012aab4",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_tb_smoke.sv"
+    },
+    {
+      "path": "tb/tb_fp2fix_zero_round.sv",
+      "bytes": 2040,
+      "sha256": "05f955bccbd44e3d0cfa0516f85c7f94fa64aa133cdece0a083dbf725759b8f0",
+      "source_directory": "tpu/tpu/sa",
+      "source_path": "tb/tb_fp2fix_zero_round.sv"
     },
     {
       "path": "tb/vcs_sa_top_tb_smoke.f",
@@ -201,8 +215,8 @@
     },
     {
       "path": "TPU_CTRL/rtl/tpu_compute_path.sv",
-      "bytes": 2655,
-      "sha256": "468f009bdef552b1f17b41a6fbf5b22774350fe1aa35e36ffd82556784174711",
+      "bytes": 2557,
+      "sha256": "ca3d1c79edcb0ad9d9f97db66b313ec6bcde8d9ab5e99187624b782f346d6eaa",
       "source_directory": "tpu/tpu/TPU_CTRL",
       "source_path": "rtl/tpu_compute_path.sv"
     },
@@ -277,11 +291,11 @@
       "source_path": "tb/tpu_ctrl_assertions.sv"
     },
     {
-      "path": "tb/tb_fp2fix_zero_round.sv",
-      "source_directory": "tpu/tpu/sa",
-      "source_path": "tb/tb_fp2fix_zero_round.sv",
-      "bytes": 2040,
-      "sha256": "05f955bccbd44e3d0cfa0516f85c7f94fa64aa133cdece0a083dbf725759b8f0"
+      "path": "AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv",
+      "bytes": 3333,
+      "sha256": "6179df997e928b25a4b2e37f30cd309acf32ffff4dff53a6c88b03725ad1eea1",
+      "source_directory": "tpu/tpu/AXI_TOP",
+      "source_path": "AXI_M_TOP/rtl/fifo_in.sv"
     }
   ]
 }

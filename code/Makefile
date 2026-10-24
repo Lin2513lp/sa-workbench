@@ -21,6 +21,16 @@ RUN_ROOT  ?= $(HOME)/sa_runs/sa
 RTL_FILELIST := rtl/filelist.f
 TB_FILE      := tb/$(TOP).sv
 TB_COMMON    := tb/sa_top_case_runner.sv
+# Optional real FIFO/CTRL integration test. Override these paths for a local
+# checkout whose sibling directories differ from the delivered hierarchy.
+CTRL_ROOT   ?= $(if $(wildcard TPU_CTRL/rtl/tpu_ctrl.sv),TPU_CTRL,../TPU_CTRL)
+FIFO_IN_RTL ?= $(if $(wildcard AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv),AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv,../AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv)
+ifeq ($(TOP),sa_ctrl_integration_tb)
+  INTEGRATION_SOURCES := $(FIFO_IN_RTL) $(CTRL_ROOT)/rtl/tpu_ctrl_sync.sv \
+                         $(CTRL_ROOT)/rtl/tpu_ctrl_skew.sv \
+                         $(CTRL_ROOT)/rtl/tpu_ctrl.sv \
+                         $(CTRL_ROOT)/rtl/tpu_compute_path.sv
+endif
 
 BUILD_ROOT := $(RUN_ROOT)/build/vcs
 BUILD_DIR  := $(BUILD_ROOT)/$(TOP)
@@ -62,7 +72,7 @@ else
 endif
 
 .PHONY: all help env dirs check-vcs check-verdi check-fsdb check-top \
-        rtl compile run wave verdi regress unit-regress summary clean clean-all
+        rtl compile run wave verdi regress unit-regress integration-regress summary clean clean-all
 
 # Daily entry point: compile the default test, run it, and generate its FSDB.
 all: run
@@ -126,7 +136,7 @@ compile: check-vcs check-top $(DUMP_CHECK) dirs
 	@echo "[VCS] Compiling $(TOP), DUMP=$(DUMP)"
 	@mkdir -p $(BUILD_DIR)
 	$(VCS) $(VCS_COMMON) $(VCS_DEBUG) $(DUMP_DEFINE) $(DUMP_PLI) \
-	  -f $(RTL_FILELIST) $(TB_COMMON) $(TB_FILE) -top $(TOP) \
+	  -f $(RTL_FILELIST) $(TB_COMMON) $(INTEGRATION_SOURCES) $(TB_FILE) -top $(TOP) \
 	  -Mdir=$(BUILD_DIR)/csrc \
 	  -o $(SIMV) -l $(COMPILE_LOG)
 
@@ -168,6 +178,9 @@ unit-regress:
 	  $(MAKE) --no-print-directory TOP=$$test DUMP=$(DUMP) run; \
 	done
 	@echo "[UNIT] All module tests passed."
+
+integration-regress:
+	@$(MAKE) --no-print-directory TOP=sa_ctrl_integration_tb DUMP=none run
 
 summary: dirs
 	@summary_file="$(LOG_DIR)/regression_summary.log"; \

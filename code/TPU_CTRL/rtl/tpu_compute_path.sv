@@ -51,8 +51,6 @@ module tpu_compute_path #(
     );
     sa_top u_sa (
         .sys_ckg, .pe_ckg, .tpu_rst_n,
-        .vector_in_vld(fifo_in_re),
-        .vector_in_last(fifo_in_re && fifo_in_rd_dat_last),
         .cpu_tpu_start_sync, .cpu_tpu_en_sync, .dat_in_a,
         .dat_in_vld, .dat_in_last,
         .cpu_dat_in_b_lock, .cpu_dat_in_b, .cpu_dat_in_b_sel,

@@ -125,7 +125,7 @@
     }
 
     .tool,
-    .open-link {
+    .open-link, .open-link-style {
       display: inline-grid;
       min-width: 34px;
       height: 34px;
@@ -190,7 +190,7 @@
 <body>
   <header>
     <h1>SA_TOP 仿真波形</h1>
-    <p>五组顶层回归波形与对应模式检查结论。</p>
+    <p>2026-10-24 虚拟机 VCS 实测 FSDB、原生 Verdi nWave 截图；六组均通过，显示全部 19 个现有 SA 端口。</p>
   </header>
 
   <main>
@@ -205,7 +205,9 @@
           <button class="tool" type="button" data-action="minus" title="缩小" aria-label="缩小">−</button>
           <button class="tool" type="button" data-action="fit" title="适合窗口">适合</button>
           <button class="tool" type="button" data-action="plus" title="放大" aria-label="放大">＋</button>
-          <a class="open-link" target="_blank" rel="noopener">原图</a>
+          <a class="open-link" target="_blank" rel="noopener">细节原图</a>
+          <a class="full-link open-link-style" target="_blank" rel="noopener">全程原图</a>
+          <a class="log-link open-link-style" target="_blank" rel="noopener">VCS 日志</a>
         </div>
       </div>
       <div class="viewport">
@@ -222,51 +224,72 @@
     (() => {
       const cases = [
         {
-          id: "fp16",
-          label: "FP16",
-          mode: "cpu_cpt_mode=2'b10",
-          latency: "PE 延迟 7 拍",
-          image: "./sim/fp16.png",
-          checks: "16 列检查 PASS",
-          caption: "完成 16 行 B 权重加载后送入一组 A 数据。scoreboard 按 FP32 编码逐列比较，C0=0x42ba0000（93），C15=0x42940000（74）。"
+                "id": "fp16",
+                "label": "FP16",
+                "mode": "cpu_cpt_mode=2'b10",
+                "latency": "PE 7 拍 + SA 暂存 15 拍",
+                "image": "./sim/fp16.png?v=90aa9abd3f35",
+                "fullImage": "./sim/fp16_full.png?v=7c3a208f60f1",
+                "log": "./sim/logs/sa_top_tb_fp16_run.log",
+                "checks": "18 个任务 / 2478 个结果 / PASS",
+                "caption": "本次 VCS 回归覆盖 H=W 1/4/16、连续包长 1/2/4/16/31/64，独立矩阵参考模型检查 2478 个结果，其中 672 个合法零值，共 3330 项检查。截图为最后一个 H=W=16、包长 64 的实际 FSDB；SA 输出在原 PE 波前之后暂存 15 拍。"
         },
         {
-          id: "int8",
-          label: "INT8",
-          mode: "cpu_cpt_mode=2'b01",
-          latency: "PE 延迟 1 拍",
-          image: "./sim/int8.png",
-          checks: "16 列检查 PASS",
-          caption: "随机整数 A/B 激励下，参考模型与 RTL 的低 32-bit 环绕结果逐列一致。C0=0x12dd8980，C15=0xf46f1022。"
+                "id": "int8",
+                "label": "INT8",
+                "mode": "cpu_cpt_mode=2'b01",
+                "latency": "PE 1 拍 + SA 暂存 15 拍",
+                "image": "./sim/int8.png?v=8f00cb42b21f",
+                "fullImage": "./sim/int8_full.png?v=97f8a8305e96",
+                "log": "./sim/logs/sa_top_tb_int8_run.log",
+                "checks": "18 个任务 / 2478 个结果 / PASS",
+                "caption": "本次 VCS 回归覆盖 H=W 1/4/16、连续包长 1/2/4/16/31/64，独立矩阵参考模型检查 2478 个结果，其中 692 个合法零值，共 3006 项检查。截图为最后一个 H=W=16、包长 64 的实际 FSDB；SA 输出在原 PE 波前之后暂存 15 拍。"
         },
         {
-          id: "multi",
-          label: "Multi",
-          mode: "cpu_cpt_mode=2'b00",
-          latency: "同一 B 连续 3 个任务",
-          image: "./sim/multi.png",
-          checks: "48 列检查 PASS",
-          caption: "B 权重仅加载一次，随后连续输入三组 A。三次 dat_out_vld 窗口和 dat_out_last 均被独立检查，共完成 3×16 列结果比对。"
+                "id": "multi",
+                "label": "Multi",
+                "mode": "cpu_cpt_mode=2'b00",
+                "latency": "连续复用 EN，54 个可变包长任务",
+                "image": "./sim/multi.png?v=9634788d2580",
+                "fullImage": "./sim/multi_full.png?v=68a10c3d8d68",
+                "log": "./sim/logs/sa_top_tb_multi_run.log",
+                "checks": "54 个任务 / 7434 个结果 / PASS",
+                "caption": "在 EN 持续有效且不复位的条件下，重复三轮尺寸与包长组合。本次 VCS 回归覆盖 H=W 1/4/16、连续包长 1/2/4/16/31/64，独立矩阵参考模型检查 7434 个结果，其中 2101 个合法零值，共 9018 项检查。截图为最后一个 H=W=16、包长 64 的实际 FSDB；SA 输出在原 PE 波前之后暂存 15 拍。"
         },
         {
-          id: "fp32",
-          label: "FP32",
-          mode: "cpu_cpt_mode=2'b11",
-          latency: "PE 延迟 4 拍",
-          image: "./sim/fp32.png",
-          checks: "16 列检查 PASS",
-          caption: "FP32 模式下等待四拍 PE 流水延迟后开启输出窗口。C0=0x42ba0000（93），C15=0x42d00000（104），与参考模型一致。"
+                "id": "fp32",
+                "label": "FP32",
+                "mode": "cpu_cpt_mode=2'b11",
+                "latency": "PE 4 拍 + SA 暂存 15 拍",
+                "image": "./sim/fp32.png?v=436bda0fa594",
+                "fullImage": "./sim/fp32_full.png?v=eff05710561b",
+                "log": "./sim/logs/sa_top_tb_fp32_run.log",
+                "checks": "18 个任务 / 2478 个结果 / PASS",
+                "caption": "本次 VCS 回归覆盖 H=W 1/4/16、连续包长 1/2/4/16/31/64，独立矩阵参考模型检查 2478 个结果，其中 672 个合法零值，共 3168 项检查。截图为最后一个 H=W=16、包长 64 的实际 FSDB；SA 输出在原 PE 波前之后暂存 15 拍。"
         },
         {
-          id: "int4",
-          label: "INT4",
-          mode: "cpu_cpt_mode=2'b00",
-          latency: "PE 延迟 1 拍",
-          image: "./sim/int4.png",
-          checks: "16 列检查 PASS",
-          caption: "当前 RTL 的 INT4 路径按 32-bit 有符号整数乘加进行验证。C0=0xf06fa532，C15=0x8f9864b3，16 个输出拍全部匹配。"
+                "id": "int4",
+                "label": "INT4",
+                "mode": "cpu_cpt_mode=2'b00",
+                "latency": "PE 1 拍 + SA 暂存 15 拍",
+                "image": "./sim/int4.png?v=b73515988962",
+                "fullImage": "./sim/int4_full.png?v=465172492578",
+                "log": "./sim/logs/sa_top_tb_int4_run.log",
+                "checks": "18 个任务 / 2478 个结果 / PASS",
+                "caption": "本次 VCS 回归覆盖 H=W 1/4/16、连续包长 1/2/4/16/31/64，独立矩阵参考模型检查 2478 个结果，其中 702 个合法零值，共 3006 项检查。截图为最后一个 H=W=16、包长 64 的实际 FSDB；SA 输出在原 PE 波前之后暂存 15 拍。"
+        },
+        {
+                "id": "smoke",
+                "label": "Smoke",
+                "mode": "物理 ARRAY_H=ARRAY_W=1",
+                "latency": "PE 1 拍；物理 1×1 额外暂存 0 拍",
+                "image": "./sim/smoke.png?v=7639a7d2ed8c",
+                "fullImage": "./sim/smoke_full.png?v=e484d547d888",
+                "log": "./sim/logs/sa_top_tb_smoke_run.log",
+                "checks": "固定 7×3=21；PASS",
+                "caption": "真实物理 1×1 冒烟任务，输出 21 并同拍携带 LAST；该配置的 Skew 尾部为 0，因此无需新增暂存延迟。"
         }
-      ];
+];
 
       const tabs = document.querySelector(".tabs");
       const title = document.querySelector(".wave-title");
@@ -304,6 +327,8 @@
         image.style.transform = `scale(${zoom})`;
         image.style.marginBottom = `${Math.max(0, image.offsetHeight * (zoom - 1))}px`;
         openLink.href = active.image;
+        document.querySelector(".full-link").href = active.fullImage;
+        document.querySelector(".log-link").href = active.log;
         caption.innerHTML = `<b>结果：</b>${active.caption}`;
         checks.textContent = active.checks;
         viewport.scrollTo({ left: 0, top: 0 });

@@ -1,0 +1,38 @@
+Command: /home/yian/sa_runs/original_interface_20261024_v2/build/vcs/sa_top_tb_int4/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_int4.fsdb -l /home/yian/sa_runs/original_interface_20261024_v2/logs/sa_top_tb_int4_run.log
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 21:42 2026
+*Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
+*Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
+*Verdi* Loading libsscore_vcs202312.so
+FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
+(C) 1996 - 2024 by Synopsys, Inc.
+*Verdi* : Create FSDB file '/home/yian/sa_runs/original_interface_20261024_v2/waves/sa_top_tb_int4.fsdb'
+*Verdi* : Begin traversing the scope (sa_top_tb_int4.u_case.dut), layer (0).
+*Verdi* : Enable +all dumping.
+*Verdi* : End of traversing.
+sa_top_tb_int4: STREAM_PASS mode=0 H=1 W=1 length=1 results=1
+sa_top_tb_int4: STREAM_PASS mode=0 H=1 W=1 length=2 results=2
+sa_top_tb_int4: STREAM_PASS mode=0 H=1 W=1 length=4 results=4
+sa_top_tb_int4: STREAM_PASS mode=0 H=1 W=1 length=16 results=16
+sa_top_tb_int4: STREAM_PASS mode=0 H=1 W=1 length=31 results=31
+sa_top_tb_int4: STREAM_PASS mode=0 H=1 W=1 length=64 results=64
+sa_top_tb_int4: STREAM_PASS mode=0 H=4 W=4 length=1 results=4
+sa_top_tb_int4: STREAM_PASS mode=0 H=4 W=4 length=2 results=8
+sa_top_tb_int4: STREAM_PASS mode=0 H=4 W=4 length=4 results=16
+sa_top_tb_int4: STREAM_PASS mode=0 H=4 W=4 length=16 results=64
+sa_top_tb_int4: STREAM_PASS mode=0 H=4 W=4 length=31 results=124
+sa_top_tb_int4: STREAM_PASS mode=0 H=4 W=4 length=64 results=256
+sa_top_tb_int4: STREAM_PASS mode=0 H=16 W=16 length=1 results=16
+sa_top_tb_int4: STREAM_PASS mode=0 H=16 W=16 length=2 results=32
+sa_top_tb_int4: STREAM_PASS mode=0 H=16 W=16 length=4 results=64
+sa_top_tb_int4: STREAM_PASS mode=0 H=16 W=16 length=16 results=256
+sa_top_tb_int4: STREAM_PASS mode=0 H=16 W=16 length=31 results=496
+sa_top_tb_int4: STREAM_PASS mode=0 H=16 W=16 length=64 results=1024
+sa_top_tb_int4: PASS jobs=18 results=2478 valid_zeros=702 checks=3006
+$finish called from file "tb/sa_top_case_runner.sv", line 344.
+$finish at simulation time              8271350
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 8271350 ps
+CPU Time:      1.770 seconds;       Data structure size:   4.8Mb
+Fri Oct 23 21:42:06 2026

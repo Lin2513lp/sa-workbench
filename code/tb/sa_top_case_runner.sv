@@ -36,11 +36,11 @@ module sa_top_case_runner #(
     logic                              dat_out_vld;
     logic                              dat_out_last;
 
-    logic vector_in_vld, vector_in_last, sa_pipeline_empty;
+    logic sa_pipeline_empty;
     logic [31:0] b_pe_value [0:15][0:15];
-    logic [31:0] a_matrix [0:15][0:15];
-    int a_numeric [0:15][0:15];
-    logic [31:0] golden [0:15][0:15];
+    logic [31:0] a_matrix [0:63][0:15];
+    int a_numeric [0:63][0:15];
+    logic [31:0] golden [0:63][0:15];
     int checks=0, matrix_results=0, jobs=0, zero_results=0;
 `ifdef VERILATOR_TRACE
     initial begin
@@ -84,8 +84,6 @@ module sa_top_case_runner #(
         .dat_out,
         .dat_out_vld,
         .dat_out_last,
-        .vector_in_vld,
-        .vector_in_last,
         .sa_pipeline_empty
     );
 
@@ -221,11 +219,11 @@ module sa_top_case_runner #(
             end
         end
         rng = RANDOM_SEED ^ (32'h85ebca6b * (job_id+1));
-        for (int k=0; k<16; k++) begin
+        for (int k=0; k<64; k++) begin
             for (int r=0; r<16; r++) begin
                 rng=next_random(rng);
                 // Include valid zero vectors, including the LAST vector.
-                if ((k%4)==0 || k==15) a_numeric[k][r]=0;
+                if ((k%4)==0 || k==63) a_numeric[k][r]=0;
                 else if (MODE<2) a_numeric[k][r]=int'(rng%13)-6;
                 else a_numeric[k][r]=int'(rng%4)+1;
                 if (MODE<2) a_matrix[k][r]=32'(a_numeric[k][r]);
@@ -264,17 +262,17 @@ module sa_top_case_runner #(
         repeat(4) sample_cycle();
     endtask
 
-    task automatic run_stream(input int n, input int gap, input int repetition);
+    task automatic run_stream(input int n, input int count, input int repetition);
         int spacing, last_pop, latency, end_cycle, t, source_t, k;
         int job_results, last_pulses;
         logic [511:0] expected_bus;
         logic expected_valid, expected_last;
         jobs++;
-        spacing=gap+1;
-        last_pop=15*spacing;
+        spacing=1;
+        last_pop=(count-1)*spacing;
         latency=(MODE==2)?7:((MODE==3)?4:1);
         // Drain all physical16-lane padding, then test additional quiet edges.
-        end_cycle=last_pop+15+(n-1)+(latency-1)+6;
+        end_cycle=last_pop+15+2*(n-1)+(latency-1)+6;
         job_results=0; last_pulses=0;
         @(negedge sys_ckg);
         cpu_h_size=4'(n-1); cpu_w_size=4'(n-1);
@@ -288,8 +286,6 @@ module sa_top_case_runner #(
             @(negedge sys_ckg);
             dat_in_a='0; dat_in_vld=0;
             dat_in_last=(t==last_pop+15);
-            vector_in_vld=(t<=last_pop && (t%spacing)==0);
-            vector_in_last=vector_in_vld && t==last_pop;
             cpu_tpu_start_sync=(t==0);
             for(int r=0;r<16;r++) begin
                 source_t=t-r;
@@ -302,48 +298,45 @@ module sa_top_case_runner #(
             sample_cycle();
             expected_bus='0; expected_valid=0; expected_last=0;
             for(int c=0;c<n;c++) begin
-                source_t=t-(n-1)-c-(latency-1);
+                source_t=t-15-(n-1)-c-(latency-1);
                 if(source_t>=0 && source_t<=last_pop && source_t%spacing==0) begin
                     k=source_t/spacing;
                     expected_bus[c*32+:32]=golden[k][c];
                     expected_valid=1;
-                    expected_last |= k==15 && c==n-1;
-                    check(dut.raw_dat_out_vld[c]===1'b1,"final raw lane valid");
-                    check(dut.raw_dat_out[c*32+:32]===golden[k][c],
-                        $sformatf("raw mode=%0d N=%0d gap=%0d T=%0d k=%0d c=%0d",MODE,n,gap,t,k,c));
+                    expected_last |= k==count-1 && c==n-1;
+
                     job_results++;matrix_results++;
                     if(golden[k][c]==0) zero_results++;
                 end
             end
             check(dat_out===expected_bus,
-                $sformatf("full512-bit output mode=%0d N=%0d gap=%0d T=%0d expected=%h got=%h",MODE,n,gap,t,expected_bus,dat_out));
-            check(dat_out_vld===expected_valid,"exact output valid including bubbles");
+                $sformatf("full512-bit output mode=%0d N=%0d length=%0d T=%0d expected=%h got=%h",MODE,n,count,t,expected_bus,dat_out));
+            check(dat_out_vld===expected_valid,"exact output valid including startup/tail");
             check(dat_out_last===expected_last,"exact output LAST including zero result");
             if(dat_out_last) last_pulses++;
-            if(t>last_pop+15+(n-1)+(latency-1))
+            if(t>last_pop+15+2*(n-1)+(latency-1))
                 check(sa_pipeline_empty===1'b1,"all padding PE results drained");
         end
-        check(job_results==16*n,"all16xN complete matrix results checked");
+        check(job_results==count*n,"all packet vectors x N complete matrix results checked");
         check(last_pulses==1,"exactly one output LAST per task");
-        $display("%s: STREAM_PASS mode=%0d H=%0d W=%0d gap=%0d results=%0d",CASE_NAME,MODE,n,n,gap,job_results);
+        $display("%s: STREAM_PASS mode=%0d H=%0d W=%0d length=%0d results=%0d",CASE_NAME,MODE,n,n,count,job_results);
     endtask
 
     initial begin
         sys_ckg=0; tpu_rst_n=0;
         cpu_tpu_start_sync=0; cpu_tpu_en_sync=0;
         dat_in_a=0; dat_in_vld=0; dat_in_last=0;
-        vector_in_vld=0; vector_in_last=0;
         cpu_dat_in_b_lock=0; cpu_dat_in_b=0; cpu_dat_in_b_sel=0;
         cpu_h_size=15; cpu_w_size=15; cpu_cpt_mode=MODE;
         repeat(2) sample_cycle();
         @(negedge sys_ckg); tpu_rst_n=1;
-        // VECTOR_COUNT now counts repetitions of the complete9-bin stream suite.
+        // VECTOR_COUNT now counts repetitions of the complete18-bin contiguous-packet suite.
         // Same enable remains high across N1->N4->N16 and subsequent N1 tasks.
         for(int rep=0;rep<VECTOR_COUNT;rep++) begin
             for(int size_bin=0;size_bin<3;size_bin++) begin
-                for(int gap_bin=0;gap_bin<3;gap_bin++) begin
+                for(int length_bin=0;length_bin<6;length_bin++) begin
                     run_stream((size_bin==0)?1:((size_bin==1)?4:16),
-                               (gap_bin==0)?0:((gap_bin==1)?3:20),rep);
+                               (length_bin==0)?1:((length_bin==1)?2:((length_bin==2)?4:((length_bin==3)?16:((length_bin==4)?31:64)))),rep);
                 end
             end
         end

@@ -1058,8 +1058,6 @@
             <tr><td><code>cpu_tpu_en_sync</code></td><td>Input</td><td>1</td><td>TPU 使能同步信号，高有效；应在 B 权重配置开始前拉高并覆盖整轮任务。</td></tr>
             <tr><td><code>dat_in_a</code></td><td>Input</td><td>32*16</td><td>输入 A 数据流，一拍包含 16 个 32-bit lane。</td></tr>
             <tr><td><code>dat_in_vld</code></td><td>Input</td><td>1</td><td>A 数据输入有效信号。</td></tr>
-            <tr><td><code>vector_in_vld</code></td><td>Input</td><td>1</td><td>与 lane0 同采样沿的原始 FIFO 向量 valid。</td></tr>
-            <tr><td><code>vector_in_last</code></td><td>Input</td><td>1</td><td>最后一个原始 FIFO 向量标记。</td></tr>
             <tr><td><code>dat_in_last</code></td><td>Input</td><td>1</td><td>A 数据输入最后一拍指示。</td></tr>
             <tr class="group-row"><td colspan="4">RegMap Interface</td></tr>
             <tr><td><code>cpu_dat_in_b_lock</code></td><td>Input</td><td>1</td><td>动态 B 权重锁存信号；经两级同步并取上升沿后形成 400MHz 域单拍脉冲 <code>cpu_dat_in_b_lock'</code>。</td></tr>
@@ -1072,7 +1070,7 @@
             <tr class="group-row"><td colspan="4">FIFO OUT Interface</td></tr>
             <tr><td><code>dat_out</code></td><td>Output</td><td>32*16</td><td>经 SA_CTRL 选择或对齐后的 16-lane SA 结果数据流。</td></tr>
             <tr><td><code>dat_out_vld</code></td><td>Output</td><td>1</td><td>最终结果输出有效信号；不能被阵列底部提前出现的 raw partial sum 直接触发。</td></tr>
-            <tr><td><code>sa_pipeline_empty</code></td><td>Output</td><td>1</td><td>底部原始 PE valid 全零；CTRL 结合结束标志使用。</td></tr>
+            <tr><td><code>sa_pipeline_empty</code></td><td>Output</td><td>1</td><td>PE 原始流水和 SA 内部待输出结果均已排空；仅供监测。</td></tr>
             <tr><td><code>dat_out_last</code></td><td>Output</td><td>1</td><td>SA 输出最后一拍指示。</td></tr>
           </tbody>
         </table>
@@ -1132,20 +1130,16 @@
         </p>
 
         <h3>6.4 输出收集</h3>
-        <p>
-          <code>output_collector</code> 按原始 FIFO 向量的 valid 历史判断各列最终结果。
-          第 col 列选择 <code>H−1+col+(L−1)</code> 位置的 valid，并与该列原始 PE valid 相与；
-          有效列直接输出 raw 数据，其余列补零。INT4/INT8、FP16、FP32 的 L 分别为 1、7、4。
-          LAST 使用 6 位倒计时，从最后一次原始向量输入加载最后一列延迟加一；
-          倒计时为 1 且末列有效时产生 <code>dat_out_last</code>。保留 37 位 valid 历史，元数据状态共 43 位。
-        </p>
-        <div class="note">
-          <b>当前实现边界：</b><code>cpu_tpu_start_sync</code> 已保留在 <code>sa_top</code> 外部接口中，
-          但尚未接入 <code>sa_ctrl</code>；当前输出时序由原始 <code>vector_in_vld</code> / <code>vector_in_last</code> 标记决定。
-          <code>sa_pipeline_empty</code> 表示底部原始 valid 全零，CTRL 结合输入/输出结束标志判断流水排空。
-          另外，当前 INT4/INT8 路径按一个 32-bit 有符号数完成乘加，尚未实现一个 32-bit lane 内的打包子字并行运算。
-        </div>
-
+        <p>SA 使用既有 <code>dat_in_vld</code> 的起点和 <code>dat_in_last</code> 标记连续输入包的边界。
+        LAST 跟随物理第15路，比原始末向量晚15拍，因此收集器在内部恢复延后15拍的连续向量有效序列，
+        并将PE原始结果及其有效位同样暂存15拍。输出仍按各列最终完成顺序形成512-bit波前，
+        无效列补零；结果为零时仍正常输出有效标记。INT4/INT8、FP16、FP32的PE延迟L分别为1、7、4，
+        第k个向量第col列的输出时刻为原始输入时刻加15+H−1+col+L−1。
+        TOP只连接既有Skew数据、VALID与LAST，不生成额外FIFO标记。</p>
+        <div class="note"><b>当前接口约定：</b>包内原始向量连续输入，包长由LAST决定；H/W/mode从输入到输出完成保持稳定。
+        共享VALID为16路Skew有效位的OR，不能恢复任意包内气泡；不能根据数据是否为零判断有效性。
+        <code>sa_pipeline_empty</code>包括内部待输出状态；CTRL仍只按输入尾部与SA最终LAST判断完成。
+        本次改动增加内部结果暂存及15拍输出延迟，未增加外部输入。</div>
         <h2>7 Testbench 搭建与结果对比</h2>
         <h3>7.1 验证平台结构</h3>
         <p>
@@ -1155,45 +1149,14 @@
           <code>output_collector</code> 配置了模块级 testbench。
         </p>
 
-        <h3>7.2 激励、参考模型与检查规则</h3>
-        <div class="note"><b>2026-10-11 当前交付：</b>公共 TB 已改为每任务连续输入 16 个原始向量，逐行 Skew，并独立检查全部 16×N 最终结果、每拍完整总线、valid 与 LAST。全部用例 H=W，覆盖 N=1/4/16、四种精度和 FIFO 气泡。以下单向量示例和波形为历史记录。</div>
-        <p>
-          TB 先按 16 次 100MHz 配置事务写入 256 个独立 B 权重，再用 16 个 400MHz 有效拍发送 A。
-          A-T0 仅 lane0 有效，A-T1 使用 lane0～1，直至 A-T15 的 16 个 lane 全部有效并拉高
-          <code>dat_in_last</code>。软件参考模型按
-          <code>C[col] = Σ A[row] × B[row][col]</code> 计算预期值；整数模式取低 32 bit 环绕结果，
-          浮点模式比较 FP32 编码。
-        </p>
-        <p>
-          scoreboard 对第 k 个输出拍检查 lane0～k 是否等于预期 C0～Ck、其余 lane 是否为零，
-          同时检查 X/Z、<code>dat_out_vld</code> 窗口及 <code>dat_out_last</code> 是否只在最后一拍出现；
-          任何任务超过 128 拍未完成都会触发超时错误。
-        </p>
-
-        <h3>7.3 历史单向量用例结果</h3>
-        <table>
-          <thead>
-            <tr><th>用例</th><th>关键预期值</th><th>实际检查</th><th>结论</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Smoke</td><td>固定数据结果 21</td><td>实际输出 21</td><td>PASS</td></tr>
-            <tr><td>INT4</td><td>C0=<code>f06fa532</code>，C15=<code>8f9864b3</code></td><td>16 列逐拍匹配</td><td>PASS</td></tr>
-            <tr><td>INT8</td><td>C0=<code>12dd8980</code>，C15=<code>f46f1022</code></td><td>最终 512-bit 总线为 {C15…C0}</td><td>PASS</td></tr>
-            <tr><td>FP16</td><td>C0=<code>42ba0000</code> (93)，C15=<code>42940000</code> (74)</td><td>16 列 FP32 编码匹配</td><td>PASS</td></tr>
-            <tr><td>FP32</td><td>C0=<code>42ba0000</code> (93)，C15=<code>42d00000</code> (104)</td><td>16 列 FP32 编码匹配</td><td>PASS</td></tr>
-            <tr><td>Multi</td><td>同一 B 连续处理 3 组 A</td><td>共 48 列检查全部匹配</td><td>PASS</td></tr>
-          </tbody>
-        </table>
-
-        <h3>7.4 回归结论与覆盖边界</h3>
-        <p>
-          2026-08-07 的回归中，Questa 下 smoke、INT4、INT8、FP16、FP32、multi 六个 SA 顶层用例均编译并运行通过，
-          无未抑制错误或警告；Icarus 下同样为 6/6 PASS。波形可在“仿真波形”栏目查看，完整源码可在“代码设计”栏目逐文件阅读。
-        </p>
-        <div class="note">
-          <b>尚未覆盖：</b>打包 INT4/INT8 子 lane、动态 H/W、任务中途复位、各 PE 门控时钟独立驱动，
-          以及 NaN、Inf、subnormal、负数、小数和舍入边界等浮点特殊情况。当前 FP 激励使用可精确表示的 1.0～4.0。
-        </div>
+        <h3>7.2 当前激励与输出时序</h3>
+        <div class="note"><b>2026-10-24 原接口与真实波形：</b>SA 使用原有 dat_in_vld/dat_in_last，外部接口共 19 个端口。图中没有新增原始向量输入。包内输入连续，物理 16 路 Skew 的尾部由原有 LAST 标记；内部保留早到结果，输出增加 15 个 SYS 周期。下方截图来自本次 VM VCS FSDB 的原生 Verdi nWave。</div>
+        <p>TB 为每个任务独立加载 B 权重，连续发送不同包长的 A 向量；H/W 使用尺寸减一编码。参考模型从原始 A 矩阵和 B 权重独立计算每个列结果，逐拍检查全部 512 位输出、精确 VALID/LAST、合法零值及尾部补零。任务之间 EN 保持有效；尺寸、模式在任务期间保持稳定。</p>
+        <h3>7.3 本次真实 VCS 回归</h3>
+        <table><thead><tr><th>用例</th><th>实际结果检查</th><th>范围</th><th>结论</th></tr></thead><tbody><tr><td>FP16</td><td>18 个任务 / 2478 个结果 / PASS</td><td>H=W 1/4/16；包长 1/2/4/16/31/64</td><td>PASS</td></tr><tr><td>INT8</td><td>18 个任务 / 2478 个结果 / PASS</td><td>H=W 1/4/16；包长 1/2/4/16/31/64</td><td>PASS</td></tr><tr><td>Multi</td><td>54 个任务 / 7434 个结果 / PASS</td><td>H=W 1/4/16；包长 1/2/4/16/31/64</td><td>PASS</td></tr><tr><td>FP32</td><td>18 个任务 / 2478 个结果 / PASS</td><td>H=W 1/4/16；包长 1/2/4/16/31/64</td><td>PASS</td></tr><tr><td>INT4</td><td>18 个任务 / 2478 个结果 / PASS</td><td>H=W 1/4/16；包长 1/2/4/16/31/64</td><td>PASS</td></tr><tr><td>Smoke</td><td>固定 7×3=21；PASS</td><td>物理 1×1；结果 21</td><td>PASS</td></tr></tbody></table>
+        <p>六组 VCS 顶层回归和原生截图均已通过源码、FSDB、日志与 PNG 哈希核对。波形页面可查看细节、全程原图和各用例原始 VCS 日志。模块测试以及真实 FIFO+CTRL 集成使用同一份已核对源码。</p>
+        <h3>7.4 覆盖边界</h3>
+        <div class="note">原接口不承诺恢复包内任意气泡：16 路 VALID 的 OR 会丢失原始气泡位置。整数路径按当前 PE 的 32 位有符号乘加检查；浮点使用可精确表示的小整数和零。NaN/Inf/subnormal、复杂舍入边界、动态修改任务配置、独立驱动各 PE 门控时钟及完整综合/CDC/时序签核不属于本次验证。</div>
       </article>
     </section>
 
@@ -1215,11 +1178,11 @@
         <div class="artifact-head">
           <div>
             <b>SA_TOP 仿真波形</b>
-            <span>FP16、INT8、multi、FP32 与 INT4 顶层回归波形。</span>
+            <span>Smoke、INT4、INT8、FP16、FP32、Multi 的本次 VCS FSDB 原生截图。</span>
           </div>
           <a class="demo-open-link" href="./sa_sim_waveforms.html" target="_blank" rel="noopener">独立页面打开</a>
         </div>
-        <iframe class="artifact-frame" src="./sa_sim_waveforms.html" title="SA_TOP 仿真波形" loading="lazy"></iframe>
+        <iframe class="artifact-frame" src="./sa_sim_waveforms.html?native=20261024" title="SA_TOP 仿真波形" loading="lazy"></iframe>
       </div>
     </section>
 
