@@ -1,13 +1,13 @@
-Command: /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/build/vcs/sa_top_tb_multi/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_multi.fsdb -l /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/logs/sa_top_tb_multi_run.log
+Command: /home/yian/sa_runs/remove_done_clear_20261024/build/vcs/sa_top_tb_multi/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/remove_done_clear_20261024/waves/sa_top_tb_multi.fsdb -l /home/yian/sa_runs/remove_done_clear_20261024/logs/sa_top_tb_multi_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:54 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 24 12:54 2026
 *Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
 *Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
 *Verdi* Loading libsscore_vcs202312.so
 FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
 (C) 1996 - 2024 by Synopsys, Inc.
-*Verdi* : Create FSDB file '/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_multi.fsdb'
+*Verdi* : Create FSDB file '/home/yian/sa_runs/remove_done_clear_20261024/waves/sa_top_tb_multi.fsdb'
 *Verdi* : Begin traversing the scope (sa_top_tb_multi.u_case.dut), layer (0).
 *Verdi* : Enable +all dumping.
 *Verdi* : End of traversing.
@@ -38,10 +38,11 @@ sa_top_tb_multi: STREAM_PASS mode=0 H=4 W=4 gap=20 results=64
 sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 gap=0 results=256
 sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 gap=3 results=256
 sa_top_tb_multi: STREAM_PASS mode=0 H=16 W=16 gap=20 results=256
-sa_top_tb_multi: PASS jobs=27 results=3024 valid_zeros=974 checks=19089
-$finish called from file "tb/sa_top_case_runner.sv", line 351.
-$finish at simulation time             19513850
+sa_top_tb_multi: ACTIVE_SIZE_REPORT_PASS
+sa_top_tb_multi: PASS jobs=27 results=3024 valid_zeros=974 checks=23364
+$finish called from file "tb/sa_top_case_runner.sv", line 393.
+$finish at simulation time             19542600
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 19513850 ps
-CPU Time:      2.440 seconds;       Data structure size:   4.8Mb
-Fri Oct 23 22:54:44 2026
+Time: 19542600 ps
+CPU Time:      2.080 seconds;       Data structure size:   4.8Mb
+Sat Oct 24 12:54:30 2026

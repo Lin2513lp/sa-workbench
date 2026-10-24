@@ -1,102 +1,259 @@
 {
-  "applicationScale": 1,
-  "imageResampled": false,
-  "nativeWindow": [
-    1800,
-    530
-  ],
-  "displayedPorts": 18,
-  "sourceManifestSha256": "8274a65d1b8328b73e555b92411d3383a2c82e155a49f8fed552ee6f88e618a7",
-  "captures": [
+  "release": "done-ro-size-report0",
+  "external_ports": 18,
+  "capture_manifest": {
+    "applicationScale": 1,
+    "imageResampled": false,
+    "nativeWindow": [
+      1800,
+      530
+    ],
+    "displayedPorts": 18,
+    "sourceManifestSha256": "ab4442201b843901de429fc90638aa1973338faa86875039d6e98cd17b4601da",
+    "captures": [
+      {
+        "top": "sa_top_tb_smoke",
+        "case": "smoke",
+        "externalPorts": 18,
+        "fsdb_sha256": "ae38b847458df102e9367c4194ee1ef21c70cf5ae481e20f496778884c4a2a31",
+        "sourceFsdbSha256": "ae38b847458df102e9367c4194ee1ef21c70cf5ae481e20f496778884c4a2a31",
+        "screenshots": [
+          {
+            "name": "compute_detail.png",
+            "sha256": "50c5356dc72d14a9cd06339ed629b7167307c2b0e442aa118beaa4584c340204",
+            "width": 1800,
+            "height": 530
+          },
+          {
+            "name": "full_run.png",
+            "sha256": "176fd90c711d5aae8a0c3e65635051f771a16da47670c7e96e03533fe71f0095",
+            "width": 1800,
+            "height": 530
+          }
+        ]
+      },
+      {
+        "top": "sa_top_tb_int4",
+        "case": "int4",
+        "externalPorts": 18,
+        "fsdb_sha256": "dfd0660561cc62bc27810d9d91d5b7f64a02b677e073f0d0e28b612b719132cc",
+        "sourceFsdbSha256": "dfd0660561cc62bc27810d9d91d5b7f64a02b677e073f0d0e28b612b719132cc",
+        "screenshots": [
+          {
+            "name": "compute_detail.png",
+            "sha256": "abec218b4d0cabab5f82a491cd4728814879c9c25812ca9fc3ffd7ee3e0e4d68",
+            "width": 1800,
+            "height": 530
+          },
+          {
+            "name": "full_run.png",
+            "sha256": "cbb11b1a667963e4b760be31f85c609e430bd972a231b39d01540a51eff06c8d",
+            "width": 1800,
+            "height": 530
+          }
+        ]
+      },
+      {
+        "top": "sa_top_tb_int8",
+        "case": "int8",
+        "externalPorts": 18,
+        "fsdb_sha256": "37fda73c5dabb608610ecdbf0202a3cf8dc05c11443c04db648e9209c9e1cda3",
+        "sourceFsdbSha256": "37fda73c5dabb608610ecdbf0202a3cf8dc05c11443c04db648e9209c9e1cda3",
+        "screenshots": [
+          {
+            "name": "compute_detail.png",
+            "sha256": "b6cdc4bcae305d4a0e28565bbb1803abfefbe61519cac93902c7bdbfee21b84b",
+            "width": 1800,
+            "height": 530
+          },
+          {
+            "name": "full_run.png",
+            "sha256": "166f776d1f30f3c97fc4224e61a11f6d6546a00c671b14aa6829abf7e3bca3de",
+            "width": 1800,
+            "height": 530
+          }
+        ]
+      },
+      {
+        "top": "sa_top_tb_fp16",
+        "case": "fp16",
+        "externalPorts": 18,
+        "fsdb_sha256": "65df70ec4c7b8c871e385a509b82f15f9dc2e12f4064ab954da622ffa5465046",
+        "sourceFsdbSha256": "65df70ec4c7b8c871e385a509b82f15f9dc2e12f4064ab954da622ffa5465046",
+        "screenshots": [
+          {
+            "name": "compute_detail.png",
+            "sha256": "66910fe5d87d60546966314a46a4c3abb2e7454f23efb704e774ba0637dc8c0c",
+            "width": 1800,
+            "height": 530
+          },
+          {
+            "name": "full_run.png",
+            "sha256": "4dbc260847d8dc5c65305e6469c3bf3c601dcda35b7f7bda76ffa5193e6dac6e",
+            "width": 1800,
+            "height": 530
+          }
+        ]
+      },
+      {
+        "top": "sa_top_tb_fp32",
+        "case": "fp32",
+        "externalPorts": 18,
+        "fsdb_sha256": "417d723ed6ddd333d3b153ae230d9071e585042f4d4571171f40be2d283cc58e",
+        "sourceFsdbSha256": "417d723ed6ddd333d3b153ae230d9071e585042f4d4571171f40be2d283cc58e",
+        "screenshots": [
+          {
+            "name": "compute_detail.png",
+            "sha256": "f7005c5610f37d5600369709a632eebae53933d14ee0f80db88168f25c631540",
+            "width": 1800,
+            "height": 530
+          },
+          {
+            "name": "full_run.png",
+            "sha256": "4f1e5c865eea80f32b3b6963e7c343b0670bac675567d8ff6f778d7f29645c40",
+            "width": 1800,
+            "height": 530
+          }
+        ]
+      },
+      {
+        "top": "sa_top_tb_multi",
+        "case": "multi",
+        "externalPorts": 18,
+        "fsdb_sha256": "9bcf788c3efa27cd9ce8cf70edf9502fd2e3620f489d5ec654c2663dd6535d37",
+        "sourceFsdbSha256": "9bcf788c3efa27cd9ce8cf70edf9502fd2e3620f489d5ec654c2663dd6535d37",
+        "screenshots": [
+          {
+            "name": "compute_detail.png",
+            "sha256": "ccb52d8176f7b74f6ff31cfe8deb85f2fc85ccebaf9f07c2b8919657367fa30c",
+            "width": 1800,
+            "height": 530
+          },
+          {
+            "name": "full_run.png",
+            "sha256": "3c0b21c9ff9177929be313c6acdf01cf09ed26f2778b4cca9d64395e0327f1b7",
+            "width": 1800,
+            "height": 530
+          }
+        ]
+      }
+    ]
+  },
+  "tested_sources": [
     {
-      "case": "smoke",
-      "externalPorts": 18,
-      "sourceFsdbSha256": "a5518aae036bf0f3353c160c11e218bcb004b323d3c80262f4fa77d1d3f5532e",
-      "screenshots": [
-        {
-          "name": "compute_detail.png",
-          "sha256": "1aa104998a9a9c134a152d39f8c89391e09b3fa60468df69f65d191bd9252d3d"
-        },
-        {
-          "name": "full_run.png",
-          "sha256": "ca3ca58df071f492d34bac0ffc61049e329bd0943ce23f06e8abd24c0b29f1ca"
-        }
-      ]
+      "relative": "rtl/filelist.f",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/filelist.f",
+      "sha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d"
     },
     {
-      "case": "int4",
-      "externalPorts": 18,
-      "sourceFsdbSha256": "489ffd692d4b3561212d1dca7c0482c8cb3a6ecab956ca205aa7548b2bb4ce13",
-      "screenshots": [
-        {
-          "name": "compute_detail.png",
-          "sha256": "4bc1c7e623111ffd8f20851cd6a3095109d4c350e886265488283354d3068324"
-        },
-        {
-          "name": "full_run.png",
-          "sha256": "99c3c33076b0f47cb26077d9ea0178ed3e953aa1a2f05f2eab8d074bace13af4"
-        }
-      ]
+      "relative": "rtl/output_collector.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/output_collector.sv",
+      "sha256": "af5533d9cfde001ea51df1e2092ef95fe96471dae236a0554e091c4de670ec26"
     },
     {
-      "case": "int8",
-      "externalPorts": 18,
-      "sourceFsdbSha256": "76233acae3370218bde58ffa6a4d60eab131f5470ea4a17eb4beec95dd8497c7",
-      "screenshots": [
-        {
-          "name": "compute_detail.png",
-          "sha256": "024ac0291cee0a211cc6cb852325dd4fa78a1f924af28c32b93a8adb2804a07b"
-        },
-        {
-          "name": "full_run.png",
-          "sha256": "848ad8575d5731f879a6f330e84b34f5268aef650d9afbf6d04cb3461372642a"
-        }
-      ]
+      "relative": "rtl/pe_array_16x16.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/pe_array_16x16.sv",
+      "sha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8"
     },
     {
-      "case": "fp16",
-      "externalPorts": 18,
-      "sourceFsdbSha256": "c9f22e9194893aa4a95f4b1decfba4a9d2ecdb738e7199e95a9f9cd4bf67caf6",
-      "screenshots": [
-        {
-          "name": "compute_detail.png",
-          "sha256": "e95bb36fcfca93839db73b667cb379e74bc0ac29b08b4eab47cf983e010e9e8a"
-        },
-        {
-          "name": "full_run.png",
-          "sha256": "d02933e078bca526368afe417101f0fbd0aa23c0888349c8f7604b828a854e0a"
-        }
-      ]
+      "relative": "rtl/pe_mp/PE_MP_v1.v",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/pe_mp/PE_MP_v1.v",
+      "sha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447"
     },
     {
-      "case": "fp32",
-      "externalPorts": 18,
-      "sourceFsdbSha256": "b513fec6590a1797f5f7a5f4c03c26cd03324f496e45611115af213b821c9325",
-      "screenshots": [
-        {
-          "name": "compute_detail.png",
-          "sha256": "b4b348d98c6f46120abcc425cad5d9eff0c220fdaab1ba2296d627c9775548f3"
-        },
-        {
-          "name": "full_run.png",
-          "sha256": "0e7ba0fa588788ef1908619838afff9812fc20e9878fb6a2cabef9b310333350"
-        }
-      ]
+      "relative": "rtl/pe_mp/fix2fp.v",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/pe_mp/fix2fp.v",
+      "sha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72"
     },
     {
-      "case": "multi",
-      "externalPorts": 18,
-      "sourceFsdbSha256": "adaca35263088c76c7b57a73a76a6bb32918316e232123ce22c068944a6b4ded",
-      "screenshots": [
-        {
-          "name": "compute_detail.png",
-          "sha256": "9a4b6bb71f1ad62add436e34923aab6f8afd6f032208009ed156c8469213eaae"
-        },
-        {
-          "name": "full_run.png",
-          "sha256": "8411f01d73203ed1f19a4d0ea5732e46d0e9b86eb9fad1ff91d92ac37df538e1"
-        }
-      ]
+      "relative": "rtl/pe_mp/fp2fix.v",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/pe_mp/fp2fix.v",
+      "sha256": "0ebd6e23b9e22b2ee633f023bf707aeaf88af0eab3c9be36c27f62cf24078293"
+    },
+    {
+      "relative": "rtl/pe_mp/fp32_adder.v",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/pe_mp/fp32_adder.v",
+      "sha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19"
+    },
+    {
+      "relative": "rtl/pe_mp/fp32_multi.v",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/pe_mp/fp32_multi.v",
+      "sha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5"
+    },
+    {
+      "relative": "rtl/sa_ctrl.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/sa_ctrl.sv",
+      "sha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d"
+    },
+    {
+      "relative": "rtl/sa_top.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/sa_top.sv",
+      "sha256": "a52ca2f898f54fc35209218713bbd0c846a261323c93a5cf7dd19b7cba90d8b8"
+    },
+    {
+      "relative": "rtl/vcs_filelist.f",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/rtl/vcs_filelist.f",
+      "sha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8"
+    },
+    {
+      "relative": "tb/output_collector_tb.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/output_collector_tb.sv",
+      "sha256": "7d07aec875129b51f77b7b8a48d5a4a7ed84984fe8a17948d68e498ca0645042"
+    },
+    {
+      "relative": "tb/pe_array_16x16_tb.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/pe_array_16x16_tb.sv",
+      "sha256": "ab5eee6343f0b3dab1fc8d9ea613d10bb395b86ff6b38bd42cd6e28210ea6d14"
+    },
+    {
+      "relative": "tb/sa_ctrl_tb.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_ctrl_tb.sv",
+      "sha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a"
+    },
+    {
+      "relative": "tb/sa_top_case_runner.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_case_runner.sv",
+      "sha256": "09d9abefb01dd903a7c5bce8947a446cf18204ab6e2bb2ff42002772f06ffa8c"
+    },
+    {
+      "relative": "tb/sa_top_tb_fp16.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_tb_fp16.sv",
+      "sha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122"
+    },
+    {
+      "relative": "tb/sa_top_tb_fp32.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_tb_fp32.sv",
+      "sha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046"
+    },
+    {
+      "relative": "tb/sa_top_tb_int4.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_tb_int4.sv",
+      "sha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8"
+    },
+    {
+      "relative": "tb/sa_top_tb_int8.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_tb_int8.sv",
+      "sha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd"
+    },
+    {
+      "relative": "tb/sa_top_tb_multi.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_tb_multi.sv",
+      "sha256": "4fe7f05dc80e1c1cd8f1362007f47e7c4f35738b638ab82185c53e8a5528cd43"
+    },
+    {
+      "relative": "tb/sa_top_tb_smoke.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/sa_top_tb_smoke.sv",
+      "sha256": "32ffb5dfa1f9d855b3466470af1b961542bf3f1dc0827afcd21a34c7f73cde31"
+    },
+    {
+      "relative": "tb/tb_fp2fix_zero_round.sv",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/tb_fp2fix_zero_round.sv",
+      "sha256": "05f955bccbd44e3d0cfa0516f85c7f94fa64aa133cdece0a083dbf725759b8f0"
+    },
+    {
+      "relative": "tb/vcs_sa_top_tb_smoke.f",
+      "path": "/mnt/hgfs/share/tpu/tpu/sa/tb/vcs_sa_top_tb_smoke.f",
+      "sha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758"
     }
   ]
 }

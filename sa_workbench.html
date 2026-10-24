@@ -1081,7 +1081,7 @@
           </thead>
           <tbody>
             <tr><td><code>sa_top</code></td><td>SA 顶层模块，连接全部外部接口，并完成 <code>sa_ctrl</code>、<code>pe_array_16x16</code> 和 <code>output_collector</code> 的实例化与互连。</td></tr>
-            <tr><td><code>sa_ctrl</code></td><td>负责动态 RegMap 信号的 CDC、active size 锁存与上报、PE 使能生成、B 权重加载控制，以及输入和控制信号向 PE 阵列的组织与传递。</td></tr>
+            <tr><td><code>sa_ctrl</code></td><td>负责动态RegMap信号的CDC、实际H/W组合值生成、PE使能、B权重加载及输入控制传递。尺寸上报寄存器由sa_top按既有START/EN锁存并清零。</td></tr>
             <tr><td><code>pe_array_16x16</code></td><td>实例化并连接 256 个 PE，保存静态 B 权重，完成 A 数据横向传播、partial sum 纵向累加及阵列底部结果汇集。</td></tr>
             <tr><td><code>output_collector</code></td><td>对应方案草图中的 <code>output_fifo</code>。接收阵列底部 16 列结果，按每列最终完成时刻组织 512-bit 波前输出总线，并产生 <code>dat_out_vld</code> 和 <code>dat_out_last</code>。</td></tr>
           </tbody>
@@ -1128,7 +1128,7 @@
           <code>pe_ckg</code>，共形成 64 个门控时钟组。
         </p>
 
-        <h3>6.4 输出收集与内部标记</h3><p>2026-10-24：以零点前版本为参照，移除SA_TOP额外输入及空闲输出，保留原18端口。CTRL通过已有dat_in_vld/dat_in_last传递lane0向量标记；SA内部仅增加15位有效历史，恢复原PE共享有效窗口。PE、SA_CTRL、Skew数值数据通路和零点前收集器未修改；没有512-bit数据缓存，没有新增结果延迟。</p>
+        <p class="note"><b>2026-10-24 尺寸上报修正：</b>rpt_active_size复位为0，EN上升沿清零，START锁存实际H/W；H为高16位、W为低16位。维持原18端口，未给sa_ctrl增加START接口。smoke仅在启动后上报4×4。原计算激励与算术参考保留，TB补充上报时序检查；六组顶层、三个单元及TOP111项均实际VCS通过。TOP/CTRL软件清除握手已删除，DONE只读。</p><h3>6.4 输出收集与内部标记</h3><p>2026-10-24：以零点前版本为参照，移除SA_TOP额外输入及空闲输出，保留原18端口。CTRL通过已有dat_in_vld/dat_in_last传递lane0向量标记；SA内部仅增加15位有效历史，恢复原PE共享有效窗口。PE、SA_CTRL、Skew数值数据通路和零点前收集器未修改；没有512-bit数据缓存，没有新增结果延迟。</p>
 <div class="note"><b>信号含义已明确调整：</b>dat_in_a仍是逐路Skew后的数据；dat_in_vld表示本拍lane0向量有效，dat_in_last表示最后一个lane0向量。VALID低时其他lane仍可能有尾部数据。CTRL自己保留物理lane15的尾部标记用于DONE，不再通过TOP给SA旁接FIFO读使能。</div><h2>7 Testbench 搭建与结果对比</h2>
         <h3>7.1 验证平台结构</h3>
         <p>
@@ -1139,7 +1139,7 @@
         </p>
 
         <h3>7.2 本次输入协议与验证</h3><p>2026-10-24：以零点前版本为参照，移除SA_TOP额外输入及空闲输出，保留原18端口。CTRL通过已有dat_in_vld/dat_in_last传递lane0向量标记；SA内部仅增加15位有效历史，恢复原PE共享有效窗口。PE、SA_CTRL、Skew数值数据通路和零点前收集器未修改；没有512-bit数据缓存，没有新增结果延迟。</p>
-<div class="note"><b>信号含义已明确调整：</b>dat_in_a仍是逐路Skew后的数据；dat_in_vld表示本拍lane0向量有效，dat_in_last表示最后一个lane0向量。VALID低时其他lane仍可能有尾部数据。CTRL自己保留物理lane15的尾部标记用于DONE，不再通过TOP给SA旁接FIFO读使能。</div><h3>7.3 本次VCS结果</h3><table><thead><tr><th>用例</th><th>结果</th></tr></thead><tbody><tr><td>FP16</td><td>9任务 / 1008结果 / 315有效零值；PASS</td></tr><tr><td>INT8</td><td>9任务 / 1008结果 / 330有效零值；PASS</td></tr><tr><td>MULTI</td><td>27任务 / 3024结果 / 974有效零值；PASS</td></tr><tr><td>FP32</td><td>9任务 / 1008结果 / 315有效零值；PASS</td></tr><tr><td>INT4</td><td>9任务 / 1008结果 / 326有效零值；PASS</td></tr><tr><td>SMOKE</td><td>7×3=21；物理1×1；PASS</td></tr></tbody></table><p>原有3个单元测试也通过。原TOP严格TB字节不变，本次重新编译并通过107项检查。六组截图恰好显示18个外部端口；源码、FSDB与PNG的SHA绑定见sim/native_manifest.json。历史八月基线直接接入的失败记录保留在对应日期报告中，本节证据对应当前修正。</p>
+<div class="note"><b>信号含义已明确调整：</b>dat_in_a仍是逐路Skew后的数据；dat_in_vld表示本拍lane0向量有效，dat_in_last表示最后一个lane0向量。VALID低时其他lane仍可能有尾部数据。CTRL自己保留物理lane15的尾部标记用于DONE，不再通过TOP给SA旁接FIFO读使能。</div><h3>7.3 本次VCS结果</h3><table><thead><tr><th>用例</th><th>结果</th></tr></thead><tbody><tr><td>FP16</td><td>9任务 / 1008结果 / 315有效零值；PASS</td></tr><tr><td>INT8</td><td>9任务 / 1008结果 / 330有效零值；PASS</td></tr><tr><td>MULTI</td><td>27任务 / 3024结果 / 974有效零值；PASS</td></tr><tr><td>FP32</td><td>9任务 / 1008结果 / 315有效零值；PASS</td></tr><tr><td>INT4</td><td>9任务 / 1008结果 / 326有效零值；PASS</td></tr><tr><td>SMOKE</td><td>7×3=21；物理1×1；PASS</td></tr></tbody></table><p>原有3个单元测试也通过。TOP TB仅调整DONE只读及尺寸上报检查，本次重新编译通过111项；原计算激励与算术参考保留。六组截图恰好显示18个外部端口；源码、FSDB与PNG的SHA绑定见sim/native_manifest.json。历史八月基线直接接入的失败记录保留在对应日期报告中，本节证据对应当前修正。</p>
 
 
       </article>

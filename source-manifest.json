@@ -1,6 +1,6 @@
 {
   "source_directory": "tpu/tpu/sa",
-  "release": "ctrl-sa-existing-markers-18ports-20261024",
+  "release": "done-read-only-size-report-20261024",
   "files": [
     {
       "path": "rtl/output_collector.sv",
@@ -60,8 +60,8 @@
     },
     {
       "path": "rtl/sa_top.sv",
-      "bytes": 5720,
-      "sha256": "b4f3a68f54b9b4140fd91a9d30bd5a2617513d628558ac1cdfc00aa7ab6b1827",
+      "bytes": 6590,
+      "sha256": "a52ca2f898f54fc35209218713bbd0c846a261323c93a5cf7dd19b7cba90d8b8",
       "source_directory": "tpu/tpu/sa",
       "source_path": "rtl/sa_top.sv"
     },
@@ -88,8 +88,8 @@
     },
     {
       "path": "tb/sa_top_case_runner.sv",
-      "bytes": 14687,
-      "sha256": "e2af0c5ac9d95b70e27912c9de726b3074594222a67558f107d13c5a34aac999",
+      "bytes": 16905,
+      "sha256": "09d9abefb01dd903a7c5bce8947a446cf18204ab6e2bb2ff42002772f06ffa8c",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_case_runner.sv"
     },
@@ -130,8 +130,8 @@
     },
     {
       "path": "tb/sa_top_tb_smoke.sv",
-      "bytes": 4376,
-      "sha256": "3e40f0cdeed8a957ba2940ca0b5112bcd8d28c7cc30b26cbf7aa695c55511b25",
+      "bytes": 4620,
+      "sha256": "32ffb5dfa1f9d855b3466470af1b961542bf3f1dc0827afcd21a34c7f73cde31",
       "source_directory": "tpu/tpu/sa",
       "source_path": "tb/sa_top_tb_smoke.sv"
     },

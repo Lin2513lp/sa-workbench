@@ -1,20 +1,20 @@
-Command: /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/build/vcs/sa_top_tb_smoke/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_smoke.fsdb -l /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/logs/sa_top_tb_smoke_run.log
+Command: /home/yian/sa_runs/remove_done_clear_20261024/build/vcs/sa_top_tb_smoke/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/remove_done_clear_20261024/waves/sa_top_tb_smoke.fsdb -l /home/yian/sa_runs/remove_done_clear_20261024/logs/sa_top_tb_smoke_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:54 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 24 12:53 2026
 *Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
 *Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
 *Verdi* Loading libsscore_vcs202312.so
 FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
 (C) 1996 - 2024 by Synopsys, Inc.
-*Verdi* : Create FSDB file '/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_smoke.fsdb'
+*Verdi* : Create FSDB file '/home/yian/sa_runs/remove_done_clear_20261024/waves/sa_top_tb_smoke.fsdb'
 *Verdi* : Begin traversing the scope (sa_top_tb_smoke), layer (0).
 *Verdi* : Enable +all dumping.
 *Verdi* : End of traversing.
 sa_top_tb_smoke: PASS
-$finish called from file "tb/sa_top_tb_smoke.sv", line 150.
+$finish called from file "tb/sa_top_tb_smoke.sv", line 153.
 $finish at simulation time                26350
            V C S   S i m u l a t i o n   R e p o r t 
 Time: 26350 ps
-CPU Time:      0.340 seconds;       Data structure size:   0.0Mb
-Fri Oct 23 22:54:14 2026
+CPU Time:      0.330 seconds;       Data structure size:   0.0Mb
+Sat Oct 24 12:53:36 2026

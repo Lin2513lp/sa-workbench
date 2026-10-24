@@ -269,6 +269,7 @@ module sa_top_case_runner #(
         int job_results, last_pulses;
         logic [511:0] expected_bus;
         logic expected_valid, expected_last;
+        logic [31:0] previous_active_size;
         jobs++;
         spacing=gap+1;
         last_pop=15*spacing;
@@ -277,10 +278,12 @@ module sa_top_case_runner #(
         end_cycle=last_pop+15+(n-1)+(latency-1)+6;
         job_results=0; last_pulses=0;
         @(negedge sys_ckg);
+        previous_active_size=rpt_active_size;
         cpu_h_size=4'(n-1); cpu_w_size=4'(n-1);
         cpu_tpu_en_sync=1;
         repeat(3) sample_cycle();
-        check(rpt_active_size=={16'(n),16'(n)},"H=W active-size report");
+        check(rpt_active_size==((jobs==1)?32'd0:previous_active_size),
+              "configuration changes do not publish before START");
         prepare_matrices(n,jobs+repetition);
         // Reload after N changes; disabled PEs clear their stationary weights.
         for(int r=0;r<16;r++) load_b_row(r);
@@ -300,6 +303,7 @@ module sa_top_case_runner #(
                 end
             end
             sample_cycle();
+            check(rpt_active_size=={16'(n),16'(n)},"START-latched H=W active-size report");
             expected_bus='0; expected_valid=0; expected_last=0;
             for(int c=0;c<n;c++) begin
                 source_t=t-(n-1)-c-(latency-1);
@@ -328,6 +332,42 @@ module sa_top_case_runner #(
         $display("%s: STREAM_PASS mode=%0d H=%0d W=%0d gap=%0d results=%0d",CASE_NAME,MODE,n,n,gap,job_results);
     endtask
 
+    // Directed report checks run after the unchanged arithmetic stream suite.
+    task automatic check_active_size_contract;
+        logic [31:0] saved_size;
+        saved_size=rpt_active_size;
+        @(negedge sys_ckg); cpu_h_size=1; cpu_w_size=2;
+        repeat(2) sample_cycle();
+        check(rpt_active_size==saved_size,"report holds when H/W change without START");
+        @(negedge sys_ckg); cpu_tpu_en_sync=0; cpu_tpu_start_sync=1;
+        sample_cycle();
+        check(rpt_active_size==saved_size,"disabled START and EN fall retain report");
+        @(negedge sys_ckg); cpu_tpu_start_sync=0;
+        sample_cycle();
+        @(negedge sys_ckg);
+        cpu_h_size=3;cpu_w_size=3;cpu_tpu_en_sync=1;cpu_tpu_start_sync=1;
+        sample_cycle();
+        check(rpt_active_size==32'h0004_0004,"valid START takes priority over simultaneous EN rise");
+        @(negedge sys_ckg); cpu_h_size=0;cpu_w_size=0;
+        repeat(2) sample_cycle();
+        check(rpt_active_size==32'h0004_0004,"held START does not recapture changing H/W");
+        @(negedge sys_ckg);cpu_tpu_start_sync=0;cpu_tpu_en_sync=0;
+        sample_cycle();
+        @(negedge sys_ckg);cpu_tpu_en_sync=1;
+        sample_cycle();
+        check(rpt_active_size==0,"EN rising without START clears the report");
+        @(negedge sys_ckg);cpu_h_size=15;cpu_w_size=15;
+        sample_cycle();
+        check(rpt_active_size==0,"report stays zero before next START");
+        @(negedge sys_ckg);cpu_tpu_start_sync=1;
+        sample_cycle();
+        check(rpt_active_size==32'h0010_0010,"START captures actual16x16 including carry");
+        @(negedge sys_ckg);tpu_rst_n=0;
+        #0.1;
+        check(rpt_active_size==0,"reset clears a previously latched report");
+        $display("%s: ACTIVE_SIZE_REPORT_PASS",CASE_NAME);
+    endtask
+
     initial begin
         sys_ckg=0; tpu_rst_n=0;
         cpu_tpu_start_sync=0; cpu_tpu_en_sync=0;
@@ -336,6 +376,7 @@ module sa_top_case_runner #(
         cpu_dat_in_b_lock=0; cpu_dat_in_b=0; cpu_dat_in_b_sel=0;
         cpu_h_size=15; cpu_w_size=15; cpu_cpt_mode=MODE;
         repeat(2) sample_cycle();
+        check(rpt_active_size==0,"reset report is zero despite default16x16 configuration");
         @(negedge sys_ckg); tpu_rst_n=1;
         // VECTOR_COUNT now counts repetitions of the complete9-bin stream suite.
         // Same enable remains high across N1->N4->N16 and subsequent N1 tasks.
@@ -347,6 +388,7 @@ module sa_top_case_runner #(
                 end
             end
         end
+        check_active_size_contract();
         $display("%s: PASS jobs=%0d results=%0d valid_zeros=%0d checks=%0d",CASE_NAME,jobs,matrix_results,zero_results,checks);
         $finish;
     end

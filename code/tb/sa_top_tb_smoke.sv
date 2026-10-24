@@ -103,12 +103,14 @@ module sa_top_tb_smoke;
         output_seen        = 1'b0;
 
         repeat (2) sample_cycle();
+        check(rpt_active_size == 32'd0, "active-size report resets to zero");
         tpu_rst_n = 1'b1;
         sample_cycle();
 
         // Enable precedes B preload and remains high through output drain.
         cpu_tpu_en_sync = 1'b1;
         sample_cycle();
+        check(rpt_active_size == 32'd0, "EN rise clears report before START");
 
         // Hold the bundled B write for one 100 MHz source interval.
         cpu_dat_in_b_lock = 1'b1;
@@ -123,6 +125,7 @@ module sa_top_tb_smoke;
         dat_in_vld         = 1'b1;
         dat_in_last        = 1'b1;
         sample_cycle();
+        check(rpt_active_size == {16'd1,16'd1}, "START latches actual dimensions");
         cpu_tpu_start_sync = 1'b0;
         dat_in_vld         = 1'b0;
         dat_in_last        = 1'b0;
