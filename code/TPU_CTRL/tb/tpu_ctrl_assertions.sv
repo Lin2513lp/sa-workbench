@@ -29,7 +29,8 @@ endmodule
 
 bind tpu_ctrl tpu_ctrl_assertions u_protocol_checks (
     .sys_ckg, .tpu_rst_n, .fifo_in_re, .fifo_empty, .cpu_tpu_en_sync,
-    .dat_in_vld, .dat_in_last, .rpt_cpt_done, .data_out_last,
+    .dat_in_vld(skew_dat_in_vld), .dat_in_last(skew_dat_in_last),
+    .rpt_cpt_done, .data_out_last,
     .start_accept, .done_clear_event,
     .rpt_error, .rpt_error_state,
     .task_active_q, .skew_last_seen_q, .output_last_seen_q, .input_last_seen_q

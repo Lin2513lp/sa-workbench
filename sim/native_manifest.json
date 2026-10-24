@@ -1,214 +1,224 @@
 {
-  "baseline_commit": "9b92a5308eb2c51ac270a35792394294bd551687",
+  "release": "ctrl-sa-existing-markers-18ports",
   "external_ports": 18,
-  "output_contract": "August cumulative column snapshots",
   "capture_manifest": {
-    "kind": "August7 baseline original18ports; actual VCS FSDB and native nWave screenshots",
-    "source_manifest_sha256": "d9ee3ed9bffc11e234af69a029a1e08240978b05c40ea8b35fbdfeb9f5fdb2f1",
+    "kind": "CTRL-owned existing vector markers;18originalports; VCS and native nWave",
+    "source_manifest_sha256": "8274a65d1b8328b73e555b92411d3383a2c82e155a49f8fed552ee6f88e618a7",
     "display": ":0",
-    "guest_runroot": "/home/yian/sa_runs/august18_baseline_20261024",
+    "guest_runroot": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024",
     "captures": [
       {
         "top": "sa_top_tb_smoke",
-        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_smoke.fsdb",
-        "fsdb_sha256": "1b95c3bcd7caa96f13017033973bced0a61c7ec2e5150e5554071795395cae9d",
+        "fsdb": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_smoke.fsdb",
+        "fsdb_sha256": "a5518aae036bf0f3353c160c11e218bcb004b323d3c80262f4fa77d1d3f5532e",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_smoke/full_run.png",
-            "sha256": "d9ffbbd41abad01f4b3b7a60c0309906a6ad517805fabda4328c172b01237aed",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_smoke/full_run.png",
+            "sha256": "17630e2320ab3411fe29c35d465b133645a3b3235fbbd9709b4c6916f2aac056",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           },
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_smoke/compute_detail.png",
-            "sha256": "5d59e7e329bf1648ad63bc246d047513c942ad2c5fecf646f0458dc0d55f21c5",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_smoke/compute_detail.png",
+            "sha256": "d84a6b0197056bbf1bcda3a3869a08b54a7caa0b58bdc7a5b46218cb72ffcf18",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           }
         ]
       },
       {
         "top": "sa_top_tb_int4",
-        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_int4.fsdb",
-        "fsdb_sha256": "c6ad6951660b77ff28bbd899552afadff3923329b5e8345cb8404dfbd62c9c52",
+        "fsdb": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_int4.fsdb",
+        "fsdb_sha256": "489ffd692d4b3561212d1dca7c0482c8cb3a6ecab956ca205aa7548b2bb4ce13",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int4/full_run.png",
-            "sha256": "02304ca97b2d1f07ee9d94a1a94df9572ae0856aa5c14bc994c70a8d8cf66833",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_int4/full_run.png",
+            "sha256": "38e558780badf366858fb4868e66b5c266fa797a536e6b3cda05773c1352be96",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           },
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int4/compute_detail.png",
-            "sha256": "7e2e8be4aac2c99bc384bc65b3e651785b526a82bbac6afd810dd96249d8e5ad",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_int4/compute_detail.png",
+            "sha256": "49bb05d11eccc8af5674b18b63915fd5268fca62f182da7c96707e442a587f56",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           }
         ]
       },
       {
         "top": "sa_top_tb_int8",
-        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_int8.fsdb",
-        "fsdb_sha256": "1016e975bd97021cd8d7aafe927d32fb5f0a2dd3491947797560a2428140ae5a",
+        "fsdb": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_int8.fsdb",
+        "fsdb_sha256": "76233acae3370218bde58ffa6a4d60eab131f5470ea4a17eb4beec95dd8497c7",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int8/full_run.png",
-            "sha256": "b55903c21ec9699a1d98f4551924f2fcf1de9bfdd1cffb3f9c5a425c4c6416d6",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_int8/full_run.png",
+            "sha256": "b792aa24f76a3cde15ea4859118668e74db25b2d89dbabcb352fd42e63200ef9",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           },
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_int8/compute_detail.png",
-            "sha256": "fe157fe2870c781364951ca7eb5bf33d00b4f18ffdc8ec96e9b843211a459c7d",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_int8/compute_detail.png",
+            "sha256": "81681af7bd37a9822046df80496ed9f6113b880eec3e37443b0828b7dc30490e",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           }
         ]
       },
       {
         "top": "sa_top_tb_fp16",
-        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp16.fsdb",
-        "fsdb_sha256": "c1af61049d3aff73a76d8c030eba07f3f38d77a03305b3918ee8fec0a9da6e95",
+        "fsdb": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_fp16.fsdb",
+        "fsdb_sha256": "c9f22e9194893aa4a95f4b1decfba4a9d2ecdb738e7199e95a9f9cd4bf67caf6",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp16/full_run.png",
-            "sha256": "fa2b34c93964da9e89f14fb488a5cdef65beebd3640cb09febc96714c1721325",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_fp16/full_run.png",
+            "sha256": "892e28294d8d48e4759137afdfee37adc506ce597f6925015de833708b680288",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           },
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp16/compute_detail.png",
-            "sha256": "bd13455ec14e40fef969e43e7df19dbd291af30d38b9686103a81b25688dfdb4",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_fp16/compute_detail.png",
+            "sha256": "952cb9b1fe67e2d306416a6dad1ed9ca33587154494de48a7da9ada1a0f6227d",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           }
         ]
       },
       {
         "top": "sa_top_tb_fp32",
-        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp32.fsdb",
-        "fsdb_sha256": "13d0189fdb60107467638ebf7afbb033608be8a9287d3b2d230e1278a9b7e09d",
+        "fsdb": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_fp32.fsdb",
+        "fsdb_sha256": "b513fec6590a1797f5f7a5f4c03c26cd03324f496e45611115af213b821c9325",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp32/full_run.png",
-            "sha256": "723a93a51f3f33665ee44c9733f78de1de47c98880eca86fb3fd9caa75339bd1",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_fp32/full_run.png",
+            "sha256": "a90fb696454208c486ab036b2f9f8bdd0592cad228ef71a14412551c284c02c9",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           },
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_fp32/compute_detail.png",
-            "sha256": "4d26102d1b81f4c530df8d2a6652c874f9cdc3e6e22f57ee820a2530af382f39",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_fp32/compute_detail.png",
+            "sha256": "ac928b23f923d2b89d06b80e868762ec660d0637f7503de222c79b149fa7858c",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           }
         ]
       },
       {
         "top": "sa_top_tb_multi",
-        "fsdb": "/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_multi.fsdb",
-        "fsdb_sha256": "526a68c833712dde982664e26439e61b59a2a4c92b29f278aa2d7f8bbcc9ee78",
+        "fsdb": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_multi.fsdb",
+        "fsdb_sha256": "adaca35263088c76c7b57a73a76a6bb32918316e232123ce22c068944a6b4ded",
         "screenshots": [
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_multi/full_run.png",
-            "sha256": "fe44d78b56fe5cd9061052e8cc20b06cb74b33d2af393f62d8fc038455a5158f",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_multi/full_run.png",
+            "sha256": "8cef59cc36f92e10ca07bceb091065866de158e42058573a9cf915ffde14a809",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           },
           {
-            "path": "/home/yian/sa_runs/august18_baseline_20261024/captures/sa_top_tb_multi/compute_detail.png",
-            "sha256": "cd5a91b5fc71586263aa7d38e4af3302959c8f737a4f0c2907d0110eb60119c8",
+            "path": "/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/captures/sa_top_tb_multi/compute_detail.png",
+            "sha256": "c5eed0e5c7f8c3dfda61ca99da9c9df47e3303ca4314acd43e05f61fdebcd331",
             "width": 2500,
-            "height": 1614
+            "height": 1618
           }
         ]
       }
     ]
   },
-  "validated_pngs": [
+  "tested_sources": [
     {
-      "top": "sa_top_tb_fp16",
-      "name": "full_run.png",
-      "sha256": "fa2b34c93964da9e89f14fb488a5cdef65beebd3640cb09febc96714c1721325",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "Makefile",
+      "sha256": "e13b30db13486f10dec36efde0a49dfbdd727049089cb8fd1c1382cce1c01c05"
     },
     {
-      "top": "sa_top_tb_fp16",
-      "name": "compute_detail.png",
-      "sha256": "bd13455ec14e40fef969e43e7df19dbd291af30d38b9686103a81b25688dfdb4",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/filelist.f",
+      "sha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d"
     },
     {
-      "top": "sa_top_tb_int8",
-      "name": "full_run.png",
-      "sha256": "b55903c21ec9699a1d98f4551924f2fcf1de9bfdd1cffb3f9c5a425c4c6416d6",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/output_collector.sv",
+      "sha256": "af5533d9cfde001ea51df1e2092ef95fe96471dae236a0554e091c4de670ec26"
     },
     {
-      "top": "sa_top_tb_int8",
-      "name": "compute_detail.png",
-      "sha256": "fe157fe2870c781364951ca7eb5bf33d00b4f18ffdc8ec96e9b843211a459c7d",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/pe_array_16x16.sv",
+      "sha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8"
     },
     {
-      "top": "sa_top_tb_multi",
-      "name": "full_run.png",
-      "sha256": "fe44d78b56fe5cd9061052e8cc20b06cb74b33d2af393f62d8fc038455a5158f",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/pe_mp/PE_MP_v1.v",
+      "sha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447"
     },
     {
-      "top": "sa_top_tb_multi",
-      "name": "compute_detail.png",
-      "sha256": "cd5a91b5fc71586263aa7d38e4af3302959c8f737a4f0c2907d0110eb60119c8",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/pe_mp/fix2fp.v",
+      "sha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72"
     },
     {
-      "top": "sa_top_tb_fp32",
-      "name": "full_run.png",
-      "sha256": "723a93a51f3f33665ee44c9733f78de1de47c98880eca86fb3fd9caa75339bd1",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/pe_mp/fp2fix.v",
+      "sha256": "0ebd6e23b9e22b2ee633f023bf707aeaf88af0eab3c9be36c27f62cf24078293"
     },
     {
-      "top": "sa_top_tb_fp32",
-      "name": "compute_detail.png",
-      "sha256": "4d26102d1b81f4c530df8d2a6652c874f9cdc3e6e22f57ee820a2530af382f39",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/pe_mp/fp32_adder.v",
+      "sha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19"
     },
     {
-      "top": "sa_top_tb_int4",
-      "name": "full_run.png",
-      "sha256": "02304ca97b2d1f07ee9d94a1a94df9572ae0856aa5c14bc994c70a8d8cf66833",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/pe_mp/fp32_multi.v",
+      "sha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5"
     },
     {
-      "top": "sa_top_tb_int4",
-      "name": "compute_detail.png",
-      "sha256": "7e2e8be4aac2c99bc384bc65b3e651785b526a82bbac6afd810dd96249d8e5ad",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/sa_ctrl.sv",
+      "sha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d"
     },
     {
-      "top": "sa_top_tb_smoke",
-      "name": "full_run.png",
-      "sha256": "d9ffbbd41abad01f4b3b7a60c0309906a6ad517805fabda4328c172b01237aed",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/sa_top.sv",
+      "sha256": "b4f3a68f54b9b4140fd91a9d30bd5a2617513d628558ac1cdfc00aa7ab6b1827"
     },
     {
-      "top": "sa_top_tb_smoke",
-      "name": "compute_detail.png",
-      "sha256": "5d59e7e329bf1648ad63bc246d047513c942ad2c5fecf646f0458dc0d55f21c5",
-      "width": 2500,
-      "height": 1614
+      "relative_path": "rtl/vcs_filelist.f",
+      "sha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8"
+    },
+    {
+      "relative_path": "tb/output_collector_tb.sv",
+      "sha256": "7d07aec875129b51f77b7b8a48d5a4a7ed84984fe8a17948d68e498ca0645042"
+    },
+    {
+      "relative_path": "tb/pe_array_16x16_tb.sv",
+      "sha256": "ab5eee6343f0b3dab1fc8d9ea613d10bb395b86ff6b38bd42cd6e28210ea6d14"
+    },
+    {
+      "relative_path": "tb/sa_ctrl_tb.sv",
+      "sha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a"
+    },
+    {
+      "relative_path": "tb/sa_top_case_runner.sv",
+      "sha256": "e2af0c5ac9d95b70e27912c9de726b3074594222a67558f107d13c5a34aac999"
+    },
+    {
+      "relative_path": "tb/sa_top_tb_fp16.sv",
+      "sha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122"
+    },
+    {
+      "relative_path": "tb/sa_top_tb_fp32.sv",
+      "sha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046"
+    },
+    {
+      "relative_path": "tb/sa_top_tb_int4.sv",
+      "sha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8"
+    },
+    {
+      "relative_path": "tb/sa_top_tb_int8.sv",
+      "sha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd"
+    },
+    {
+      "relative_path": "tb/sa_top_tb_multi.sv",
+      "sha256": "4fe7f05dc80e1c1cd8f1362007f47e7c4f35738b638ab82185c53e8a5528cd43"
+    },
+    {
+      "relative_path": "tb/sa_top_tb_smoke.sv",
+      "sha256": "3e40f0cdeed8a957ba2940ca0b5112bcd8d28c7cc30b26cbf7aa695c55511b25"
+    },
+    {
+      "relative_path": "tb/tb_fp2fix_zero_round.sv",
+      "sha256": "05f955bccbd44e3d0cfa0516f85c7f94fa64aa133cdece0a083dbf725759b8f0"
+    },
+    {
+      "relative_path": "tb/vcs_sa_top_tb_smoke.f",
+      "sha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758"
     }
-  ],
-  "strict_TOP": "FAIL preserved independent-vector oracle; 0 vs30 at2573.750ns"
+  ]
 }

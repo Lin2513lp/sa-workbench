@@ -1,37 +1,29 @@
-Command: /home/yian/sa_runs/august18_baseline_20261024/build/vcs/sa_top_tb_fp16/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp16.fsdb -l /home/yian/sa_runs/august18_baseline_20261024/logs/sa_top_tb_fp16_run.log
+Command: /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/build/vcs/sa_top_tb_fp16/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_fp16.fsdb -l /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/logs/sa_top_tb_fp16_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:08 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:54 2026
 *Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
 *Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
 *Verdi* Loading libsscore_vcs202312.so
 FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
 (C) 1996 - 2024 by Synopsys, Inc.
-*Verdi* : Create FSDB file '/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp16.fsdb'
+*Verdi* : Create FSDB file '/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_fp16.fsdb'
 *Verdi* : Begin traversing the scope (sa_top_tb_fp16.u_case.dut), layer (0).
 *Verdi* : Enable +all dumping.
 *Verdi* : End of traversing.
-sa_top_tb_fp16: B row 0 = 72d54200 ee7a3c00 7d064200 7ad84200 3d5e4200 aa014200 10c84000 742e4000 eba84000 81293c00 e45f4400 50953c00 33813c00 33f44400 b36a3c00 a15f3c00
-sa_top_tb_fp16: B row 1 = d1383c00 30174200 61104200 e36e3c00 92984200 65944200 16613c00 e0fe4200 bedb3c00 544a4200 1ccd4200 3eda4200 accd4400 ed474400 f1c54200 80e84400
-sa_top_tb_fp16: B row 2 = b4644400 6d7f3c00 c5e94400 263f3c00 11114200 38cb4200 5d624000 815c4000 a99d4400 8d1b4200 32e54200 3e5e4200 50634000 39334400 3aa34400 4d4e4000
-sa_top_tb_fp16: B row 3 = 454d3c00 6fc63c00 ebd14400 ef064000 40b74400 57f84400 baff3c00 a42a4000 16af4200 66c24000 8af34200 a6ba3c00 39014400 4e903c00 6bca3c00 7cc54400
-sa_top_tb_fp16: B row 4 = 6fae3c00 7fa23c00 9e3d4200 60654400 27503c00 77cc4000 af0e4000 75004400 df374000 a9134200 2ee73c00 f22e4200 89903c00 6a4f3c00 3b3e3c00 e0474000
-sa_top_tb_fp16: B row 5 = 5f194200 53be4000 a13f4000 04ff4400 a16a3c00 5f704000 704a4400 7eab3c00 4ecc3c00 2a253c00 39944000 1e034000 b1a83c00 8ca44400 93654400 8d424200
-sa_top_tb_fp16: B row 6 = baae3c00 b08b3c00 4b874400 0c504400 f3403c00 48d54200 05164000 9dba4400 89e83c00 51f24200 2cc04200 8ace3c00 c8ee4200 eed44400 19434000 50883c00
-sa_top_tb_fp16: B row 7 = 57984200 da394000 d4bc4400 ceaf3c00 5bee3c00 41704200 149b3c00 b3984200 24483c00 61c53c00 b24f3c00 18934400 3e4a4200 d7144200 1c9f4000 77b44200
-sa_top_tb_fp16: B row 8 = 7d354200 12f74200 b6323c00 021c4000 88b94200 1ed84000 db273c00 a0064000 cfd64000 1d0b4000 6a9c3c00 27d33c00 24034000 a0e24000 b4333c00 ad6e4200
-sa_top_tb_fp16: B row 9 = 79554000 28074000 68f94400 17734400 3dbf4400 0cb94200 f4904200 67d74200 85a44400 b20e4200 a5d44000 11a34000 33023c00 2d094400 33773c00 a10c3c00
-sa_top_tb_fp16: B row 10 = c4cf4000 b64a4400 ba574400 5c0f4000 95193c00 a6cd4000 87464000 31473c00 d8d74000 a3e44200 aec34000 6d0e4400 39c34000 3b093c00 c5814200 3bc93c00
-sa_top_tb_fp16: B row 11 = ce764000 dd0d4000 57a14200 c7603c00 38c53c00 848a4000 dcf34200 2ea73c00 d47b3c00 44434000 d7ab4200 0d234400 3a6f4200 181f4000 2d904400 9ae13c00
-sa_top_tb_fp16: B row 12 = efa64200 2c0c4200 958e4200 d6e44200 76f44000 44204000 5d144000 ec9e3c00 8eb44400 e0384000 afcf4200 61894400 5ca44000 f6834200 ebb24000 a8834200
-sa_top_tb_fp16: B row 13 = bc054400 7dec3c00 18e94200 0d244000 2f3d4000 74e04400 02fd4400 3c444000 e0344400 a6d54400 08fa4400 4d3f3c00 51dc4200 34f34200 617a4400 b65d3c00
-sa_top_tb_fp16: B row 14 = 22473c00 37364400 d31a3c00 8a2d4400 36cd4400 9ca04200 cd8e4200 82fd3c00 a06c3c00 cdb24400 a7384400 0d384000 83cd4000 f4f54200 67ff4000 13553c00
-sa_top_tb_fp16: B row 15 = 0b664000 e39c4200 cfa04200 5b733c00 f40e3c00 61d04200 0a324000 3fcd4400 e9814400 5bc44400 c3e43c00 2eba4400 dcc34200 ae554400 cd0e4200 91bc3c00
-sa_top_tb_fp16: A vector 0 = 63dd4400 4ad83c00 5aff3c00 3b1e4000 338e4000 11014200 dea24000 0d5b4400 b88d4000 25284400 c1933c00 b7414000 8b4c4200 69834400 85c54000 9ae43c00; expected columns = 42ba0000 42940000 42ea0000 42c80000 42aa0000 42d60000 42b20000 42a80000 42b40000 42b40000 42c40000 42b00000 42a40000 42e80000 42aa0000 42940000
-sa_top_tb_fp16: PASS
-$finish called from file "tb/sa_top_case_runner.sv", line 411.
-$finish at simulation time               423850
+sa_top_tb_fp16: STREAM_PASS mode=2 H=1 W=1 gap=0 results=16
+sa_top_tb_fp16: STREAM_PASS mode=2 H=1 W=1 gap=3 results=16
+sa_top_tb_fp16: STREAM_PASS mode=2 H=1 W=1 gap=20 results=16
+sa_top_tb_fp16: STREAM_PASS mode=2 H=4 W=4 gap=0 results=64
+sa_top_tb_fp16: STREAM_PASS mode=2 H=4 W=4 gap=3 results=64
+sa_top_tb_fp16: STREAM_PASS mode=2 H=4 W=4 gap=20 results=64
+sa_top_tb_fp16: STREAM_PASS mode=2 H=16 W=16 gap=0 results=256
+sa_top_tb_fp16: STREAM_PASS mode=2 H=16 W=16 gap=3 results=256
+sa_top_tb_fp16: STREAM_PASS mode=2 H=16 W=16 gap=20 results=256
+sa_top_tb_fp16: PASS jobs=9 results=1008 valid_zeros=315 checks=6525
+$finish called from file "tb/sa_top_case_runner.sv", line 351.
+$finish at simulation time              6643850
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 423850 ps
-CPU Time:      0.740 seconds;       Data structure size:   4.8Mb
-Fri Oct 23 22:08:56 2026
+Time: 6643850 ps
+CPU Time:      1.590 seconds;       Data structure size:   4.8Mb
+Fri Oct 23 22:54:32 2026

@@ -1,0 +1,85 @@
+[
+  {
+    "path": "tb/output_collector_tb.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "7d07aec875129b51f77b7b8a48d5a4a7ed84984fe8a17948d68e498ca0645042"
+  },
+  {
+    "path": "tb/pe_array_16x16_tb.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "ab5eee6343f0b3dab1fc8d9ea613d10bb395b86ff6b38bd42cd6e28210ea6d14"
+  },
+  {
+    "path": "tb/sa_ctrl_tb.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a"
+  },
+  {
+    "path": "tb/sa_top_case_runner.sv",
+    "sameAsPreMidnight": false,
+    "sha256": "e2af0c5ac9d95b70e27912c9de726b3074594222a67558f107d13c5a34aac999"
+  },
+  {
+    "path": "tb/sa_top_tb_fp16.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122"
+  },
+  {
+    "path": "tb/sa_top_tb_fp32.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046"
+  },
+  {
+    "path": "tb/sa_top_tb_int4.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8"
+  },
+  {
+    "path": "tb/sa_top_tb_int8.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd"
+  },
+  {
+    "path": "tb/sa_top_tb_multi.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "4fe7f05dc80e1c1cd8f1362007f47e7c4f35738b638ab82185c53e8a5528cd43"
+  },
+  {
+    "path": "tb/sa_top_tb_smoke.sv",
+    "sameAsPreMidnight": false,
+    "sha256": "3e40f0cdeed8a957ba2940ca0b5112bcd8d28c7cc30b26cbf7aa695c55511b25"
+  },
+  {
+    "path": "tb/tb_fp2fix_zero_round.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "05f955bccbd44e3d0cfa0516f85c7f94fa64aa133cdece0a083dbf725759b8f0"
+  },
+  {
+    "path": "tb/vcs_sa_top_tb_smoke.f",
+    "sameAsPreMidnight": true,
+    "sha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758"
+  },
+  {
+    "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv",
+    "sameAsPreMidnight": false,
+    "sha256": "3bd9a45aecd37fc86e91f91ba3157dac3cc966cff383e6266edff756a2d33800",
+    "sameContentAsPreMidnight": false
+  },
+  {
+    "path": "TPU_CTRL/tb/tpu_ctrl_assertions.sv",
+    "sameAsPreMidnight": false,
+    "sha256": "2f477932939693596682db3300e150df65bfa10b46a88aa916275b308ee31e66",
+    "sameContentAsPreMidnight": false
+  },
+  {
+    "path": "TPU_CTRL/tb/tb_tpu_done_clear.sv",
+    "sameAsPreMidnight": false,
+    "sha256": "e9dec7e31656683316da24f7a1319153f19354fe65197b78eef8e572fbab1826",
+    "sameContentAsPreMidnight": true
+  },
+  {
+    "path": "TPU_TOP/tb/tb_tpu_top_smoke.sv",
+    "sameAsPreMidnight": true,
+    "sha256": "43f0f372839e8637232918cbbeafd27310c2b07a90e3e5fa7fbc03527c6a380f"
+  }
+]

@@ -1,0 +1,187 @@
+{
+  "modules": [
+    {
+      "file": "AHB_SLAVE/ahb_slave.sv",
+      "module": "ahb_slave",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "19dd3f49ee560796541e330903414199d630d0bd629861a9420c8d54b8c39b9c"
+    },
+    {
+      "file": "TPU_CTRL/rtl/reg_list.sv",
+      "module": "reg_list",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "4b567437d9692d2228429a93384964a00a29b238454004d1ad1ca0fa5b9c5d5e"
+    },
+    {
+      "file": "TPU_CRG/rtl/rst_sync.sv",
+      "module": "rst_sync",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "6989318c749253db0d57e217f2be6b440596efa9995c23ec6778b9d4f484bd21"
+    },
+    {
+      "file": "TPU_CRG/rtl/crg_icg.sv",
+      "module": "crg_icg",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "1fc030698ccd7819864c87ad66e7f724a2e7fad46d357216bca38d28e85918df"
+    },
+    {
+      "file": "TPU_CRG/rtl/sys_clk_crg.sv",
+      "module": "sys_clk_crg",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "1cc860987e9298fec87a11920d1871b88bd6c0b786abfadae2daa03928a9d4ce"
+    },
+    {
+      "file": "TPU_CRG/rtl/pe_crg.sv",
+      "module": "pe_crg",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "e2ced6de0ed2d0bf1d1460146d8a4d05a7ca8ada6bc04c2d459bb351c531225b"
+    },
+    {
+      "file": "TPU_CRG/rtl/tpu_crg.sv",
+      "module": "tpu_crg",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "c4a1a9d3ac866879b1e0932e2a335751e2f028015182c847c642d0ab784f73d6"
+    },
+    {
+      "file": "AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv",
+      "module": "fifo_in",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "720115279716be0d66fca70751977be9f462e65b9d8f2599ce483d582449bea9"
+    },
+    {
+      "file": "AXI_TOP/AXI_M_TOP/rtl/axi2fifo.sv",
+      "module": "axi2fifo",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "9381660fd2311a446b7c5eed718f1769038aef4831b020aad8975f2c53816d9f"
+    },
+    {
+      "file": "AXI_TOP/AXI_M_TOP/rtl/AXI_M_TOP.sv",
+      "module": "AXI_M_TOP",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "b1e7bd7ad3ba38aec6dbf295aaca4aa5ddba9daa1b449702480ae5e6b9967638"
+    },
+    {
+      "file": "AXI_TOP/AXI_S_TOP/rtl/fifo_out.sv",
+      "module": "fifo_out",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "feb976ca9840f9c742f4cd6f65a96af94a19d1e42acc21e550d0174e6d05846a"
+    },
+    {
+      "file": "AXI_TOP/AXI_S_TOP/rtl/fifo2axi.sv",
+      "module": "fifo2axi",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "67f95debfe6814a61d8641e1d3aa30469c131fe02b8df87ea1bb61a1d67a0726"
+    },
+    {
+      "file": "AXI_TOP/AXI_S_TOP/rtl/AXI_S_TOP.sv",
+      "module": "AXI_S_TOP",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "329ed95b724b1c47c4e6bb8e1b3549343a6a358595d1583478cf24055656a1e5"
+    },
+    {
+      "file": "sa/rtl/pe_mp/fp32_adder.v",
+      "module": "FP32_ADDER",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "5bc17e5e9e943da56541f1c2af7005ac524532c73b1ea84ba0ff14e34884ac60"
+    },
+    {
+      "file": "sa/rtl/pe_mp/fp32_multi.v",
+      "module": "FP32_MUTI",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "1fc318908ce9ec8e1a81b9b9653c8a61d3814728de6fc9dd13760542f8b02a09"
+    },
+    {
+      "file": "sa/rtl/pe_mp/fp2fix.v",
+      "module": "FP2FIX",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "1554e768e953e54ee869dbf2cff73cccd3f50e1cca2b20bc28de1a9094232e01"
+    },
+    {
+      "file": "sa/rtl/pe_mp/fix2fp.v",
+      "module": "FIX2FP",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "c7ab5aa7e3d6eb1ce4812b80f848420f58d2f7adccece5aaeaafe5404de26e61"
+    },
+    {
+      "file": "sa/rtl/pe_mp/PE_MP_v1.v",
+      "module": "PE_MP_v1",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "68f176c22764d2d1bf60eda52d696f020f2d24277fbe95f3fff2bcefd65a6e23"
+    },
+    {
+      "file": "sa/rtl/sa_ctrl.sv",
+      "module": "sa_ctrl",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "c11b42a8a63656ad0b7529504cef7f5eeade13a1b90c374633418cf2cf5212f2"
+    },
+    {
+      "file": "sa/rtl/pe_array_16x16.sv",
+      "module": "pe_array_16x16",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "64857475434445646f0a6c451c5360aa1328a88fe31c46727f5c8f0db4a9792a"
+    },
+    {
+      "file": "sa/rtl/output_collector.sv",
+      "module": "output_collector",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "5d13a0876009921f4020893539a78e7cf5d8387c52abf64a83cfc4c42311f564"
+    },
+    {
+      "file": "sa/rtl/sa_top.sv",
+      "module": "sa_top",
+      "headerUnchanged": true,
+      "baseline": "user original 18-port SA interface (August)",
+      "normalizedHeaderSha256": "30195c017873346e6444bac70eda261b1c989c67d046f88ce60fb99b3428bba3"
+    },
+    {
+      "file": "TPU_CTRL/rtl/tpu_ctrl_sync.sv",
+      "module": "tpu_ctrl_sync",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "bd8cef73a2e5f74c3645b4152fe8759f5416bf48ce6be1ca92d81009ff446ebd"
+    },
+    {
+      "file": "TPU_CTRL/rtl/tpu_ctrl_skew.sv",
+      "module": "tpu_ctrl_skew",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "35d20828ace2dbadf3bf9d0f60efe881f8e247cc894138bb9a92170009f402b4"
+    },
+    {
+      "file": "TPU_CTRL/rtl/tpu_ctrl.sv",
+      "module": "tpu_ctrl",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "0eff7ce31fb4f047225699ec017b5efca33e9bb51da0c38fb38b23cfd5121cef"
+    },
+    {
+      "file": "TPU_TOP/rtl/tpu_top.sv",
+      "module": "tpu_top",
+      "headerUnchanged": true,
+      "baseline": "pre-midnight TOP source snapshot",
+      "normalizedHeaderSha256": "5c511138d3c538ad4e900aaba9ac8076bd627f1079dfd84bd2b67706932d6d1c"
+    }
+  ],
+  "unexpectedChanges": []
+}

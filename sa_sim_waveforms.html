@@ -190,7 +190,7 @@
 <body>
   <header>
     <h1>SA_TOP 仿真波形</h1>
-    <p>八月基线 · 18 个原始外部端口 · 本次真实 VCS FSDB / 原生 Verdi nWave 截图。SA 原始六组回归通过；当前 TOP 严格流式 oracle 不通过（首拍 0，期望 30），协议差异单独保留。</p>
+    <p>本次18端口SA、CTRL既有标记接口：真实VCS FSDB与原生Verdi截图，原严格TOP smoke通过。六组SA算术参考保持零点前版本，气泡和有效零值均检查。</p>
   </header>
 
   <main>
@@ -222,74 +222,7 @@
 
   <script>
     (() => {
-      const cases = [
-        {
-                "id": "fp16",
-                "label": "FP16",
-                "mode": "cpu_cpt_mode=2'b10",
-                "latency": "PE 延迟 7 拍",
-                "image": "./sim/fp16.png?aug18=bd13455ec14e",
-                "fullImage": "./sim/fp16_full.png?aug18=fa2b34c93964",
-                "log": "./sim/logs/sa_top_tb_fp16_run.log",
-                "checks": "1 个向量 / 16 列结果；PASS",
-                "caption": "八月原始 TB：同一个 A 向量按行阶梯重复送入，LAST 后按原有精度延迟开始输出；第 k 拍包含已完成的 C0…Ck，最终拍保留全部 16 列并给出 LAST。每拍检查全部 16 个 lane。"
-        },
-        {
-                "id": "int8",
-                "label": "INT8",
-                "mode": "cpu_cpt_mode=2'b01",
-                "latency": "PE 延迟 1 拍",
-                "image": "./sim/int8.png?aug18=fe157fe2870c",
-                "fullImage": "./sim/int8_full.png?aug18=b55903c21ec9",
-                "log": "./sim/logs/sa_top_tb_int8_run.log",
-                "checks": "1 个向量 / 16 列结果；PASS",
-                "caption": "八月原始 TB：同一个 A 向量按行阶梯重复送入，LAST 后按原有精度延迟开始输出；第 k 拍包含已完成的 C0…Ck，最终拍保留全部 16 列并给出 LAST。每拍检查全部 16 个 lane。"
-        },
-        {
-                "id": "multi",
-                "label": "Multi",
-                "mode": "cpu_cpt_mode=2'b00",
-                "latency": "同一 B，顺序完成 3 个向量任务",
-                "image": "./sim/multi.png?aug18=cd5a91b5fc71",
-                "fullImage": "./sim/multi_full.png?aug18=fe44d78b56fe",
-                "log": "./sim/logs/sa_top_tb_multi_run.log",
-                "checks": "3 个向量 / 48 列结果；PASS",
-                "caption": "B 仅加载一次，顺序完成 3 个独立向量任务，共 48 列结果；每个任务仍采用八月累积输出。八月原始 TB：同一个 A 向量按行阶梯重复送入，LAST 后按原有精度延迟开始输出；第 k 拍包含已完成的 C0…Ck，最终拍保留全部 16 列并给出 LAST。每拍检查全部 16 个 lane。"
-        },
-        {
-                "id": "fp32",
-                "label": "FP32",
-                "mode": "cpu_cpt_mode=2'b11",
-                "latency": "PE 延迟 4 拍",
-                "image": "./sim/fp32.png?aug18=4d26102d1b81",
-                "fullImage": "./sim/fp32_full.png?aug18=723a93a51f3f",
-                "log": "./sim/logs/sa_top_tb_fp32_run.log",
-                "checks": "1 个向量 / 16 列结果；PASS",
-                "caption": "八月原始 TB：同一个 A 向量按行阶梯重复送入，LAST 后按原有精度延迟开始输出；第 k 拍包含已完成的 C0…Ck，最终拍保留全部 16 列并给出 LAST。每拍检查全部 16 个 lane。"
-        },
-        {
-                "id": "int4",
-                "label": "INT4",
-                "mode": "cpu_cpt_mode=2'b00",
-                "latency": "PE 延迟 1 拍",
-                "image": "./sim/int4.png?aug18=7e2e8be4aac2",
-                "fullImage": "./sim/int4_full.png?aug18=02304ca97b2d",
-                "log": "./sim/logs/sa_top_tb_int4_run.log",
-                "checks": "1 个向量 / 16 列结果；PASS",
-                "caption": "八月原始 TB：同一个 A 向量按行阶梯重复送入，LAST 后按原有精度延迟开始输出；第 k 拍包含已完成的 C0…Ck，最终拍保留全部 16 列并给出 LAST。每拍检查全部 16 个 lane。"
-        },
-        {
-                "id": "smoke",
-                "label": "Smoke",
-                "mode": "物理 1×1",
-                "latency": "7×3=21 (0x15)",
-                "image": "./sim/smoke.png?aug18=5d59e7e329bf",
-                "fullImage": "./sim/smoke_full.png?aug18=d9ffbbd41aba",
-                "log": "./sim/logs/sa_top_tb_smoke_run.log",
-                "checks": "固定结果 21；PASS",
-                "caption": "原始八月物理 1×1 冒烟测试，输入 7、权重 3，结果 21（波形按十六进制显示 0x15），同拍给出 LAST。"
-        }
-];
+      const cases = [{"id": "fp16", "label": "FP16", "mode": "cpu_cpt_mode=2'b10", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/fp16.png?v=952cb9b1fe67", "fullImage": "./sim/fp16_full.png?v=892e28294d8d", "log": "./sim/logs/sa_top_tb_fp16_run.log", "checks": "9任务 / 1008结果 / 315有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "int8", "label": "INT8", "mode": "cpu_cpt_mode=2'b01", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/int8.png?v=81681af7bd37", "fullImage": "./sim/int8_full.png?v=b792aa24f76a", "log": "./sim/logs/sa_top_tb_int8_run.log", "checks": "9任务 / 1008结果 / 330有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "multi", "label": "MULTI", "mode": "cpu_cpt_mode=2'b00", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/multi.png?v=c5eed0e5c7f8", "fullImage": "./sim/multi_full.png?v=8cef59cc36f9", "log": "./sim/logs/sa_top_tb_multi_run.log", "checks": "27任务 / 3024结果 / 974有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "fp32", "label": "FP32", "mode": "cpu_cpt_mode=2'b11", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/fp32.png?v=ac928b23f923", "fullImage": "./sim/fp32_full.png?v=a90fb6964542", "log": "./sim/logs/sa_top_tb_fp32_run.log", "checks": "9任务 / 1008结果 / 315有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "int4", "label": "INT4", "mode": "cpu_cpt_mode=2'b00", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/int4.png?v=49bb05d11ecc", "fullImage": "./sim/int4_full.png?v=38e558780bad", "log": "./sim/logs/sa_top_tb_int4_run.log", "checks": "9任务 / 1008结果 / 326有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "smoke", "label": "SMOKE", "mode": "物理1×1", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/smoke.png?v=d84a6b019705", "fullImage": "./sim/smoke_full.png?v=17630e2320ab", "log": "./sim/logs/sa_top_tb_smoke_run.log", "checks": "7×3=21；物理1×1；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}];
 
       const tabs = document.querySelector(".tabs");
       const title = document.querySelector(".wave-title");

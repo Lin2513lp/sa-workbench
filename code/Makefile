@@ -5,12 +5,12 @@ VCS       ?= vcs
 VERDI     ?= verdi
 
 # Select one case by leaving one TOP line uncommented. Makefile comments use '#'.
-TOP       ?= sa_top_tb_smoke
+# TOP     ?= sa_top_tb_smoke
 # TOP     ?= sa_top_tb_int4
 # TOP     ?= sa_top_tb_int8
 # TOP     ?= sa_top_tb_fp16
 # TOP     ?= sa_top_tb_fp32
-# TOP     ?= sa_top_tb_multi
+TOP       ?= sa_top_tb_multi
 DUMP      ?= fsdb
 
 # VCS creates symbolic links while building its shared objects. VMware hgfs
@@ -38,6 +38,8 @@ TESTS := sa_top_tb_smoke \
          sa_top_tb_fp32  \
          sa_top_tb_multi
 
+UNIT_TESTS := output_collector_tb sa_ctrl_tb pe_array_16x16_tb
+
 VERDI_ROOT := $(or $(VERDI_HOME),$(NOVAS_HOME))
 FSDB_TAB   := $(VERDI_ROOT)/share/PLI/VCS/LINUX64/novas.tab
 FSDB_LIB   := $(VERDI_ROOT)/share/PLI/VCS/LINUX64/pli.a
@@ -60,7 +62,7 @@ else
 endif
 
 .PHONY: all help env dirs check-vcs check-verdi check-fsdb check-top \
-        rtl compile run wave verdi regress summary clean clean-all
+        rtl compile run wave verdi regress unit-regress summary clean clean-all
 
 # Daily entry point: compile the default test, run it, and generate its FSDB.
 all: run
@@ -73,7 +75,8 @@ help:
 	@echo "  make compile TOP=sa_top_tb_int4  Compile one testbench"
 	@echo "  make run TOP=sa_top_tb_int4      Compile and run one testbench"
 	@echo "  make wave TOP=sa_top_tb_int4     Open its FSDB in Verdi"
-	@echo "  make regress                     Run all six SA top cases"
+	@echo "  make regress                     Run six updated SA stream tests (H=W only)"
+	@echo "  make unit-regress DUMP=none       Run collector/control/array module tests"
 	@echo "  make summary                     Summarize VCS run logs"
 	@echo "  make run TOP=sa_top_tb_int4 DUMP=none  Run without waveform dumping"
 	@echo "  make clean TOP=sa_top_tb_int4    Remove one test's generated files"
@@ -131,6 +134,10 @@ run: compile
 	@echo "[SIM] Running $(TOP)"
 	cd "$(RUN_ROOT)" && \
 	  "$(SIMV)" +vcs+lic+wait $(DUMP_RUN) -l "$(RUN_LOG)"
+	@grep -q "$(TOP): PASS" "$(RUN_LOG)" || \
+	  { echo "ERROR: missing $(TOP): PASS in $(RUN_LOG)"; exit 1; }
+	@! grep -Eq "(^|[[:space:]])(Error|Fatal|UVM_ERROR|UVM_FATAL)(:|-|[[:space:]])" "$(RUN_LOG)" || \
+	  { echo "ERROR: simulator reported an error in $(RUN_LOG)"; exit 1; }
 	@echo "[SIM] Log:  $(RUN_LOG)"
 	@if [ "$(DUMP)" = "fsdb" ]; then \
 	  test -f "$(FSDB_FILE)" || \
@@ -153,6 +160,14 @@ regress:
 	done
 	@echo "[REGRESS] All directed tests passed."
 	@$(MAKE) --no-print-directory summary
+
+unit-regress:
+	@set -e; \
+	for test in $(UNIT_TESTS); do \
+	  echo "[UNIT] $$test"; \
+	  $(MAKE) --no-print-directory TOP=$$test DUMP=$(DUMP) run; \
+	done
+	@echo "[UNIT] All module tests passed."
 
 summary: dirs
 	@summary_file="$(LOG_DIR)/regression_summary.log"; \

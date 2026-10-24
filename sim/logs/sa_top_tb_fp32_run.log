@@ -1,37 +1,29 @@
-Command: /home/yian/sa_runs/august18_baseline_20261024/build/vcs/sa_top_tb_fp32/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp32.fsdb -l /home/yian/sa_runs/august18_baseline_20261024/logs/sa_top_tb_fp32_run.log
+Command: /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/build/vcs/sa_top_tb_fp32/simv +vcs+lic+wait +FSDB_FILE=/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_fp32.fsdb -l /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/logs/sa_top_tb_fp32_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:09 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:54 2026
 *Verdi* WARNING: 'Enable FSDB dumping with option -debug/-debug_pp/-debug_all and option -P along with novas.tab file' will be deprecated in VERDI2024.09.
 *Verdi* WARNING: Please use '-debug_access' along with a proper setting on VERDI_HOME environment variable in vcs compilation. For details, please refer to VCS manual for -debug_access usage.
 *Verdi* Loading libsscore_vcs202312.so
 FSDB Dumper for VCS, Release Verdi_V-2023.12-SP2, Linux x86_64/64bit, 05/26/2024
 (C) 1996 - 2024 by Synopsys, Inc.
-*Verdi* : Create FSDB file '/home/yian/sa_runs/august18_baseline_20261024/waves/sa_top_tb_fp32.fsdb'
+*Verdi* : Create FSDB file '/home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/waves/sa_top_tb_fp32.fsdb'
 *Verdi* : Begin traversing the scope (sa_top_tb_fp32.u_case.dut), layer (0).
 *Verdi* : Enable +all dumping.
 *Verdi* : End of traversing.
-sa_top_tb_fp32: B row 0 = 3f800000 40000000 3f800000 40400000 3f800000 40800000 3f800000 3f800000 40400000 40400000 40400000 40800000 3f800000 40000000 40400000 40000000
-sa_top_tb_fp32: B row 1 = 40000000 40000000 40800000 40400000 40000000 3f800000 40400000 40800000 40000000 40800000 40400000 40800000 40800000 3f800000 40000000 40800000
-sa_top_tb_fp32: B row 2 = 3f800000 40000000 40800000 40800000 40000000 3f800000 3f800000 40400000 40000000 40000000 40000000 40800000 40000000 40000000 40000000 40000000
-sa_top_tb_fp32: B row 3 = 40400000 40400000 3f800000 40400000 40000000 40800000 40800000 3f800000 3f800000 40800000 40400000 40000000 40800000 40000000 40000000 40000000
-sa_top_tb_fp32: B row 4 = 40800000 40400000 40400000 3f800000 3f800000 40800000 40400000 40400000 40800000 3f800000 40000000 3f800000 40000000 40000000 3f800000 40000000
-sa_top_tb_fp32: B row 5 = 40000000 40000000 40800000 40400000 3f800000 40000000 40400000 3f800000 40400000 3f800000 40800000 40400000 40800000 3f800000 40800000 40000000
-sa_top_tb_fp32: B row 6 = 40000000 40800000 3f800000 40400000 3f800000 40400000 3f800000 40000000 40400000 40000000 40800000 40400000 40400000 3f800000 40400000 40000000
-sa_top_tb_fp32: B row 7 = 40400000 40400000 3f800000 40800000 40000000 40800000 40000000 40800000 40000000 40800000 3f800000 3f800000 40800000 40000000 40400000 40000000
-sa_top_tb_fp32: B row 8 = 3f800000 40400000 40800000 40400000 40800000 3f800000 3f800000 3f800000 40000000 40400000 40000000 40800000 40000000 40800000 3f800000 3f800000
-sa_top_tb_fp32: B row 9 = 40800000 40400000 40400000 3f800000 40400000 40400000 40000000 40400000 40800000 3f800000 3f800000 40800000 3f800000 40400000 3f800000 40400000
-sa_top_tb_fp32: B row 10 = 40400000 40800000 40800000 40000000 40000000 40000000 40800000 40800000 40000000 3f800000 40400000 40000000 40800000 40000000 40800000 40000000
-sa_top_tb_fp32: B row 11 = 40000000 40000000 40400000 40000000 40400000 40400000 40400000 40000000 40000000 40000000 40800000 40400000 40400000 40400000 40400000 40000000
-sa_top_tb_fp32: B row 12 = 40000000 40800000 40000000 40800000 3f800000 3f800000 40000000 3f800000 3f800000 3f800000 40800000 40400000 40000000 40400000 40000000 40400000
-sa_top_tb_fp32: B row 13 = 3f800000 3f800000 40000000 40000000 3f800000 40800000 3f800000 40800000 40800000 40400000 40800000 40400000 40800000 40000000 40800000 40400000
-sa_top_tb_fp32: B row 14 = 3f800000 40000000 40400000 3f800000 3f800000 40800000 40400000 40400000 40800000 40800000 40400000 3f800000 40800000 3f800000 40000000 40800000
-sa_top_tb_fp32: B row 15 = 40800000 40000000 40400000 40800000 40800000 3f800000 40400000 40400000 40800000 40800000 40400000 3f800000 3f800000 40400000 40400000 40800000
-sa_top_tb_fp32: A vector 0 = 40000000 40000000 40400000 40000000 40800000 40800000 3f800000 40400000 40400000 40000000 40000000 40400000 40400000 40000000 40800000 40000000; expected columns = 42ba0000 42d80000 42ee0000 42dc0000 429e0000 42de0000 42c80000 42ce0000 42e40000 42cc0000 42ee0000 42d80000 42f00000 42b20000 42cc0000 42d00000
-sa_top_tb_fp32: PASS
-$finish called from file "tb/sa_top_case_runner.sv", line 411.
-$finish at simulation time               416350
+sa_top_tb_fp32: STREAM_PASS mode=3 H=1 W=1 gap=0 results=16
+sa_top_tb_fp32: STREAM_PASS mode=3 H=1 W=1 gap=3 results=16
+sa_top_tb_fp32: STREAM_PASS mode=3 H=1 W=1 gap=20 results=16
+sa_top_tb_fp32: STREAM_PASS mode=3 H=4 W=4 gap=0 results=64
+sa_top_tb_fp32: STREAM_PASS mode=3 H=4 W=4 gap=3 results=64
+sa_top_tb_fp32: STREAM_PASS mode=3 H=4 W=4 gap=20 results=64
+sa_top_tb_fp32: STREAM_PASS mode=3 H=16 W=16 gap=0 results=256
+sa_top_tb_fp32: STREAM_PASS mode=3 H=16 W=16 gap=3 results=256
+sa_top_tb_fp32: STREAM_PASS mode=3 H=16 W=16 gap=20 results=256
+sa_top_tb_fp32: PASS jobs=9 results=1008 valid_zeros=315 checks=6444
+$finish called from file "tb/sa_top_case_runner.sv", line 351.
+$finish at simulation time              6576350
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 416350 ps
-CPU Time:      0.720 seconds;       Data structure size:   4.8Mb
-Fri Oct 23 22:09:01 2026
+Time: 6576350 ps
+CPU Time:      1.250 seconds;       Data structure size:   4.8Mb
+Fri Oct 23 22:54:38 2026

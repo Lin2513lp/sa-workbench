@@ -1057,8 +1057,8 @@
             <tr><td><code>cpu_tpu_start_sync</code></td><td>Input</td><td>1</td><td>启动同步信号，用于锁存本轮 active size 并启动计算。</td></tr>
             <tr><td><code>cpu_tpu_en_sync</code></td><td>Input</td><td>1</td><td>TPU 使能同步信号，高有效；应在 B 权重配置开始前拉高并覆盖整轮任务。</td></tr>
             <tr><td><code>dat_in_a</code></td><td>Input</td><td>32*16</td><td>输入 A 数据流，一拍包含 16 个 32-bit lane。</td></tr>
-            <tr><td><code>dat_in_vld</code></td><td>Input</td><td>1</td><td>A 数据输入有效信号。</td></tr>
-            <tr><td><code>dat_in_last</code></td><td>Input</td><td>1</td><td>A 数据输入最后一拍指示。</td></tr>
+            <tr><td><code>dat_in_vld</code></td><td>Input</td><td>1</td><td>CTRL提供的lane0向量有效标记；低电平时其余Skew路仍可能有效。</td></tr>
+            <tr><td><code>dat_in_last</code></td><td>Input</td><td>1</td><td>CTRL提供的最后一个lane0向量标记，与dat_in_vld同拍；不再表示lane15尾部。</td></tr>
             <tr class="group-row"><td colspan="4">RegMap Interface</td></tr>
             <tr><td><code>cpu_dat_in_b_lock</code></td><td>Input</td><td>1</td><td>动态 B 权重锁存信号；经两级同步并取上升沿后形成 400MHz 域单拍脉冲 <code>cpu_dat_in_b_lock'</code>。</td></tr>
             <tr><td><code>cpu_dat_in_b</code></td><td>Input</td><td>32*16</td><td>100MHz 域动态 B 权重数据，一次包含 16 个 32-bit lane；由 DMUX 在 <code>cpu_dat_in_b_lock'</code> 有效时锁存为 <code>cpu_dat_in_b'</code>。</td></tr>
@@ -1128,15 +1128,8 @@
           <code>pe_ckg</code>，共形成 64 个门控时钟组。
         </p>
 
-        <h3>6.4 输出收集</h3>
-        <p>当前采用 2026-08-07 版本的原始 OUTPUT_COLLECTOR：IDLE / WAIT / OUTPUT 三态控制及 512-bit 结果保持寄存器。
-        各列结果按顺序累积，首拍保留第0列，后续拍保留已收集各列，最终 LAST 拍包含完整一组结果。
-        SA 顶层恰好为八月设计中的 18 个端口；原始 RTL、Makefile 和 9 个 TB 均已恢复，
-        仅保留 FP2FIX 组合默认赋值与负数舍入为零这两处已验证的小修补。</p>
-        <div class="note"><b>验证边界：</b>八月原有 6 个 SA 顶层测试及 3 个单元测试通过。
-        该测试输入为重复保持同一组 A 的阶梯序列，不能据此声称支持连续多个独立向量的流输出。
-        当前 TOP 严格流式测试首拍实际为 0、期望为 30，集成未通过；未修改 oracle 来掩盖差异。</div>
-        <h2>7 Testbench 搭建与结果对比</h2>
+        <h3>6.4 输出收集与内部标记</h3><p>2026-10-24：以零点前版本为参照，移除SA_TOP额外输入及空闲输出，保留原18端口。CTRL通过已有dat_in_vld/dat_in_last传递lane0向量标记；SA内部仅增加15位有效历史，恢复原PE共享有效窗口。PE、SA_CTRL、Skew数值数据通路和零点前收集器未修改；没有512-bit数据缓存，没有新增结果延迟。</p>
+<div class="note"><b>信号含义已明确调整：</b>dat_in_a仍是逐路Skew后的数据；dat_in_vld表示本拍lane0向量有效，dat_in_last表示最后一个lane0向量。VALID低时其他lane仍可能有尾部数据。CTRL自己保留物理lane15的尾部标记用于DONE，不再通过TOP给SA旁接FIFO读使能。</div><h2>7 Testbench 搭建与结果对比</h2>
         <h3>7.1 验证平台结构</h3>
         <p>
           顶层回归由公共驱动器 <code>sa_top_case_runner.sv</code> 完成，INT4、INT8、FP16、FP32
@@ -1145,14 +1138,8 @@
           <code>output_collector</code> 配置了模块级 testbench。
         </p>
 
-        <h3>7.2 八月原版激励与本次真实波形</h3>
-<div class="note"><b>2026-10-24：</b>恢复 2026-08-07 基线。正式 SA 波形恰好展示 18 个原有外部端口，不加入内部信号或总线拆片。六组截图全部由本次 VCS FSDB 在 Verdi 原生 nWave 生成。</div>
-<p>原始 TB 对同一个 A 向量按行阶梯重复送入。LAST 后按原有精度延迟开启收集器，首拍保留第0列，后续拍保留已完成列，最后一拍给出完整16列与LAST。Multi只加载一次B，顺序执行三个任务。此处恢复原始TB，没有使用后加的可变包长流式TB。</p>
-<h3>7.3 本次 Questa / VCS 结果</h3>
-<table><thead><tr><th>用例</th><th>实际原版检查范围</th><th>结论</th></tr></thead><tbody><tr><td>SMOKE</td><td>7×3=21；物理1×1</td><td>PASS</td></tr><tr><td>INT4</td><td>原始16×16阶梯输入、16列结果</td><td>PASS</td></tr><tr><td>INT8</td><td>原始16×16阶梯输入、16列结果</td><td>PASS</td></tr><tr><td>FP16</td><td>原始16×16阶梯输入、16列结果</td><td>PASS</td></tr><tr><td>FP32</td><td>原始16×16阶梯输入、16列结果</td><td>PASS</td></tr><tr><td>MULTI</td><td>3个顺序任务、48列结果</td><td>PASS</td></tr></tbody></table>
-<p>另有 sa_ctrl、pe_array_16x16、output_collector 三个原有单元测试通过。23个工程文件的SHA与仿真副本逐项一致，22个与八月提交完全一致，仅fp2fix.v保留此前验证的两处小修补。<a href="sim/august-validation.md">基线核对报告</a> · <a href="sim/august-restored-manifest.json">逐文件比对</a> · <a href="sim/native_manifest.json">原生波形证据</a></p>
-<h3>7.4 TOP 集成差异</h3>
-<div class="note">SA原版测试通过不等于当前TOP通过。TOP严格参考要求4个独立向量、7拍流式结果；本次Questa与VCS都在2573.750ns首拍失败，实际全零而期望lane0=30。未放宽断言，未另加收集器适配。后续DONE/W1C检查未执行到。原理动画仅用于阵列数据流讲解，不是八月collector已支持多向量连续流的验证依据。</div>
+        <h3>7.2 本次输入协议与验证</h3><p>2026-10-24：以零点前版本为参照，移除SA_TOP额外输入及空闲输出，保留原18端口。CTRL通过已有dat_in_vld/dat_in_last传递lane0向量标记；SA内部仅增加15位有效历史，恢复原PE共享有效窗口。PE、SA_CTRL、Skew数值数据通路和零点前收集器未修改；没有512-bit数据缓存，没有新增结果延迟。</p>
+<div class="note"><b>信号含义已明确调整：</b>dat_in_a仍是逐路Skew后的数据；dat_in_vld表示本拍lane0向量有效，dat_in_last表示最后一个lane0向量。VALID低时其他lane仍可能有尾部数据。CTRL自己保留物理lane15的尾部标记用于DONE，不再通过TOP给SA旁接FIFO读使能。</div><h3>7.3 本次VCS结果</h3><table><thead><tr><th>用例</th><th>结果</th></tr></thead><tbody><tr><td>FP16</td><td>9任务 / 1008结果 / 315有效零值；PASS</td></tr><tr><td>INT8</td><td>9任务 / 1008结果 / 330有效零值；PASS</td></tr><tr><td>MULTI</td><td>27任务 / 3024结果 / 974有效零值；PASS</td></tr><tr><td>FP32</td><td>9任务 / 1008结果 / 315有效零值；PASS</td></tr><tr><td>INT4</td><td>9任务 / 1008结果 / 326有效零值；PASS</td></tr><tr><td>SMOKE</td><td>7×3=21；物理1×1；PASS</td></tr></tbody></table><p>原有3个单元测试也通过。原TOP严格TB字节不变，本次重新编译并通过107项检查。六组截图恰好显示18个外部端口；源码、FSDB与PNG的SHA绑定见sim/native_manifest.json。历史八月基线直接接入的失败记录保留在对应日期报告中，本节证据对应当前修正。</p>
 
 
       </article>

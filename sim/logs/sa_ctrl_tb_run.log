@@ -1,11 +1,11 @@
-Command: /home/yian/sa_runs/august18_baseline_20261024/build/vcs/sa_ctrl_tb/simv +vcs+lic+wait -l /home/yian/sa_runs/august18_baseline_20261024/logs/sa_ctrl_tb_run.log
+Command: /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/build/vcs/sa_ctrl_tb/simv +vcs+lic+wait -l /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/logs/sa_ctrl_tb_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:09 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:54 2026
 sa_ctrl_tb: PASS
 $finish called from file "tb/sa_ctrl_tb.sv", line 215.
 $finish at simulation time                68850
            V C S   S i m u l a t i o n   R e p o r t 
 Time: 68850 ps
-CPU Time:      0.280 seconds;       Data structure size:   0.0Mb
-Fri Oct 23 22:09:13 2026
+CPU Time:      0.300 seconds;       Data structure size:   0.0Mb
+Fri Oct 23 22:54:51 2026

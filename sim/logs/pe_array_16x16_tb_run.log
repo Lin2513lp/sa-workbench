@@ -1,11 +1,11 @@
-Command: /home/yian/sa_runs/august18_baseline_20261024/build/vcs/pe_array_16x16_tb/simv +vcs+lic+wait -l /home/yian/sa_runs/august18_baseline_20261024/logs/pe_array_16x16_tb_run.log
+Command: /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/build/vcs/pe_array_16x16_tb/simv +vcs+lic+wait -l /home/yian/sa_runs/ctrl_sa_markers_18ports_20261024/logs/pe_array_16x16_tb_run.log
 Chronologic VCS simulator copyright 1991-2023
 Contains Synopsys proprietary information.
-Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:09 2026
+Compiler version V-2023.12-SP2_Full64; Runtime version V-2023.12-SP2_Full64;  Oct 23 22:54 2026
 pe_array_16x16_tb: PASS
 $finish called from file "tb/pe_array_16x16_tb.sv", line 147.
 $finish at simulation time                28850
            V C S   S i m u l a t i o n   R e p o r t 
 Time: 28850 ps
-CPU Time:      0.300 seconds;       Data structure size:   0.1Mb
-Fri Oct 23 22:09:17 2026
+CPU Time:      0.280 seconds;       Data structure size:   0.1Mb
+Fri Oct 23 22:54:54 2026

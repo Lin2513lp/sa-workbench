@@ -115,8 +115,11 @@ module tb_tpu_ctrl;
             $display("CTRL_HEX H=W=1 t=%0d read=%b input=%0128h expected=%0128h actual=%0128h valid=%b last=%b",
                      t, fifo_in_re, fifo_in_rdata, expected_data, dat_in_a, dat_in_vld, dat_in_last);
             if (fifo_in_re !== (t < 16)) $fatal(1, "H=W=1: FIFO read t=%0d", t);
-            if (dat_in_vld !== 1'b1) $fatal(1, "H=W=1: VALID t=%0d", t);
-            if (dat_in_last !== (t == 30)) $fatal(1, "H=W=1: LAST t=%0d", t);
+            if (dat_in_vld !== (t < 16)) $fatal(1, "H=W=1: lane0 VALID t=%0d", t);
+            if (dat_in_last !== (t == 15)) $fatal(1, "H=W=1: lane0 LAST t=%0d", t);
+            checks_count += 2;
+            if (dut.skew_dat_in_vld !== 1'b1) $fatal(1, "H=W=1: internal skew VALID t=%0d", t);
+            if (dut.skew_dat_in_last !== (t == 30)) $fatal(1, "H=W=1: internal physical tail t=%0d", t);
 
             // 下降沿寄存器已更新：读一包计数加1，尾巴阶段维持16；计数来自实际读取次数，与H/W无关。
             @(negedge sys_ckg);
@@ -179,8 +182,11 @@ module tb_tpu_ctrl;
             $display("CTRL_HEX H=W=4 t=%0d read=%b input=%0128h expected=%0128h actual=%0128h valid=%b last=%b",
                      t, fifo_in_re, fifo_in_rdata, expected_data, dat_in_a, dat_in_vld, dat_in_last);
             if (fifo_in_re !== (t < 16)) $fatal(1, "H=W=4: FIFO read t=%0d", t);
-            if (dat_in_vld !== 1'b1) $fatal(1, "H=W=4: VALID t=%0d", t);
-            if (dat_in_last !== (t == 30)) $fatal(1, "H=W=4: LAST t=%0d", t);
+            if (dat_in_vld !== (t < 16)) $fatal(1, "H=W=4: lane0 VALID t=%0d", t);
+            if (dat_in_last !== (t == 15)) $fatal(1, "H=W=4: lane0 LAST t=%0d", t);
+            checks_count += 2;
+            if (dut.skew_dat_in_vld !== 1'b1) $fatal(1, "H=W=4: internal skew VALID t=%0d", t);
+            if (dut.skew_dat_in_last !== (t == 30)) $fatal(1, "H=W=4: internal physical tail t=%0d", t);
 
             // 下降沿寄存器已更新：读一包计数加1，尾巴阶段维持16；计数来自实际读取次数，与H/W无关。
             @(negedge sys_ckg);
@@ -243,8 +249,11 @@ module tb_tpu_ctrl;
             $display("CTRL_HEX H=W=16 t=%0d read=%b input=%0128h expected=%0128h actual=%0128h valid=%b last=%b",
                      t, fifo_in_re, fifo_in_rdata, expected_data, dat_in_a, dat_in_vld, dat_in_last);
             if (fifo_in_re !== (t < 16)) $fatal(1, "H=W=16: FIFO read t=%0d", t);
-            if (dat_in_vld !== 1'b1) $fatal(1, "H=W=16: VALID t=%0d", t);
-            if (dat_in_last !== (t == 30)) $fatal(1, "H=W=16: LAST t=%0d", t);
+            if (dat_in_vld !== (t < 16)) $fatal(1, "H=W=16: lane0 VALID t=%0d", t);
+            if (dat_in_last !== (t == 15)) $fatal(1, "H=W=16: lane0 LAST t=%0d", t);
+            checks_count += 2;
+            if (dut.skew_dat_in_vld !== 1'b1) $fatal(1, "H=W=16: internal skew VALID t=%0d", t);
+            if (dut.skew_dat_in_last !== (t == 30)) $fatal(1, "H=W=16: internal physical tail t=%0d", t);
 
             // 下降沿寄存器已更新：读一包计数加1，尾巴阶段维持16；计数来自实际读取次数，与H/W无关。
             @(negedge sys_ckg);
