@@ -153,7 +153,7 @@
 
     .viewport img {
       display: block;
-      width: 2048px;
+      width: auto;
       max-width: none;
       height: auto;
       transform-origin: left top;
@@ -205,8 +205,10 @@
           <button class="tool" type="button" data-action="minus" title="缩小" aria-label="缩小">−</button>
           <button class="tool" type="button" data-action="fit" title="适合窗口">适合</button>
           <button class="tool" type="button" data-action="plus" title="放大" aria-label="放大">＋</button>
+          <button class="tool" type="button" data-action="actual" title="原始像素显示">100%</button>
           <a class="open-link" target="_blank" rel="noopener">细节原图</a>
           <a class="full-link open-link-style" target="_blank" rel="noopener">全程原图</a>
+          <a class="open-link-style" href="sa_august_comparison.html">与八月版对照</a>
           <a class="log-link open-link-style" target="_blank" rel="noopener">VCS 日志</a>
         </div>
       </div>
@@ -222,7 +224,7 @@
 
   <script>
     (() => {
-      const cases = [{"id": "fp16", "label": "FP16", "mode": "cpu_cpt_mode=2'b10", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/fp16.png?v=952cb9b1fe67", "fullImage": "./sim/fp16_full.png?v=892e28294d8d", "log": "./sim/logs/sa_top_tb_fp16_run.log", "checks": "9任务 / 1008结果 / 315有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "int8", "label": "INT8", "mode": "cpu_cpt_mode=2'b01", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/int8.png?v=81681af7bd37", "fullImage": "./sim/int8_full.png?v=b792aa24f76a", "log": "./sim/logs/sa_top_tb_int8_run.log", "checks": "9任务 / 1008结果 / 330有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "multi", "label": "MULTI", "mode": "cpu_cpt_mode=2'b00", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/multi.png?v=c5eed0e5c7f8", "fullImage": "./sim/multi_full.png?v=8cef59cc36f9", "log": "./sim/logs/sa_top_tb_multi_run.log", "checks": "27任务 / 3024结果 / 974有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "fp32", "label": "FP32", "mode": "cpu_cpt_mode=2'b11", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/fp32.png?v=ac928b23f923", "fullImage": "./sim/fp32_full.png?v=a90fb6964542", "log": "./sim/logs/sa_top_tb_fp32_run.log", "checks": "9任务 / 1008结果 / 315有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "int4", "label": "INT4", "mode": "cpu_cpt_mode=2'b00", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/int4.png?v=49bb05d11ecc", "fullImage": "./sim/int4_full.png?v=38e558780bad", "log": "./sim/logs/sa_top_tb_int4_run.log", "checks": "9任务 / 1008结果 / 326有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "smoke", "label": "SMOKE", "mode": "物理1×1", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/smoke.png?v=d84a6b019705", "fullImage": "./sim/smoke_full.png?v=17630e2320ab", "log": "./sim/logs/sa_top_tb_smoke_run.log", "checks": "7×3=21；物理1×1；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}];
+      const cases = [{"id": "fp16", "label": "FP16", "mode": "cpu_cpt_mode=2'b10", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/fp16.png?v=e95bb36fcfca", "fullImage": "./sim/fp16_full.png?v=d02933e078bc", "log": "./sim/logs/sa_top_tb_fp16_run.log", "checks": "9任务 / 1008结果 / 315有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "int8", "label": "INT8", "mode": "cpu_cpt_mode=2'b01", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/int8.png?v=024ac0291cee", "fullImage": "./sim/int8_full.png?v=848ad8575d57", "log": "./sim/logs/sa_top_tb_int8_run.log", "checks": "9任务 / 1008结果 / 330有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "multi", "label": "MULTI", "mode": "cpu_cpt_mode=2'b00", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/multi.png?v=9a4b6bb71f1a", "fullImage": "./sim/multi_full.png?v=8411f01d7320", "log": "./sim/logs/sa_top_tb_multi_run.log", "checks": "27任务 / 3024结果 / 974有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "fp32", "label": "FP32", "mode": "cpu_cpt_mode=2'b11", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/fp32.png?v=b4b348d98c6f", "fullImage": "./sim/fp32_full.png?v=0e7ba0fa5887", "log": "./sim/logs/sa_top_tb_fp32_run.log", "checks": "9任务 / 1008结果 / 315有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "int4", "label": "INT4", "mode": "cpu_cpt_mode=2'b00", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/int4.png?v=4bc1c7e62311", "fullImage": "./sim/int4_full.png?v=99c3c33076b0", "log": "./sim/logs/sa_top_tb_int4_run.log", "checks": "9任务 / 1008结果 / 326有效零值；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}, {"id": "smoke", "label": "SMOKE", "mode": "物理1×1", "latency": "沿用零点前PE与收集器时序，无新增结果延迟", "image": "./sim/smoke.png?v=1aa104998a9a", "fullImage": "./sim/smoke_full.png?v=ca3ca58df071", "log": "./sim/logs/sa_top_tb_smoke_run.log", "checks": "7×3=21；物理1×1；PASS", "caption": "本次VCS FSDB原生Verdi截图，仅18个SA外部端口。已有VALID/LAST为CTRL提供的lane0向量标记；SA内部15位标记历史恢复PE有效窗口。保留零点前算术参考、气泡及有效零值检查，没有数值缓存。"}];
 
       const tabs = document.querySelector(".tabs");
       const title = document.querySelector(".wave-title");
@@ -278,9 +280,11 @@
       });
 
       document.querySelector('[data-action="fit"]').addEventListener("click", () => {
-        zoom = Math.max(0.4, Math.min(1, (viewport.clientWidth - 28) / 2048));
+        zoom = Math.max(0.4, Math.min(1, (viewport.clientWidth - 28) / (image.naturalWidth || 1800)));
         render();
       });
+
+      document.querySelector('[data-action="actual"]').addEventListener("click", () => { zoom = 1; render(); });
 
       image.addEventListener("load", () => {
         image.style.marginBottom = `${Math.max(0, image.offsetHeight * (zoom - 1))}px`;

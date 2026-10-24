@@ -1,0 +1,340 @@
+{
+  "augustCommit": "9b92a5308eb2c51ac270a35792394294bd551687",
+  "augustDate": "2026-08-07T21:03:40+08:00",
+  "SA_portsEqual": true,
+  "ports": [
+    [
+      "input",
+      "sys_ckg"
+    ],
+    [
+      "input",
+      "pe_ckg"
+    ],
+    [
+      "input",
+      "tpu_rst_n"
+    ],
+    [
+      "input",
+      "cpu_tpu_start_sync"
+    ],
+    [
+      "input",
+      "cpu_tpu_en_sync"
+    ],
+    [
+      "input",
+      "dat_in_a"
+    ],
+    [
+      "input",
+      "dat_in_vld"
+    ],
+    [
+      "input",
+      "dat_in_last"
+    ],
+    [
+      "input",
+      "cpu_dat_in_b_lock"
+    ],
+    [
+      "input",
+      "cpu_dat_in_b"
+    ],
+    [
+      "input",
+      "cpu_dat_in_b_sel"
+    ],
+    [
+      "input",
+      "cpu_h_size"
+    ],
+    [
+      "input",
+      "cpu_w_size"
+    ],
+    [
+      "input",
+      "cpu_cpt_mode"
+    ],
+    [
+      "output",
+      "rpt_active_size"
+    ],
+    [
+      "output",
+      "dat_out"
+    ],
+    [
+      "output",
+      "dat_out_vld"
+    ],
+    [
+      "output",
+      "dat_out_last"
+    ]
+  ],
+  "files": [
+    {
+      "path": "Makefile",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "39e03d72b0ae3c1caba3cb72b92537e5cd644cff31b2faf6d807b13f1293613b",
+      "currentSha256": "e13b30db13486f10dec36efde0a49dfbdd727049089cb8fd1c1382cce1c01c05"
+    },
+    {
+      "path": "rtl/filelist.f",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d",
+      "currentSha256": "25b98d8b7a5e599af23c67f7606211961836b133acacfa03a45e3e1b94c24e7d"
+    },
+    {
+      "path": "rtl/output_collector.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "03133a594eb583361c540606e3b85732f0c4fd935d8920b6d2cb2cf9ebf1e91e",
+      "currentSha256": "af5533d9cfde001ea51df1e2092ef95fe96471dae236a0554e091c4de670ec26"
+    },
+    {
+      "path": "rtl/pe_array_16x16.sv",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8",
+      "currentSha256": "affc351187bc3714e9bbfd6e6189cd56362710d925bf88bec5f5296dff5f0ef8"
+    },
+    {
+      "path": "rtl/pe_mp/PE_MP_v1.v",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447",
+      "currentSha256": "215c2b8601547f0cc03be317cbbb98e2eab048d0f8985bd37702c3484abfb447"
+    },
+    {
+      "path": "rtl/pe_mp/fix2fp.v",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72",
+      "currentSha256": "fbe9ed0e6a45c1aafc4165df6efed185418942b58573248bfa6d1f0537e7ac72"
+    },
+    {
+      "path": "rtl/pe_mp/fp2fix.v",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "80573302d4a24a12ff757d4619a141bd359474285fd81ac326b17bf30045e0ee",
+      "currentSha256": "0ebd6e23b9e22b2ee633f023bf707aeaf88af0eab3c9be36c27f62cf24078293"
+    },
+    {
+      "path": "rtl/pe_mp/fp32_adder.v",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19",
+      "currentSha256": "be3d1061521a02963f44f965b6034e90f9fda616e26379ab0ef536468d2eed19"
+    },
+    {
+      "path": "rtl/pe_mp/fp32_multi.v",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5",
+      "currentSha256": "79a83d9179c30b54a73195bb1195df5477449b65d234b90e46aaf45843bd9da5"
+    },
+    {
+      "path": "rtl/sa_ctrl.sv",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d",
+      "currentSha256": "26221e2528b85905b3f5421411f4ee9359f44dba93298a1e15dec92855c1791d"
+    },
+    {
+      "path": "rtl/sa_top.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "1ff701ca3aa3637be7bf3f2cb00b76443bdba9c164ecc97ff637bb8da05ec801",
+      "currentSha256": "b4f3a68f54b9b4140fd91a9d30bd5a2617513d628558ac1cdfc00aa7ab6b1827"
+    },
+    {
+      "path": "rtl/vcs_filelist.f",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8",
+      "currentSha256": "5b19f31163ee337bc1cfcda7f62d5066aa27ff3969a876e4f0945ffdcfb8fda8"
+    },
+    {
+      "path": "tb/output_collector_tb.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "512791e7d25e6c904bf541caed0344723c75f0a75a0135057b9fe143f95e12ca",
+      "currentSha256": "7d07aec875129b51f77b7b8a48d5a4a7ed84984fe8a17948d68e498ca0645042"
+    },
+    {
+      "path": "tb/pe_array_16x16_tb.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "5d53bcd8d4d59a36ab6bc77a136b0e408261479b95e2873ee04ea64bba2fd337",
+      "currentSha256": "ab5eee6343f0b3dab1fc8d9ea613d10bb395b86ff6b38bd42cd6e28210ea6d14"
+    },
+    {
+      "path": "tb/sa_ctrl_tb.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "50c122569048351a0121ef705f9776996fcb3d73a67943ee55f0e14a84d57dc3",
+      "currentSha256": "2242e6c70ebaf6a9205e88d26c578b2e5a624f66e85eaaeb137db10516c2460a"
+    },
+    {
+      "path": "tb/sa_top_case_runner.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "02e47c2fb51e5c2dfd64e512722541f10278b1e78ecac2a6499fc6ee0d92911a",
+      "currentSha256": "e2af0c5ac9d95b70e27912c9de726b3074594222a67558f107d13c5a34aac999"
+    },
+    {
+      "path": "tb/sa_top_tb_fp16.sv",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122",
+      "currentSha256": "0e15a31199e13058c719a349953aba57ecc14c633831a02fb55616f6abfa4122"
+    },
+    {
+      "path": "tb/sa_top_tb_fp32.sv",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046",
+      "currentSha256": "d738526532f15bdc0271e82c85c815781c5d68d391b4c9b444e3b5dea70e8046"
+    },
+    {
+      "path": "tb/sa_top_tb_int4.sv",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8",
+      "currentSha256": "24f296556991ef7bfed13ecdadf22eb46efc3a2d5e512347debaf73ced49fad8"
+    },
+    {
+      "path": "tb/sa_top_tb_int8.sv",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd",
+      "currentSha256": "249736f5bf290bc9af73a2d1d3b01896017ee5900b0d9bc775c981a1460496bd"
+    },
+    {
+      "path": "tb/sa_top_tb_multi.sv",
+      "byteEqual": false,
+      "contentEqual": false,
+      "augustSha256": "af771cf00dff30dff2aff89949979b6ec9581b55b7e734c1de32005a1dd3e10d",
+      "currentSha256": "4fe7f05dc80e1c1cd8f1362007f47e7c4f35738b638ab82185c53e8a5528cd43"
+    },
+    {
+      "path": "tb/sa_top_tb_smoke.sv",
+      "byteEqual": false,
+      "contentEqual": true,
+      "augustSha256": "dbc0853533cdb2ed5c864254c819ff63433a38fa8cc74a7ed9b64e7b54b01304",
+      "currentSha256": "3e40f0cdeed8a957ba2940ca0b5112bcd8d28c7cc30b26cbf7aa695c55511b25"
+    },
+    {
+      "path": "tb/vcs_sa_top_tb_smoke.f",
+      "byteEqual": true,
+      "contentEqual": true,
+      "augustSha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758",
+      "currentSha256": "f4e500c2e1d7815db981dc85abc4895e5dca17baa9fda7665acdb898e2dcd758"
+    }
+  ],
+  "collectorPorts": {
+    "august": [
+      [
+        "input",
+        "sys_ckg"
+      ],
+      [
+        "input",
+        "tpu_rst_n"
+      ],
+      [
+        "input",
+        "active_w_size"
+      ],
+      [
+        "input",
+        "task_input_last"
+      ],
+      [
+        "input",
+        "cpt_mode"
+      ],
+      [
+        "input",
+        "raw_dat_in"
+      ],
+      [
+        "input",
+        "raw_dat_in_vld"
+      ],
+      [
+        "output",
+        "dat_out"
+      ],
+      [
+        "output",
+        "dat_out_vld"
+      ],
+      [
+        "output",
+        "dat_out_last"
+      ]
+    ],
+    "current": [
+      [
+        "input",
+        "sys_ckg"
+      ],
+      [
+        "input",
+        "tpu_rst_n"
+      ],
+      [
+        "input",
+        "stream_enable"
+      ],
+      [
+        "input",
+        "active_h_size"
+      ],
+      [
+        "input",
+        "active_w_size"
+      ],
+      [
+        "input",
+        "cpt_mode"
+      ],
+      [
+        "input",
+        "vector_in_vld"
+      ],
+      [
+        "input",
+        "vector_in_last"
+      ],
+      [
+        "input",
+        "raw_dat_in"
+      ],
+      [
+        "input",
+        "raw_dat_in_vld"
+      ],
+      [
+        "output",
+        "dat_out"
+      ],
+      [
+        "output",
+        "dat_out_vld"
+      ],
+      [
+        "output",
+        "dat_out_last"
+      ]
+    ]
+  }
+}
