@@ -206,9 +206,9 @@
   <header class="page-head">
     <div>
       <h1>SA_TOP RTL / TB 代码设计</h1>
-      <div class="subtitle">当前 SA 与 TPU_CTRL 交付代码：Makefile、RTL、自检 TB；仿真波形保持历史版本。</div>
+      <div class="subtitle">仅 SA 自身 RTL、内部子模块与独立 TB；其他模块源码见对应工作台。</div>
     </div>
-    <div class="stats"><span>RTL：11个文件</span><span>TB：11个文件</span><span>构建：1个文件</span><span>TPU_CTRL：8个文件</span></div>
+    <div class="stats"><span>RTL：9个文件</span><span>TB：11个文件</span></div>
   </header>
 
   <div class="workspace">
@@ -236,7 +236,7 @@
 
   <script>
     (() => {
-      const files = [{"group": "构建", "path": "Makefile", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/filelist.f", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/output_collector.sv", "desc": "零点前收集器原样保留；向量标记仅在SA内部连接"}, {"group": "RTL", "path": "rtl/pe_array_16x16.sv", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/fix2fp.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/fp2fix.v", "desc": "FP16转INT16；修正负数舍零，补齐舍入组合赋值"}, {"group": "RTL", "path": "rtl/pe_mp/fp32_adder.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/fp32_multi.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/PE_MP_v1.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/sa_ctrl.sv", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/sa_top.sv", "desc": "原18端口；内部15位标记历史恢复PE有效控制"}, {"group": "RTL", "path": "rtl/vcs_filelist.f", "desc": "工程源文件"}, {"group": "TB", "path": "tb/output_collector_tb.sv", "desc": "八月原始收集器单元测试"}, {"group": "TB", "path": "tb/pe_array_16x16_tb.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_ctrl_tb.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_case_runner.sv", "desc": "保留零点前算术参考、气泡与零值检查；适配18端口"}, {"group": "TB", "path": "tb/sa_top_tb_fp16.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_fp32.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_int4.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_int8.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_multi.sv", "desc": "连续任务与无复位重复输入"}, {"group": "TB", "path": "tb/sa_top_tb_smoke.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/tb_fp2fix_zero_round.sv", "desc": "有限FP16编码穷举转换回归"}, {"group": "TB", "path": "tb/vcs_sa_top_tb_smoke.f", "desc": "工程源文件"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/Makefile", "desc": "CTRL make all / make verdi 入口"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/README.md", "desc": "CTRL 独立工程运行说明"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/ahb_slave_regmap.sv", "desc": "AHB封装传入独立错误标志与错误次数"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/filelist.f", "desc": "CTRL相对路径编译清单"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/reg_list.sv", "desc": "独立错误标志0x418与错误次数0x40C只读回"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/tpu_compute_path.sv", "desc": "当前共享交付源码"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/tpu_ctrl.sv", "desc": "任务、FIFO读取、计数与流水完成控制"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/tpu_ctrl_skew.sv", "desc": "16路大括号拼接：有效数据或补0"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/rtl/tpu_ctrl_sync.sv", "desc": "EN/START两拍同步"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/scripts/check_license.sh", "desc": "沿用既有工程的VCS许可检查"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/tb/reg_list_assertions.sv", "desc": "当前共享交付源码"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/tb/tb_ahb_slave_regmap.sv", "desc": "AHB错误标志0x418与次数0x40C读写保护检查"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/tb/tb_reg_list.sv", "desc": "全部8种错误次数与只读检查"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/tb/tb_tpu_ctrl.sv", "desc": "三种H/W均送相同16包，补0对齐输出一致"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/tb/tb_tpu_done_clear.sv", "desc": "当前共享交付源码"}, {"group": "TPU_CTRL", "path": "TPU_CTRL/tb/tpu_ctrl_assertions.sv", "desc": "当前共享交付源码"}, {"path": "AXI_TOP/AXI_M_TOP/rtl/fifo_in.sv", "group": "构建", "desc": "当前共享交付源码"}];
+      const files = [{"group": "RTL", "path": "rtl/output_collector.sv", "desc": "零点前收集器原样保留；向量标记仅在SA内部连接"}, {"group": "RTL", "path": "rtl/pe_array_16x16.sv", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/fix2fp.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/fp2fix.v", "desc": "FP16转INT16；修正负数舍零，补齐舍入组合赋值"}, {"group": "RTL", "path": "rtl/pe_mp/fp32_adder.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/fp32_multi.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/pe_mp/PE_MP_v1.v", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/sa_ctrl.sv", "desc": "工程源文件"}, {"group": "RTL", "path": "rtl/sa_top.sv", "desc": "原18端口；内部15位标记历史恢复PE有效控制"}, {"group": "TB", "path": "tb/output_collector_tb.sv", "desc": "输出收集器独立 TB"}, {"group": "TB", "path": "tb/pe_array_16x16_tb.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_ctrl_tb.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_case_runner.sv", "desc": "保留零点前算术参考、气泡与零值检查；适配18端口"}, {"group": "TB", "path": "tb/sa_top_tb_fp16.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_fp32.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_int4.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_int8.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/sa_top_tb_multi.sv", "desc": "连续任务与无复位重复输入"}, {"group": "TB", "path": "tb/sa_top_tb_smoke.sv", "desc": "工程源文件"}, {"group": "TB", "path": "tb/tb_fp2fix_zero_round.sv", "desc": "有限FP16编码穷举转换回归"}];
 
       const tree = document.getElementById("file-tree");
       const filter = document.getElementById("file-filter");
@@ -251,7 +251,7 @@
       const renderTree = () => {
         const query = filter.value.trim().toLowerCase();
         tree.replaceChildren();
-        ["构建", "RTL", "TB", "TPU_CTRL"].forEach((group) => {
+        ["RTL", "TB"].forEach((group) => {
           const entries = files.filter((file) => file.group === group && file.path.toLowerCase().includes(query));
           if (!entries.length) return;
           const title = document.createElement("div");

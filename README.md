@@ -1,3 +1,5 @@
+> 源码范围：仅本模块 RTL、内部子模块及独立 TB；其他模块源码请进入对应工作台。`code/` 不收录联调包装、构建脚本、Makefile 或说明文件。
+
 # SA Design Workbench
 
 [Open the SA workbench](https://lin2513lp.github.io/sa-workbench/sa_workbench.html) · [Native waveforms](https://lin2513lp.github.io/sa-workbench/sa_sim_waveforms.html)
@@ -8,4 +10,5 @@ The exact pre-midnight TOP TB, including DONE/TX-LAST/count assertions, passes 1
 
 `code/` contains source snapshots. `source-manifest.json` records source hashes; `sim/native_manifest.json` binds the current VCS sources, six FSDBs and twelve native Verdi screenshots with exactly 18 external signals. Raw run logs are under `sim/logs/`; [the correction report](sim/marker-validation.md) describes the changes and verification scope.
 
-Run `make regress` in `code/` in a configured Linux VCS environment. Use `make verdi TOP=sa_top_tb_multi` to open the generated FSDB/KDB. Build artifacts stay in Linux local storage.
+The published code directory contains only RTL and independent TB snapshots. Simulation uses the original local project environment.
+
