@@ -272,7 +272,8 @@
         <button type="button" data-zoom="out" title="缩小" aria-label="缩小">−</button>
         <span class="zoom-value" id="zoom-value">100%</span>
         <button type="button" data-zoom="in" title="放大" aria-label="放大">+</button>
-        <button type="button" data-zoom="reset" title="重置缩放" aria-label="重置缩放">1:1</button>
+        <button type="button" data-zoom="reset" title="原始比例" aria-label="原始比例">1:1</button>
+        <button type="button" data-zoom="fit" title="适应宽度" aria-label="适应宽度">适应宽度</button>
       </div>
     </div>
 
@@ -534,21 +535,28 @@
         button.addEventListener("click", () => renderMode(button.dataset.mode));
       });
 
-      let zoom = 0.52;
+      let fitMode = true;
+      const fitZoom = () => Math.min(1, Math.max(0.05, (timeline.clientWidth - 2) / 2400));
+      let zoom = fitZoom();
       const zoomValue = document.getElementById("zoom-value");
       const applyZoom = (next) => {
-        zoom = Math.min(1.1, Math.max(0.4, next));
-        document.documentElement.style.setProperty("--wave-scale", zoom.toFixed(2));
+        zoom = Math.min(1.1, Math.max(0.05, next));
+        document.documentElement.style.setProperty("--wave-scale", zoom.toFixed(5));
         zoomValue.textContent = `${Math.round(zoom * 100)}%`;
       };
 
       document.querySelectorAll("[data-zoom]").forEach((button) => {
         button.addEventListener("click", () => {
+          fitMode = button.dataset.zoom === "fit";
+          if (fitMode) applyZoom(fitZoom());
           if (button.dataset.zoom === "in") applyZoom(zoom + 0.1);
           if (button.dataset.zoom === "out") applyZoom(zoom - 0.1);
           if (button.dataset.zoom === "reset") applyZoom(1);
         });
       });
+      const refit = () => { if (fitMode && timeline.clientWidth > 0) applyZoom(fitZoom()); };
+      window.addEventListener("resize", refit);
+      if (typeof ResizeObserver !== "undefined") new ResizeObserver(refit).observe(timeline);
       applyZoom(zoom);
       renderMode("int");
     })();
